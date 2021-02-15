@@ -1,0 +1,81 @@
+<h1>Offene Bestellungen</h1>
+
+<ng-container *ngIf="orders && orders.length; else noOrder">
+
+  <div *ngFor="let order of orders | callbackFilter: filterFinished">
+  
+    <mat-card class="{{order.status}}">
+      <mat-card-title>
+        <span>{{order.table.name}}</span>
+        <button mat-icon-button (click)="openMessageDialog(order)"><mat-icon>message</mat-icon></button>
+      </mat-card-title>
+      <mat-card-content>
+        <div>{{order.comment}}</div>
+        <ul>
+          <li *ngFor="let item of order.items">{{item.count}}x - {{item.meal.name}}</li>
+        </ul>
+    
+        <em *ngIf="order.orderMessage && order.orderMessage.length">{{order.orderMessage}}</em>
+        <em *ngIf="order.comment && order.comment.length">{{order.comment}}</em>
+    
+        <div>
+          <button class="status-button" [disabled]="status === order.status" (click)="changeStatus(order, status)" mat-raised-button *ngFor="let status of orderStatusArray">
+            {{orderService.getTextForOrderStatus(status)}}
+          </button>
+        </div>
+
+        <div fxLayoutAlign="end" class="order-status">
+          {{orderService.getTextForOrderStatus(order.status)}}
+        </div>
+
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <mat-accordion>
+    <mat-expansion-panel hideToggle>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Abgeschlossen
+        </mat-panel-title>
+        <mat-panel-description></mat-panel-description>
+      </mat-expansion-panel-header>
+      <div>
+        <div *ngFor="let order of orders | callbackFilter: filterUnfinished">
+  
+          <mat-card class="{{order.status}}">
+            <mat-card-title>
+              <span>{{order.table.name}}</span>
+              <button mat-icon-button (click)="openMessageDialog(order)"><mat-icon>message</mat-icon></button>
+            </mat-card-title>
+            <mat-card-content>
+              <div>{{order.comment}}</div>
+              <ul>
+                <li *ngFor="let item of order.items">{{item.count}}x - {{item.meal.name}}</li>
+              </ul>
+          
+              <em *ngIf="order.orderMessage && order.orderMessage.length">{{order.orderMessage}}</em>
+              <em *ngIf="order.comment && order.comment.length">{{order.comment}}</em>
+          
+              <div>
+                <button class="status-button" [disabled]="status === order.status" (click)="changeStatus(order, status)" mat-raised-button *ngFor="let status of orderStatusArray">
+                  {{orderService.getTextForOrderStatus(status)}}
+                </button>
+              </div>
+      
+              <div fxLayoutAlign="end" class="order-status">
+                {{orderService.getTextForOrderStatus(order.status)}}
+              </div>
+      
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </div>
+    </mat-expansion-panel>
+  </mat-accordion>
+
+</ng-container>
+
+<ng-template #noOrder>
+  Keine offene Bestellung
+</ng-template>

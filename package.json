@@ -18,15 +18,31 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "db:start": "docker run --name hz-mysql -p=3306:3306 -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=hzoo -d mysql",
+    "db:remove": "docker stop hz-mysql && docker rm hz-mysql"
   },
   "dependencies": {
     "@nestjs/common": "^7.5.1",
+    "@nestjs/config": "^0.6.3",
     "@nestjs/core": "^7.5.1",
+    "@nestjs/jwt": "^7.2.0",
+    "@nestjs/passport": "^7.1.5",
     "@nestjs/platform-express": "^7.5.1",
+    "@nestjs/platform-socket.io": "^7.6.12",
+    "@nestjs/serve-static": "^2.1.4",
+    "@nestjs/typeorm": "^7.1.5",
+    "@nestjs/websockets": "^7.6.12",
+    "class-transformer": "^0.3.2",
+    "class-validator": "^0.13.1",
+    "mysql2": "^2.2.5",
+    "passport": "^0.4.1",
+    "passport-jwt": "^4.0.0",
+    "passport-local": "^1.0.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
-    "rxjs": "^6.6.3"
+    "rxjs": "^6.6.3",
+    "typeorm": "^0.2.30"
   },
   "devDependencies": {
     "@nestjs/cli": "^7.5.1",
@@ -35,6 +51,9 @@
     "@types/express": "^4.17.8",
     "@types/jest": "^26.0.15",
     "@types/node": "^14.14.6",
+    "@types/passport-jwt": "^3.0.4",
+    "@types/passport-local": "^1.0.33",
+    "@types/socket.io": "^2.1.13",
     "@types/supertest": "^2.0.10",
     "@typescript-eslint/eslint-plugin": "^4.6.1",
     "@typescript-eslint/parser": "^4.6.1",

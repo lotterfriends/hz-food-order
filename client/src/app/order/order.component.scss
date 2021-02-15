@@ -1,0 +1,38 @@
+:host {
+  display: block;
+  font-family: sans-serif;
+  min-width: 300px;
+  max-width: 600px;
+  margin: 50px auto;  
+}
+
+.mat-card {
+  margin-bottom: 1em;
+}
+
+.comment {
+  width: 100%;
+}
+
+.meal-count {
+  margin: 0 1em;
+  font-weight: bold;
+}
+
+.order-status {
+  font-weight: bold;
+}
+
+
+.in-preparation {
+  background-color: yellow;
+}
+.ready-for-pickup {
+  background-color: aqua;
+}
+.finished {
+  background-color: green;
+}
+.canceled {
+  background-color: red;
+}

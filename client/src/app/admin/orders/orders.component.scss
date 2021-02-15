@@ -1,0 +1,20 @@
+.mat-card {
+  margin-bottom: 1em;
+}
+
+.status-button:not(:last-of-type) {
+  margin-right: .5em;
+}
+
+.in-preparation {
+  background-color: yellow;
+}
+.ready-for-pickup {
+  background-color: aqua;
+}
+.finished {
+  background-color: green;
+}
+.canceled {
+  background-color: red;
+}

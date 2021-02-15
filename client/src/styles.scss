@@ -1,0 +1,14 @@
+@import 'normalize.css/normalize.css';
+@import '~@angular/material/prebuilt-themes/indigo-pink.css';
+@import './mat-icon-font.scss';
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+body {
+  background-color: #efefef;
+}
+
+.w-100 {
+  width: 100%;
+}

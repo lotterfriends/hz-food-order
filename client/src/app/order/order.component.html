@@ -1,0 +1,49 @@
+<ng-container *ngIf="table">
+
+  <h1>{{table.name}}</h1>
+
+  <h2>Bestellungen</h2>
+  
+  <mat-card  *ngFor="let order of orders" class="{{order.status}}">
+    <ul>
+      <li *ngFor="let item of order.items">{{item.count}}x - {{item.meal.name}}</li>
+    </ul>
+  
+    <em *ngIf="order.orderMessage && order.orderMessage.length">{{order.orderMessage}}</em>
+    <em *ngIf="order.comment && order.comment.length">{{order.comment}}</em>
+  
+    <div fxLayoutAlign="end center" class="order-status">
+      {{orderService.getTextForOrderStatus(order.status)}}
+    </div>
+  
+  </mat-card>
+  
+  
+  
+  <h2>Karte</h2>
+    
+  <mat-card  *ngFor="let meal of meals"  fxLayout="row" fxLayoutAlign="space-between">
+    <span>
+      {{meal.name}}
+    </span>
+    <span fxLayoutAlign="end center">
+      <button (click)="mealMinus(meal)" mat-mini-fab aria-label="">-</button>
+      <span class="meal-count">{{meal.count}}</span>
+      <button (click)="mealPlus(meal)" mat-mini-fab aria-label="">+</button>
+    </span>
+  </mat-card>
+  
+  
+  
+  <section>
+    <mat-form-field class="comment">
+      <mat-label>Bemerkung</mat-label>
+      <textarea [(ngModel)]="comment" matInput></textarea>
+    </mat-form-field>
+  </section>
+  
+  <section>
+    <button mat-raised-button color="primary" (click)="sendOrder()">Abschicken</button>
+  </section>
+
+</ng-container>

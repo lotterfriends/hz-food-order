@@ -1,0 +1,80 @@
+<mat-sidenav-container fullscreen>
+
+  <mat-sidenav #navigationSidenav mode="over" role="navigation" >
+
+    <mat-toolbar>
+      <mat-toolbar-row>
+        <h2 class="toolbar-title">HZ Order</h2>
+      </mat-toolbar-row>
+    </mat-toolbar>
+
+    <!-- <mat-nav-list dense> -->
+    <mat-nav-list>
+
+      <ng-container>
+
+        <!-- <h2 matSubheader> subheader </h2> -->
+
+        <a mat-list-item routerLink="/" style="height: 0;"></a>
+
+        <a *ngFor="let item of mainRoutes"
+          mat-list-item
+          (click)="navigationSidenav.close()"
+          [routerLink]="[item.path]"
+          routerLinkActive="list-item-active">
+          <mat-icon *ngIf="item.data.icon" matListIcon class="nav-list-icon">{{item.data.icon}}</mat-icon> {{item.data.title}}
+        </a>
+
+      </ng-container>
+<!-- 
+      <ng-container *ngIf="false">
+
+        <h2 matSubheader> subheader </h2>
+
+        <a *ngFor="let item of customerRoutes"
+          mat-list-item
+          (click)="navigationSidenav.close()"
+          [routerLink]="[item.route]"
+          routerLinkActive="list-item-active">
+          <mat-icon matListIcon class="nav-list-icon"> {{ item.icon }} </mat-icon>
+          {{item.title}}
+        </a>
+
+      </ng-container> -->
+
+    </mat-nav-list>
+
+  </mat-sidenav>
+
+  <mat-sidenav #commandbarSidenav position="end" mode="side" class="crm-command-bar-sidenav">
+
+    <mat-list style="padding: 10px;">
+<!-- 
+      <mat-card *ngFor="let item of toolPaletteItems" style="padding: 8px; margin-bottom: 10px; text-align: center;">
+
+        <img mat-card-sm-image
+             [src]="item.icon"
+             [alt]="item.name"
+             draggable="true"
+             (dragstart)="onDragStart($event, item.id)">
+
+        <mat-card-content>
+          <mat-card-subtitle>
+            {{item.name}}
+          </mat-card-subtitle>
+        </mat-card-content>
+
+      </mat-card> -->
+
+    </mat-list>
+
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <app-header  (toggleSidenav)="navigationSidenav.toggle()"></app-header>
+    <div class="admin-main">
+      <router-outlet></router-outlet>
+    </div>
+  </mat-sidenav-content>
+
+</mat-sidenav-container>

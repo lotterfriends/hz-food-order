@@ -1,0 +1,15 @@
+<h1 mat-dialog-title>
+  Hinweis zur Bestellung
+</h1>
+
+<div mat-dialog-content>
+  <mat-form-field fxFlexFill class="">
+    <mat-label>Nachricht</mat-label>
+    <textarea autocomplete="off" [(ngModel)]="message" placeholder="Deine Nachricht" matInput></textarea>
+  </mat-form-field>
+</div>
+
+<div mat-dialog-actions>
+  <button mat-button (click)="onDismiss()">abbrechen</button>
+  <button mat-raised-button color="primary" (click)="onConfirm()">senden</button>
+</div>

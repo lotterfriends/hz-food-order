@@ -1,0 +1,68 @@
+<div>
+
+  <h2>Angebot</h2>
+
+  <mat-card>
+    <mat-card-content>
+      <mat-form-field fxFlexFill class="">
+        <mat-label>Name</mat-label>
+        <input (keyup.enter)="addMeal()" required minlength="2" autocomplete="off" [(ngModel)]="mealName" type="text" matInput>
+      </mat-form-field>
+      <mat-form-field fxFlexFill class="">
+        <mat-label>Beschreibung</mat-label>
+        <textarea autocomplete="off" [(ngModel)]="mealDesciption" placeholder="z.B. Inhalsstoffe" matInput></textarea>
+      </mat-form-field>
+      <mat-form-field fxFlexFill class="">
+        <mat-label>Bestand</mat-label>
+        <input (keyup.enter)="addMeal()" type="number" required autocomplete="off" [(ngModel)]="mealStock" matInput>
+      </mat-form-field>
+      
+      <span>
+        <button mat-raised-button color="primary" (click)="addMeal()">erstellen</button>
+      </span>
+    </mat-card-content>
+  </mat-card>
+  
+  
+  <div *ngFor="let meal of meals">
+    <mat-card>
+      <ng-container *ngIf="!meal.edit; else mealEdit">
+        <mat-card-title fxLayout="row" fxLayoutAlign="space-between">
+          <span>{{meal.name}}</span>
+          <span fxLayoutAlign="end center"><button (click)="startEdit(meal)" mat-icon-button aria-label="Bearbeiten">
+            <mat-icon>mode_edit</mat-icon>
+          </button></span>
+        </mat-card-title>
+        <mat-card-content>
+          <div *ngIf="meal.description && meal.description.length"><em>{{meal.description}}</em></div>
+          <div>Bestand: {{meal.stock}}</div>
+        </mat-card-content>
+      </ng-container>
+      <ng-template #mealEdit>
+        <mat-form-field fxFlexFill class="">
+          <mat-label>Name</mat-label>
+          <input (keydown.enter)="saveEdit(meal)" required minlength="2" autocomplete="off" [(ngModel)]="meal.name" type="text" matInput>
+        </mat-form-field>
+  
+        <mat-form-field fxFlexFill class="">
+          <mat-label>Beschreibung</mat-label>
+          <textarea autocomplete="off" [(ngModel)]="meal.description" type="search" placeholder="z.B. Inhalsstoffe" matInput></textarea>
+        </mat-form-field>
+  
+        <mat-form-field fxFlexFill class="">
+          <mat-label>Bestand</mat-label>
+          <input (keydown.enter)="saveEdit(meal)" type="number" required autocomplete="off" [(ngModel)]="meal.stock" matInput>
+        </mat-form-field>
+  
+        <mat-card-actions>
+          <button mat-raised-button color="primary" (click)="saveEdit(meal)">speichern</button>
+          <button mat-raised-button color="secondary" type="cancel" (click)="cancelEdit(meal)">abbrechen</button>
+        </mat-card-actions>
+  
+      </ng-template>
+      
+    </mat-card>
+    
+  </div>
+</div>
+
