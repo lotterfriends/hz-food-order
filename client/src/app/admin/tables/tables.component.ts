@@ -1,10 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { AdminService, Settings, Table } from '../admin.service';
+import { Router } from '@angular/router';
 import { NgxQrcodeElementTypes, NgxQrcodeErrorCorrectionLevels } from '@techiediaries/ngx-qrcode';
-import { environment } from "../../../environments/environment";
-import { MatDialog } from '@angular/material/dialog';
-import { ConfirmDialogComponent, ConfirmDialogModel } from 'src/app/confirm-dialog/confirm-dialog.component';
-import * as e from 'express';
+import { first } from 'rxjs/operators';
+import { AdminTablesService, Table } from '../services/admin-tables.service';
 
 interface ViewTable extends Table {
   edit: boolean;
@@ -17,8 +15,6 @@ interface ViewTable extends Table {
 })
 export class TablesComponent implements OnInit {
   
-  serverSecret: string = '';
-  secret: string = '';
   tables: ViewTable[] = [];
   editTables: ViewTable[] = [];
   tableName: string = '';
@@ -30,30 +26,12 @@ export class TablesComponent implements OnInit {
 
 
   constructor(
-    private adminService: AdminService,
-    private dialog: MatDialog
+    private adminTablesService: AdminTablesService,
+    private router: Router,
   ) { }
 
-  updateSecret() {
-    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      maxWidth: "400px",
-      data: new ConfirmDialogModel('Achtung', 'Wenn sie den Schlüssel ändern, werden allen bisher erstellten QR-Codes ungültig.')
-    });
-
-    dialogRef.afterClosed().subscribe(dialogResult => {
-      if (dialogResult) {
-        this.adminService.updateSecret(this.secret).subscribe((settings: Settings) => {
-          this.secret = settings.secret;
-          this.serverSecret = this.secret;
-          this.getTables();
-        });
-      }
-    });
-
-  }
-
   getTables() {
-    this.adminService.getTables().subscribe(result => {
+    this.adminTablesService.getTables().pipe(first()).subscribe(result => {
       this.tables = result.map((e) => {
         return  {
           edit: false,
@@ -63,14 +41,8 @@ export class TablesComponent implements OnInit {
     });
   }
 
-  getNewSecret() {
-    this.adminService.getNewSecret().subscribe(newSecretObject => {
-      this.secret = newSecretObject.secret;
-    })
-  }
-
   addTable() {
-    this.adminService.createTable(this.tableName).subscribe((table: Table) => {
+    this.adminTablesService.createTable(this.tableName).pipe(first()).subscribe((table: Table) => {
       this.tableName = '';
       this.tables.push({edit: false, ...table});
     })
@@ -82,7 +54,7 @@ export class TablesComponent implements OnInit {
   }
   
   saveEdit(table: ViewTable) {
-    this.adminService.renameTable(table.id, table.name).subscribe(result => {
+    this.adminTablesService.renameTable(table.id, table.name).pipe(first()).subscribe(result => {
       const tableIndex = this.tables.findIndex(e => e.id === result.id);
       this.tables[tableIndex] = { edit: false, ...result};
     })
@@ -97,13 +69,19 @@ export class TablesComponent implements OnInit {
     }
   }
 
+  openPrintDocument(table: ViewTable) {
+    const url = this.value + table.secret;
+    console.log(table);
+    this.router.navigateByUrl('/print-table', { 
+      state: { 
+        url,
+        name: table.name
+      }
+    });
+  }
+
   ngOnInit(): void {
     this.getTables();
-
-    this.adminService.getSettings().subscribe(settings => {
-      this.secret = settings.secret;
-      this.serverSecret = this.secret;
-    });
   }
 
 

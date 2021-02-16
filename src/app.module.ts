@@ -11,7 +11,6 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
-import { OrderGateway } from './order-gateway';
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -36,6 +35,6 @@ import { OrderGateway } from './order-gateway';
     UsersModule
   ],
   controllers: [AppController],
-  providers: [AppService, OrderGateway],
+  providers: [AppService],
 })
 export class AppModule {}

@@ -26,47 +26,8 @@
         </a>
 
       </ng-container>
-<!-- 
-      <ng-container *ngIf="false">
-
-        <h2 matSubheader> subheader </h2>
-
-        <a *ngFor="let item of customerRoutes"
-          mat-list-item
-          (click)="navigationSidenav.close()"
-          [routerLink]="[item.route]"
-          routerLinkActive="list-item-active">
-          <mat-icon matListIcon class="nav-list-icon"> {{ item.icon }} </mat-icon>
-          {{item.title}}
-        </a>
-
-      </ng-container> -->
 
     </mat-nav-list>
-
-  </mat-sidenav>
-
-  <mat-sidenav #commandbarSidenav position="end" mode="side" class="crm-command-bar-sidenav">
-
-    <mat-list style="padding: 10px;">
-<!-- 
-      <mat-card *ngFor="let item of toolPaletteItems" style="padding: 8px; margin-bottom: 10px; text-align: center;">
-
-        <img mat-card-sm-image
-             [src]="item.icon"
-             [alt]="item.name"
-             draggable="true"
-             (dragstart)="onDragStart($event, item.id)">
-
-        <mat-card-content>
-          <mat-card-subtitle>
-            {{item.name}}
-          </mat-card-subtitle>
-        </mat-card-content>
-
-      </mat-card> -->
-
-    </mat-list>
 
   </mat-sidenav>
 

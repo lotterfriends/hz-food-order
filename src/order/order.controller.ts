@@ -1,10 +1,8 @@
-import { BadRequestException, Body, Controller, Get, Headers, Param, Post, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { OrderGateway } from 'src/order-gateway';
-import { TableService } from 'src/tables/table.service';
+import { OrderGateway } from 'src/order/order-gateway';
 import { Order } from './order.entity';
 import { OrderService } from './order.service';
-import { OrderDto } from './types/oder-dto';
 import { OrderStatus } from './types/order-status';
 
 
@@ -13,7 +11,6 @@ import { OrderStatus } from './types/order-status';
 export class OrderController {
   constructor(
     private readonly orderService: OrderService,
-    private readonly tableService: TableService,
     private readonly orderGateway: OrderGateway
   ) {}
 
@@ -60,5 +57,10 @@ export class OrderController {
       this.orderGateway.sendOrderUpdateToTable(respnseOrder);
       return respnseOrder;
     }
+  }
+
+  @Post('archive')
+  async archive() {
+    this.orderService.archiveAllActiveOrders();
   }
 }

@@ -1,28 +1,32 @@
 
 import {
-  OnGatewayConnection,
+  MessageBody, OnGatewayConnection,
   OnGatewayDisconnect,
   SubscribeMessage,
   WebSocketGateway,
-  WebSocketServer,
-  MessageBody
+  WebSocketServer
 } from '@nestjs/websockets';
-import { throws } from 'assert';
 import { Socket } from 'socket.io';
-import { Order } from './order/order.entity';
-import { Table } from './tables/table.entity';
-import { TableService } from './tables/table.service';
+import { AuthService } from '../auth/auth.service';
+import { Order } from './order.entity';
+import { Table } from '../tables/table.entity';
+import { TableService } from '../tables/table.service';
+import { User } from 'src/users/users.service';
 
 interface ClientConnection {
   socket: Socket;
   table?: Table;
+  user?: User;
   tables?: Table[];
 }
 
 @WebSocketGateway()
 export class OrderGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
-  constructor(private readonly tableService: TableService) {}
+  constructor(
+    private readonly tableService: TableService,
+    private readonly authService: AuthService
+  ) {}
   
   @WebSocketServer() server;
 
@@ -51,6 +55,26 @@ export class OrderGateway implements OnGatewayConnection, OnGatewayDisconnect {
     for (const currentConnection of this.connections) {
       if (currentConnection.socket.id === client.id) {
         currentConnection.table = table;
+      }
+    }
+  }
+
+  @SubscribeMessage('user-register')
+  async handleRegisterUser(client: Socket, token: string) {
+    const user = await this.authService.validateToken(token);
+    if (user) {
+      for (const currentConnection of this.connections) {
+        if (currentConnection.socket.id === client.id) {
+          currentConnection.user = user;
+        }
+      }
+    }
+  }
+
+  sendOrderUpdateToUser(order: Order) {
+    for (const currentConnection of this.connections) {
+      if (currentConnection.user) {
+        currentConnection.socket.emit('order-update', order);
       }
     }
   }

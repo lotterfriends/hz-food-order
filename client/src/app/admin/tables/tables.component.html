@@ -1,28 +1,3 @@
-<h2>QR-Code Schlüssel</h2>
-<mat-card>
-  <!-- <mat-card-title>Schlüssel</mat-card-title> -->
-
-  <mat-card-content>
-    <section fxFlexFill>
-      <em>Es ist nur möglich eine Bestellung abzuschicken, wenn man einen URL aufruft, der mit diesem Schlüssel abgesichert ist. Der Schlüssel sollte für <strong>jede</strong> Veranstaltung geändert werden, sodass Besucher die den Schlüssel von vorherigen Veranstaltungen noch besitzen (Seite ist noch im Browser geöffnet, Foto vom QR-Code erstellt), nicht mehr bestellen können.</em>
-    </section>
-  
-    <br />
-  
-    <mat-form-field fxFlexFill>
-      <mat-label>Schlüssel</mat-label>
-      <input readonly (keyup.enter)="updateSecret()" required minlength="6" autocomplete="off" [(ngModel)]="secret" type="text" matInput>
-      <button mat-button matSuffix mat-icon-button aria-label="refresh" (click)="getNewSecret()">
-        <mat-icon>refresh</mat-icon>
-      </button>
-    </mat-form-field>
-    <mat-card-actions>
-      <button mat-raised-button color="primary" [disabled]="this.secret === this.serverSecret" (click)="updateSecret()">speichern</button>
-      <button mat-raised-button color="secondary" (click)="this.secret = this.serverSecret">Abbrechen</button>
-    </mat-card-actions>
-  </mat-card-content>
-</mat-card>
-
 <h2>Tische</h2>
 
 <mat-card>
@@ -49,16 +24,21 @@
       <mat-panel-description></mat-panel-description>
     </mat-expansion-panel-header>
       <ng-container *ngIf="!table.edit; else tableEdit">
-        <span fxLayoutAlign="end center"><button (click)="startEdit(table)" mat-icon-button aria-label="Bearbeiten">
-          <mat-icon>mode_edit</mat-icon>
-        </button></span>
 
-        <a mat-stroked-button target="_blank" href="{{value + table.secret}}">Als Besucher öffnen</a>
-        <ngx-qrcode
-          [elementType]="elementType"
-          [errorCorrectionLevel]="correctionLevel"
-          [value]="value + table.secret"
-          cssClass="admin-qr"></ngx-qrcode>
+        <div fxLayout="row">
+          <div>
+            <ngx-qrcode
+              [elementType]="elementType"
+              [errorCorrectionLevel]="correctionLevel"
+              [value]="value + table.secret"
+              cssClass="admin-qr"></ngx-qrcode>
+          </div>
+          <div fxLayout="column">
+            <a class="table-button" mat-stroked-button (click)="startEdit(table)">Bearbeiten</a>
+            <a class="table-button" mat-stroked-button target="_blank" href="{{value + table.secret}}">Als Besucher öffnen</a>
+            <a class="table-button" mat-stroked-button (click)="openPrintDocument(table)">Drucken</a>
+          </div>
+        </div>
       </ng-container>
       <ng-template #tableEdit>
         <mat-form-field fxFlexFill class="">

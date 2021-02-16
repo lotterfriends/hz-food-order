@@ -4,21 +4,25 @@
 
   <h2>Bestellungen</h2>
   
-  <mat-card  *ngFor="let order of orders" class="{{order.status}}">
-    <ul>
-      <li *ngFor="let item of order.items">{{item.count}}x - {{item.meal.name}}</li>
-    </ul>
-  
-    <em *ngIf="order.orderMessage && order.orderMessage.length">{{order.orderMessage}}</em>
-    <em *ngIf="order.comment && order.comment.length">{{order.comment}}</em>
-  
-    <div fxLayoutAlign="end center" class="order-status">
-      {{orderService.getTextForOrderStatus(order.status)}}
-    </div>
-  
-  </mat-card>
-  
-  
+  <ng-container *ngIf="orders.filter(filterFinished).length; else noOrder">
+
+    <mat-card *ngFor="let order of orders | callbackFilter: filterFinished" class="{{order.status}}">
+      <mat-card-title>{{order.code}}</mat-card-title>
+      <ul>
+        <li *ngFor="let item of order.items">{{item.count}}x - {{item.meal.name}}</li>
+      </ul>
+    
+      <em *ngIf="order.orderMessage && order.orderMessage.length">{{order.orderMessage}}</em>
+      <em *ngIf="order.comment && order.comment.length">{{order.comment}}</em>
+    
+      <div fxLayoutAlign="end center" class="order-status">
+        {{orderService.getTextForOrderStatus(order.status)}}
+      </div>
+    
+    </mat-card>
+    
+    
+  </ng-container>
   
   <h2>Karte</h2>
     
@@ -47,3 +51,10 @@
   </section>
 
 </ng-container>
+
+
+<ng-template #noOrder>
+  <div class="no-order" fxLayout="row" fxLayoutAlign="start center">
+    <div>Keine Bestellung</div> <mat-icon>sentiment_very_dissatisfied</mat-icon>
+  </div>
+</ng-template>

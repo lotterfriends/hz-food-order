@@ -2,13 +2,17 @@ import { Injectable } from '@angular/core';
 import { Socket } from 'ngx-socket-io';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { AuthService } from './auth.service';
 import { ServerOrder } from './order/order.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class OrderWSService {
-    constructor(private socket: Socket) { 
+    constructor(
+      private socket: Socket,
+      private authService: AuthService
+    ) { 
 
       this.socket.on('connect', () => {
         this.isConnected.next(true);
@@ -24,21 +28,20 @@ export class OrderWSService {
 
 
     registerAsTable(secret: string) {
-      console.log(this.socket);
-      console.log(secret);
       this.socket.emit('table-register', secret);
     }
-
-    sendMessage(msg: string){
-      this.socket.emit('message', msg);
-    }
-
-    getMessage() {
-      return this.socket.fromEvent('message').pipe(map((data) => (data as any).msg));
+    
+    registerAsUser() {
+      const token = this.authService.getToken();
+      this.socket.emit('user-register', token);
     }
 
     tableOrderUpdate(): Observable<ServerOrder>{
       return this.socket.fromEvent<ServerOrder>('table-order-update');
+    }
+
+    orderUpdate(): Observable<ServerOrder>{
+      return this.socket.fromEvent<ServerOrder>('order-update');
     }
 
     

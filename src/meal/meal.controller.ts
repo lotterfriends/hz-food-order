@@ -1,4 +1,5 @@
-import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { Table } from 'typeorm';
 import { Meal } from './meal.entity';
 import { MealService } from './meal.service';
@@ -10,6 +11,7 @@ export interface MealDto {
 }
 
 @Controller('meals')
+@UseGuards(JwtAuthGuard)
 export class MealController {
   constructor(private readonly mealService: MealService) {}
 

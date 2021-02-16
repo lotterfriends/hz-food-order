@@ -22,6 +22,7 @@ export enum OrderStatus {
 }
 
 export interface OrderMeal {
+  id: number;
   name: string;
   count: number;
 }
@@ -35,6 +36,7 @@ export interface Order {
 export interface ServerOrder {
   comment: string;
   id: number;
+  code: string;
   items:{
     count: number;
     id: number;
@@ -58,23 +60,6 @@ export class OrderService {
 
   constructor(private http: HttpClient) {}
 
-
-  getTables(): Observable<Table[]> {
-    return this.http.get<Table[]>(`${environment.apiPath}/tables`)
-  }
-
-  createTable(name:string, code:string): Observable<Table> {
-    return this.http.post<Table>(`${environment.apiPath}/tables`, { name, code});
-  }
-  
-  getMeals(): Observable<Meal[]> {
-    return this.http.get<Meal[]>(`${environment.apiPath}/meals`)
-  }
-
-  createMeal(name:string, stock:number): Observable<Meal> {
-    return this.http.post<Meal>(`${environment.apiPath}/meals`, { name, stock});
-  }
-
   createOrder(order: Order): Observable<ServerOrder> {
     return this.http.post<ServerOrder>(`${environment.apiPath}/table-orders`, order);
   }
@@ -84,7 +69,11 @@ export class OrderService {
   }
 
   getTabeForSecret(secret: string): Observable<Table> {
-    return this.http.get<Table>(`${environment.apiPath}/tables/${secret}`)
+    return this.http.get<Table>(`${environment.apiPath}/table-orders/${secret}`)
+  }
+
+  getMeals(): Observable<Meal[]> {
+    return this.http.get<Meal[]>(`${environment.apiPath}/table-orders/meals`)
   }
 
   getTextForOrderStatus(status: OrderStatus): string {

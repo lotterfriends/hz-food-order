@@ -1,0 +1,12 @@
+<div class="print-page">
+  <div>
+    <h1>{{name}}</h1>
+    
+    <ngx-qrcode
+      [elementType]="elementType"
+      [errorCorrectionLevel]="correctionLevel"
+      [value]="url"
+      [width]="500"
+      cssClass="print-qr"></ngx-qrcode>
+  </div>
+</div>

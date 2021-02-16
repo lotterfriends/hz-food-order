@@ -7,15 +7,18 @@ import { TableOrderController } from './table-order.controller';
 import { Order } from './order.entity';
 import { OrderService } from './order.service';
 import { OrderController } from './order.controller';
-import { OrderGateway } from 'src/order-gateway';
+import { OrderGateway } from 'src/order/order-gateway';
+import { AppService } from 'src/app.service';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Order, OrderItem]),
     TablesModule,
-    MealModule
+    MealModule,
+    AuthModule
   ],
   controllers: [TableOrderController, OrderController],
-  providers: [OrderService, OrderGateway],
+  providers: [OrderService, OrderGateway, AppService],
 })
 export class OrderModule {}

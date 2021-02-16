@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { AuthGuardService } from '../auth-guard.service';
 import { MealsComponent } from './meals/meals.component';
 import { OrdersComponent } from './orders/orders.component';
+import { SettingsComponent } from './settings/settings.component';
 import { TablesComponent } from './tables/tables.component';
 
 export const adminRoutes: Routes = [
@@ -31,6 +32,15 @@ export const adminRoutes: Routes = [
     data: {
       title: 'Angebot',
       icon: 'local_offer'
+    }
+  },
+  { 
+    path: 'settings',
+    component: SettingsComponent,
+    canActivate: [AuthGuardService],
+    data: {
+      title: 'Einstellungen',
+      icon: 'settings'
     }
   },
   { path: '**', redirectTo: 'orders' }

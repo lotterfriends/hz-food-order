@@ -59,13 +59,14 @@ export class TableService {
     const serverSecret = process.env.SERVER_SECRET;
     const appSecret = await this.settingsService.getSecret();
     const tables = await this.getAll();
+    let foundTable = null;
     for (const table of tables) {
       const hash = createHash('sha256').update([table.key, appSecret, serverSecret].join('-')).digest('hex');
       if (hash === secret) {
-        return table;
+        foundTable = table;
       }
     }
-    return null;
+    return foundTable;
   }
 
 }

@@ -13,8 +13,7 @@ import { UiModule } from '../ui/ui.module';
 import { OrdersComponent } from './orders/orders.component';
 import { AdminRoutingModule } from './admin-routing.module';
 import { OrderMessageDialogComponent } from './orders/order-message-dialog/order-message-dialog';
-import { CallbackFilterPipe } from '../ui/callbackFilter.pipe';
-
+import { SettingsComponent } from './settings/settings.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +23,8 @@ import { CallbackFilterPipe } from '../ui/callbackFilter.pipe';
     MealsComponent,
     AppHeaderComponent,
     AppNavigationComponent,
-    OrderMessageDialogComponent
+    OrderMessageDialogComponent,
+    SettingsComponent
   ],
   imports: [
     AdminRoutingModule,

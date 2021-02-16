@@ -7,9 +7,12 @@ import { OrderStatus } from "./types/order-status";
 export class Order {
   @PrimaryGeneratedColumn()
   id: number;
-
+  
   @CreateDateColumn()
   created: Date;
+
+  @Column()
+  code: string;
 
   @Column({nullable: true})
   comment: string;

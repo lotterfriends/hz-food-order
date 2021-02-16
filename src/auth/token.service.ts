@@ -11,6 +11,14 @@ export interface RefreshTokenPayload {
   sub: number
 }
 
+export interface TokenPayload {
+  iat: number;
+  exp: number;
+  aud: string;
+  iss: string;
+  sub: string;
+}
+
 @Injectable()
 export class TokenService {
   constructor(

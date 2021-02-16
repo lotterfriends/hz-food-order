@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { JwtHelperService } from '@auth0/angular-jwt';
+import { first } from 'rxjs/operators';
 
 interface User {
   userId: number;
@@ -74,13 +75,12 @@ export class AuthService {
   logout(): void {
     this.http.post<{}>(`${environment.apiPath}/auth/logout`, {
       refresh_token:  localStorage.getItem('refresh_token')
-    }).subscribe(() => {
+    }).pipe(first()).subscribe(() => {
       this.removeToken();
       this.stopRefreshTokenTimer();
       this.userSubject.next(null);
       this.router.navigate(['/login']);
     });
-
   }
 
   getMe()  {

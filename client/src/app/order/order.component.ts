@@ -2,7 +2,7 @@ import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
-import { combineLatest } from 'rxjs';
+import { first } from 'rxjs/operators';
 import { ConfirmDialogComponent, ConfirmDialogModel } from '../confirm-dialog/confirm-dialog.component';
 import { OrderWSService } from '../order-ws.service';
 import { Order, OrderMeal, OrderService, OrderStatus, ServerOrder, Table } from './order.service';
@@ -49,35 +49,12 @@ export class OrderComponent implements OnInit, AfterViewInit {
       } else {
         sessionStorage.removeItem('secret');
       }
-    })
-
-    // combineLatest([
-    //   this.route.paramMap,
-    //   this.orderWSService.isConnected
-    // ]).subscribe(([params, isConnected]) => {
-    //   console.log(params, isConnected);
-    //   if (isConnected) {
-    //     this.secret = params.get('secret');
-    //     if (this.secret) {
-    //       this.orderWSService.registerAsTable(this.secret);
-    //       sessionStorage.setItem('secret', this.secret);
-    //       this.orderService.getTabeForSecret(this.secret).subscribe(table => {
-    //         if (table) {
-    //           this.table = table;
-    //         } else {
-    //           this.router.navigate(['/empty']);
-    //         }
-    //       })
-    //     } else {
-    //       sessionStorage.removeItem('secret');
-    //     }
-    //   }
-      
-    // })
+    });
 
     this.orderService.getMeals().subscribe(result => {
       for(const meal of result) {
         this.meals.push({
+          id: meal.id,
           name: meal.name,
           count: 0
         })
@@ -98,6 +75,7 @@ export class OrderComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+    // after connected event not working
     setTimeout(() => {
       if (this.secret) {
         this.orderWSService.registerAsTable(this.secret);
@@ -137,7 +115,7 @@ export class OrderComponent implements OnInit, AfterViewInit {
     order.comment = this.comment;
     this.comment = '';
     if (order.items.length) {
-      this.orderService.createOrder(order).subscribe(serverOrder => {
+      this.orderService.createOrder(order).pipe(first()).subscribe(serverOrder => {
         this.orders.push(serverOrder);
       })
     }
@@ -156,11 +134,15 @@ export class OrderComponent implements OnInit, AfterViewInit {
       data: new ConfirmDialogModel('Achtung', 'Jetzt Kostenpflichtig bestellen?')
     });
 
-    dialogRef.afterClosed().subscribe(dialogResult => {
+    dialogRef.afterClosed().pipe(first()).subscribe(dialogResult => {
       if (dialogResult) {
         this.placeOrder();
       }
     });
+  }
+
+  filterFinished(entry: ServerOrder) {
+    return entry.status !== OrderStatus.Finished && entry.status !== OrderStatus.Canceled; 
   }
 
 }

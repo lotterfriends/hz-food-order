@@ -21,9 +21,6 @@ export class AuthGuardService implements CanActivate {
       return false;
     }
 
-    const exp = this.jwtHelper.decodeToken(token).exp;
-    
-    
     const eDate = this.jwtHelper.getTokenExpirationDate();
     if (eDate) {
       const eTime = eDate.getTime();

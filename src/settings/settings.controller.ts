@@ -9,7 +9,6 @@ import { SettingsService } from './settings.service';
 export class SettingsController {
   constructor(private readonly settingsService: SettingsService) {}
 
-
   @Put()
   async update(@Body() settings: Settings) {
     return this.settingsService.update(settings);

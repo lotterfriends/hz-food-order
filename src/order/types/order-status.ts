@@ -3,4 +3,5 @@ export enum OrderStatus {
   ReadyForPickup = 'ready-for-pickup',
   Finished = 'finished',
   Canceled = 'canceled',
+  Archived = 'archived',
 }

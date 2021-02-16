@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { AdminService, Meal, Table } from '../admin.service';
-import { NgxQrcodeElementTypes, NgxQrcodeErrorCorrectionLevels } from '@techiediaries/ngx-qrcode';
-import { FormGroup } from '@angular/forms';
+import { first, subscribeOn } from 'rxjs/operators';
+import { AdminMealsService, Meal } from '../services/admin-meals.service';
 
 interface ViewMeal extends Meal {
   edit: boolean;
@@ -21,14 +20,16 @@ export class MealsComponent implements OnInit {
   mealStock: number = 0;
 
 
-  constructor(private adminService: AdminService) { }
+  constructor(
+    private adminMealsService: AdminMealsService
+  ) { }
 
   addMeal() {
-    this.adminService.createMeal({
+    this.adminMealsService.createMeal({
       name: this.mealName,
       stock: this.mealStock,
       description: this.mealDesciption
-    } as Meal).subscribe((meal: Meal) => {
+    } as Meal).pipe(first()).subscribe((meal: Meal) => {
       this.meals.push({ edit: false, ...meal});
       this.mealName = '';
       this.mealDesciption = '';
@@ -42,11 +43,11 @@ export class MealsComponent implements OnInit {
   }
   
   saveEdit(meal: ViewMeal) {
-    this.adminService.updateMeal(meal.id, {
+    this.adminMealsService.updateMeal(meal.id, {
       name: meal.name,
       stock: meal.stock,
       description: meal.description
-    } as Meal).subscribe(result => {
+    } as Meal).pipe(first()).subscribe(result => {
       const mealIndex = this.meals.findIndex(e => e.id === result.id);
       this.meals[mealIndex] = { edit: false, ...result};
     })
@@ -66,7 +67,7 @@ export class MealsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.adminService.getMeals().subscribe(result => {
+    this.adminMealsService.getMeals().pipe(first()).subscribe(result => {
       this.meals = result.map((e) => {
         return {
           edit: false,
