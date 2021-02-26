@@ -32,5 +32,9 @@ export class ProductsService {
     return this.productsRepository.update(productId, {stock: product.stock});
   }
 
+  delete(id: number) {
+    this.productsRepository.softDelete(id);
+  }
+
 
 }

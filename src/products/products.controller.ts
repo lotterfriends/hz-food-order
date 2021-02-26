@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { Table } from 'typeorm';
 import { ProductCategory } from './products-category.entity';
@@ -34,4 +34,10 @@ export class ProductsController {
   getAll() {
     return this.productService.getAll();
   }
+
+  @Delete(':id')
+  delete(@Param('id') id: number) {
+    return this.productService.delete(id);
+  }
+
 }
