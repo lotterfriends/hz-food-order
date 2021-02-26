@@ -35,21 +35,17 @@ export class OrderComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
 
-    this.route.paramMap.subscribe(params => {
-      this.secret = params.get('secret');
-      if (this.secret) {
-        sessionStorage.setItem('secret', this.secret);
-        this.orderService.getTabeForSecret(this.secret).subscribe(table => {
-          if (table) {
-            this.table = table;
-          } else {
-            this.router.navigate(['/empty']);
-          }
-        })
-      } else {
-        sessionStorage.removeItem('secret');
-      }
-    });
+    
+    this.secret = sessionStorage.getItem('secret');
+    if (this.secret) {
+      this.orderService.getTabeForSecret(this.secret).subscribe(table => {
+        if (table) {
+          this.table = table;
+        } else {
+          this.router.navigate(['/empty']);
+        }
+      })
+    }
 
     this.orderService.getMeals().subscribe(result => {
       for(const meal of result) {

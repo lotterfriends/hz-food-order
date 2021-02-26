@@ -3,7 +3,14 @@
   font-family: sans-serif;
   min-width: 300px;
   max-width: 600px;
-  margin: 50px auto;  
+  padding: 1em;
+}
+
+@media (min-width: 605px) {
+  :host {
+    padding: 0;
+    margin: 50px auto;
+  }
 }
 
 

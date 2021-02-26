@@ -20,6 +20,7 @@ import { OrderComponent } from './order/order.component';
 import { SecretInterceptor } from './secret.interceptor';
 import { TokenInterceptor } from './token.interceptor';
 import { PrintTableComponent } from './print-table/print-table.component';
+import { OrderRedirectComponent } from './order-redirect/order-redirect.component';
 
 export function tokenGetter() {
   return localStorage.getItem('token');
@@ -39,6 +40,7 @@ const socketConfig: SocketIoConfig = {
     EmptyComponent,
     LoginComponent,
     PrintTableComponent,
+    OrderRedirectComponent,
   ],
   imports: [
     FormsModule,

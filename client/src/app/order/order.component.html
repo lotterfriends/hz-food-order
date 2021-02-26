@@ -1,8 +1,8 @@
 <ng-container *ngIf="table">
 
-  <h1>{{table.name}}</h1>
+  <h1 class="mat-title">{{table.name}}</h1>
 
-  <h2>Bestellungen</h2>
+  <h3 class="mat-headline">Bestellungen</h3>
   
   <ng-container *ngIf="orders.filter(filterFinished).length; else noOrder">
 
@@ -24,7 +24,7 @@
     
   </ng-container>
   
-  <h2>Karte</h2>
+  <h3 class="mat-headline">Karte</h3>
     
   <mat-card  *ngFor="let meal of meals"  fxLayout="row" fxLayoutAlign="space-between">
     <span>
