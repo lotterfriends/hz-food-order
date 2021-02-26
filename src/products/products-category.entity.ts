@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Product } from "./products.entity";
 
 @Entity()
@@ -15,8 +15,11 @@ export class ProductCategory {
   @Column({nullable: true})
   description?: string;
 
-  @ManyToOne(() => Product, product => product.category, { eager: false })
+  @OneToMany(() => Product, product => product.category)
   @JoinColumn()
   product: Product;
+
+  @Column({default: 100})
+  order: number;
 
 }

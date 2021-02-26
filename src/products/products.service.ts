@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository} from 'typeorm';
+import { CatergoryDto } from './product-categories.controller';
+import { ProductCategory } from './products-category.entity';
 import { ProductDto } from './products.controller';
 import { Product } from './products.entity';
 @Injectable()
@@ -8,7 +10,29 @@ export class ProductsService {
 
   constructor(
     @InjectRepository(Product) private productsRepository: Repository<Product>,
+    @InjectRepository(ProductCategory) private categoryRepository: Repository<ProductCategory>,
   ) {}
+    
+  saveCategory(categoryDto: CatergoryDto) {
+    return this.categoryRepository.save(categoryDto);
+  }
+
+  getAllCategories() {
+    return this.categoryRepository.find();
+  }
+
+  deleteCategory(id: number) {
+    return this.categoryRepository.delete(id);
+  }
+
+  async updateCategoriesOrder(entries: {id: number, order: number}[]) {
+    for (const entry of entries) {
+      const c = await this.categoryRepository.findOne(entry.id);
+      c.order = entry.order;
+      await this.categoryRepository.save(c);
+    }
+  }
+
 
   save(table: ProductDto): Promise<Product> {
     return this.productsRepository.save(table);

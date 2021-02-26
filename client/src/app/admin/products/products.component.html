@@ -1,5 +1,51 @@
 <div>
 
+  <h2 class="mat-headline">Kategorien</h2>
+
+  <div>
+    <div fxFlex fxLayout="column" fxLayout.gt-md="row" fxLayoutAlign="space-between" fxLayoutGap="1em">
+      <div fxFlex.gt-md="50%" fxLayout="column">
+          <mat-card style="padding: .75em;" *ngIf="categories && categories.length; else emptyCategories">
+            <mat-card-content>
+              <mat-list class="categories" cdkDropList (cdkDropListDropped)="drop($event)">
+                <mat-list-item class="category" cdkDrag *ngFor="let category of categories">
+                  <span mat-line>{{category.name}}</span>
+                  <button mat-icon-button (click)="deleteCategory(category)">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </mat-list-item>
+              </mat-list>
+            </mat-card-content>
+          </mat-card>
+          <ng-template #emptyCategories>
+            <mat-card>
+              <mat-card-content>
+                Noch keine Kategorien
+              </mat-card-content>
+            </mat-card>
+          </ng-template>
+      </div>
+      <div fxFlex.gt-md="50%" fxLayout="column">
+        <mat-card>
+          <mat-card-content>
+            <mat-form-field fxFlexFill class="">
+              <mat-label>Name</mat-label>
+              <input (keyup.enter)="addCategory()" required minlength="2" autocomplete="off" [(ngModel)]="categoryName" type="text" matInput>
+            </mat-form-field>
+
+            <span>
+              <button mat-raised-button color="primary" (click)="addCategory()">erstellen</button>
+            </span>
+
+          </mat-card-content>
+        </mat-card>
+      </div>
+  
+    </div>
+
+  </div>
+
+
   <h2 class="mat-headline">Angebot</h2>
 
   <mat-card>
@@ -20,7 +66,12 @@
         <mat-label>Preis</mat-label>
         <input class="price-field" (keyup.enter)="addProduct()" currencyMask  [options]="{ prefix: '', suffix: '€', allowNegative: false, thousands: '.', decimal: ',' }" required autocomplete="off" [(ngModel)]="productPrice" matInput>
       </mat-form-field>
-      
+      <mat-form-field fxFlexFill>
+        <mat-label>Kategorie</mat-label>
+        <mat-select [(value)]="productCategory">
+          <mat-option  *ngFor="let category of categories" [value]="category">{{category.name}}</mat-option>
+        </mat-select>
+      </mat-form-field>
       <span>
         <button mat-raised-button color="primary" (click)="addProduct()">erstellen</button>
       </span>
@@ -39,8 +90,9 @@
         </mat-card-title>
         <mat-card-content>
           <div *ngIf="product.description && product.description.length"><em>{{product.description}}</em></div>
-          <div>Bestand: {{product.stock}}</div>
-          <div>Preis: {{product.price}}€</div>
+          <div *ngIf="product.stock">Bestand: {{product.stock}}</div>
+          <div *ngIf="product.price">Preis: {{product.price}}€</div>
+          <div *ngIf="product.category">Kategorie: {{product.category.name}}</div>
         </mat-card-content>
       </ng-container>
       <ng-template #edit>
@@ -62,6 +114,13 @@
         <mat-form-field fxFlexFill class="">
           <mat-label>Preis</mat-label>
           <input class="price-field" currencyMask  [options]="{ prefix: '', suffix: '€', allowNegative: false, thousands: '.', decimal: ',' }" (keydown.enter)="saveEdit(product)" required autocomplete="off" [(ngModel)]="product.price" matInput>
+        </mat-form-field>
+
+        <mat-form-field fxFlexFill>
+          <mat-label>Kategorie</mat-label>
+          <mat-select [(value)]="product.category" [compareWith]="categoryCompareFkt">
+            <mat-option *ngFor="let category of categories" [value]="category">{{category.name}}</mat-option>
+          </mat-select>
         </mat-form-field>
   
         <mat-card-actions>

@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, JoinColumn, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { ProductCategory } from "./products-category.entity";
 
 @Entity()
@@ -21,7 +21,7 @@ export class Product {
   @Column({ type: 'decimal', precision: 15, scale: 2 })
   price?: number;
 
-  @OneToMany(() => ProductCategory, category => category.product, { cascade: true })
+  @ManyToOne(() => ProductCategory, category => category.product, { eager: true, onDelete: 'SET NULL' })
   @JoinColumn()
   category: ProductCategory
 
