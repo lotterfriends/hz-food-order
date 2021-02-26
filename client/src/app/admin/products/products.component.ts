@@ -12,19 +12,19 @@ interface ViewProduct extends Product {
   styleUrls: ['./products.component.scss']
 })
 export class ProductsComponent implements OnInit {
-  
+
   products: ViewProduct[] = [];
   editProducts: ViewProduct[] = [];
-  productName: string = '';
-  productDesciption: string = '';
-  productStock: number = 0;
+  productName = '';
+  productDesciption = '';
+  productStock = 0;
 
 
   constructor(
     private adminProductsService: AdminProductsService
   ) { }
 
-  addProduct() {
+  addProduct(): void {
     this.adminProductsService.createProduct({
       name: this.productName,
       stock: this.productStock,
@@ -34,15 +34,15 @@ export class ProductsComponent implements OnInit {
       this.productName = '';
       this.productDesciption = '';
       this.productStock = 0;
-    })
+    });
   }
 
-  startEdit(product: ViewProduct) {
+  startEdit(product: ViewProduct): void {
     this.editProducts.push({ ...product});
     product.edit = true;
   }
-  
-  saveEdit(product: ViewProduct) {
+
+  saveEdit(product: ViewProduct): void {
     this.adminProductsService.updateProduct(product.id, {
       name: product.name,
       stock: product.stock,
@@ -50,10 +50,10 @@ export class ProductsComponent implements OnInit {
     } as Product).pipe(first()).subscribe(result => {
       const pIndex = this.products.findIndex(e => e.id === result.id);
       this.products[pIndex] = { edit: false, ...result};
-    })
+    });
   }
 
-  cancelEdit(product: ViewProduct) {
+  cancelEdit(product: ViewProduct): void {
     const editProductIndex = this.editProducts.findIndex(e => e.id === product.id);
     if (editProductIndex > -1) {
       const pIndex = this.products.findIndex(e => e.id === this.editProducts[editProductIndex].id);
@@ -62,7 +62,7 @@ export class ProductsComponent implements OnInit {
     }
   }
 
-  clearForm(form: any) {
+  clearForm(form: any): void {
     form.reset();
   }
 
@@ -72,7 +72,7 @@ export class ProductsComponent implements OnInit {
         return {
           edit: false,
           ...e
-        }
+        };
       });
     });
   }

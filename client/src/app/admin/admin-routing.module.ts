@@ -7,8 +7,8 @@ import { SettingsComponent } from './settings/settings.component';
 import { TablesComponent } from './tables/tables.component';
 
 export const adminRoutes: Routes = [
-  { 
-    path: 'orders', 
+  {
+    path: 'orders',
     component: OrdersComponent,
     canActivate: [AuthGuardService],
     data: {
@@ -16,8 +16,8 @@ export const adminRoutes: Routes = [
       icon: 'all_inbox'
     }
   },
-  { 
-    path: 'tables', 
+  {
+    path: 'tables',
     component: TablesComponent,
     canActivate: [AuthGuardService],
     data: {
@@ -25,7 +25,7 @@ export const adminRoutes: Routes = [
       icon: 'place'
     }
   },
-  { 
+  {
     path: 'offers',
     component: ProductsComponent,
     canActivate: [AuthGuardService],
@@ -34,7 +34,7 @@ export const adminRoutes: Routes = [
       icon: 'local_offer'
     }
   },
-  { 
+  {
     path: 'settings',
     component: SettingsComponent,
     canActivate: [AuthGuardService],

@@ -13,12 +13,12 @@ interface User {
 }
 
 export interface AuthenticationPayload {
-  user: User
+  user: User;
   payload: {
     type: string
     token: string
     refresh_token: string
-  }
+  };
 }
 
 
@@ -37,10 +37,10 @@ export class AuthService {
   // store the URL so we can redirect after logging in
   // redirectUrl: string;
 
-  login(username: string, password: string) {
+  login(username: string, password: string): Promise<void> {
     return this.http.post<AuthenticationPayload>(`${environment.apiPath}/auth/login`, {
-      username: username,
-      password: password
+      username,
+      password
     }).toPromise().then((result) => {
       if (result.payload.token) {
         this.userSubject.next(result.user);
@@ -54,7 +54,7 @@ export class AuthService {
     });
   }
 
-  refresh() {
+  refresh(): Promise<void> {
     return this.http.post<AuthenticationPayload>(`${environment.apiPath}/auth/refresh`, {
       refresh_token:  localStorage.getItem('refresh_token'),
     }).toPromise().then((result) => {
@@ -83,28 +83,28 @@ export class AuthService {
     });
   }
 
-  getMe()  {
+  getMe(): Observable<{data: User}> {
     return this.http.get<{data: User}>(`${environment.apiPath}/profile`);
   }
 
-  removeToken() {
+  removeToken(): void {
     localStorage.removeItem('refresh_token');
     localStorage.removeItem('token');
   }
 
-  refreshToken() {
+  refreshToken(): Promise<void> {
     const refreshToken = localStorage.getItem('refresh_token');
     if (refreshToken) {
-      
+
       let refreshTokenObject;
       try {
         refreshTokenObject = JSON.parse(atob(refreshToken.split('.')[1]));
-      } catch(e) {
+      } catch (e) {
         this.removeToken();
       }
       if (refreshTokenObject) {
         const expires = new Date(refreshTokenObject.exp * 1000);
-  
+
         if (expires.getTime() - Date.now() > 0) {
           return this.refresh().then(() => {}, () => {
             this.removeToken();
@@ -114,16 +114,16 @@ export class AuthService {
         }
       }
     }
-    return Promise.resolve();  
+    return Promise.resolve();
   }
 
-  refreshTokenWithTimer() {
+  refreshTokenWithTimer(): Promise<void> {
     const refreshToken = localStorage.getItem('refresh_token');
     if (refreshToken) {
       let refreshTokenObject;
       try {
         refreshTokenObject = JSON.parse(atob(refreshToken.split('.')[1]));
-      } catch(e) {
+      } catch (e) {
         this.removeToken();
       }
       if (refreshTokenObject) {
@@ -142,13 +142,13 @@ export class AuthService {
     return Promise.resolve();
   }
 
-  private startRefreshTokenTimer() {
+  private startRefreshTokenTimer(): void {
     const token = localStorage.getItem('token');
 
     if (token) {
       // parse json object from base64 encoded jwt token
       const jwtToken = JSON.parse(atob(token.split('.')[1]));
-  
+
       // set a timeout to refresh the token a minute before it expires
       const expires = new Date(jwtToken.exp * 1000);
       const timeout = expires.getTime() - Date.now() - (60 * 1000);
@@ -156,7 +156,7 @@ export class AuthService {
     }
   }
 
-  private stopRefreshTokenTimer() {
+  private stopRefreshTokenTimer(): void {
     if (typeof this.refreshTokenTimeout !== 'undefined') {
       clearTimeout(this.refreshTokenTimeout);
     }

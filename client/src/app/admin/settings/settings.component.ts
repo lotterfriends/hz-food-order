@@ -12,8 +12,8 @@ import { AdminSettingsService, Settings } from '../services/admin-settings.servi
 })
 export class SettingsComponent implements OnInit {
 
-  serverSecret: string = '';
-  secret: string = '';
+  serverSecret = '';
+  secret = '';
 
   constructor(
     private adminOrderService: AdminOrderService,
@@ -28,9 +28,9 @@ export class SettingsComponent implements OnInit {
     });
   }
 
-  updateSecret() {
+  updateSecret(): void {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      maxWidth: "400px",
+      maxWidth: '400px',
       data: new ConfirmDialogModel('Achtung', 'Wenn sie den Schlüssel ändern, werden allen bisher erstellten QR-Codes ungültig.')
     });
 
@@ -44,15 +44,15 @@ export class SettingsComponent implements OnInit {
     });
   }
 
-  getNewSecret() {
+  getNewSecret(): void {
     this.adminSettingsService.getNewSecret().pipe(first()).subscribe(newSecretObject => {
       this.secret = newSecretObject.secret;
-    })
+    });
   }
 
-  archive() {
+  archive(): void {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      maxWidth: "400px",
+      maxWidth: '400px',
       data: new ConfirmDialogModel('Achtung', 'Alle Bestellungen werden archiviert')
     });
 
@@ -60,10 +60,9 @@ export class SettingsComponent implements OnInit {
       if (dialogResult) {
         this.adminOrderService.archive().pipe(first()).subscribe(e => {
           console.log(e);
-        })
+        });
       }
     });
-    
   }
 
 }

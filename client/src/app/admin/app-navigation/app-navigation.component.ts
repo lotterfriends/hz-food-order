@@ -6,7 +6,7 @@ interface NavRoute{
   data: {
     title: string;
     icon?: string;
-  }
+  };
 }
 
 @Component({

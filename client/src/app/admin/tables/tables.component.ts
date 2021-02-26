@@ -14,11 +14,11 @@ interface ViewTable extends Table {
   styleUrls: ['./tables.component.scss']
 })
 export class TablesComponent implements OnInit {
-  
+
   tables: ViewTable[] = [];
   editTables: ViewTable[] = [];
-  tableName: string = '';
-  tableCode: string = '';
+  tableName = '';
+  tableCode = '';
 
   elementType = NgxQrcodeElementTypes.URL;
   correctionLevel = NgxQrcodeErrorCorrectionLevels.HIGH;
@@ -30,37 +30,37 @@ export class TablesComponent implements OnInit {
     private router: Router,
   ) { }
 
-  getTables() {
+  getTables(): void {
     this.adminTablesService.getTables().pipe(first()).subscribe(result => {
       this.tables = result.map((e) => {
         return  {
           edit: false,
           ...e
-        }
+        };
       });
     });
   }
 
-  addTable() {
+  addTable(): void {
     this.adminTablesService.createTable(this.tableName).pipe(first()).subscribe((table: Table) => {
       this.tableName = '';
       this.tables.push({edit: false, ...table});
-    })
+    });
   }
 
-  startEdit(item: ViewTable) {
+  startEdit(item: ViewTable): void {
     this.editTables.push({ ...item});
     item.edit = true;
   }
-  
-  saveEdit(table: ViewTable) {
+
+  saveEdit(table: ViewTable): void {
     this.adminTablesService.renameTable(table.id, table.name).pipe(first()).subscribe(result => {
       const tableIndex = this.tables.findIndex(e => e.id === result.id);
       this.tables[tableIndex] = { edit: false, ...result};
-    })
+    });
   }
 
-  cancelEdit(item: ViewTable) {
+  cancelEdit(item: ViewTable): void {
     const editTableIndex = this.editTables.findIndex(e => e.id === item.id);
     if (editTableIndex > -1) {
       const itemIndex = this.tables.findIndex(e => e.id === this.editTables[editTableIndex].id);
@@ -69,11 +69,11 @@ export class TablesComponent implements OnInit {
     }
   }
 
-  openPrintDocument(table: ViewTable) {
+  openPrintDocument(table: ViewTable): void {
     const url = this.value + table.secret;
     console.log(table);
-    this.router.navigateByUrl('/print-table', { 
-      state: { 
+    this.router.navigateByUrl('/print-table', {
+      state: {
         url,
         name: table.name
       }

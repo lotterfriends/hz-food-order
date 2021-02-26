@@ -15,16 +15,16 @@ export class LoginComponent implements OnInit {
   ) {}
 
   @ViewChild('loginCard') loginCard: ElementRef | undefined;
-  @Input() username: string = '';
-  @Input() password: string = '';
+  @Input() username = '';
+  @Input() password = '';
 
-  ngOnInit() {
+  ngOnInit(): void {
     if (typeof this.authService.getToken() === 'string') {
       this.router.navigate(['/admin']);
     }
   }
 
-  login() {
+  login(): void {
     this.loginCard?.nativeElement.classList.remove('shake');
     this.authService.login(this.username, this.password).then(undefined, () => {
       this.loginCard?.nativeElement.classList.add('shake');

@@ -18,8 +18,8 @@ interface PrintState {
 @UntilDestroy()
 export class PrintTableComponent implements OnInit {
   private state$: Observable<PrintState>;
-  public name: string = '';
-  public url: string = '';
+  public name = '';
+  public url = '';
   public elementType = NgxQrcodeElementTypes.URL;
   public correctionLevel = NgxQrcodeErrorCorrectionLevels.HIGH;
 

@@ -26,18 +26,18 @@ export class AppHeaderComponent implements OnInit {
 
       const adminRouts = this.router.config.find(e => e.path === 'admin')?.children;
       if (adminRouts) {
-        const currentRouteConfig = adminRouts.find(e => `/admin/${e.path}` === (event as NavigationEnd).url)
+        const currentRouteConfig = adminRouts.find(e => `/admin/${e.path}` === (event as NavigationEnd).url);
         if (currentRouteConfig && currentRouteConfig.data && currentRouteConfig.data.title) {
           this.title = currentRouteConfig.data.title.trim();
         }
       }
-    })
+    });
   }
 
   ngOnInit(): void {
   }
 
-  logout() {
+  logout(): void {
     this.authService.logout();
   }
 

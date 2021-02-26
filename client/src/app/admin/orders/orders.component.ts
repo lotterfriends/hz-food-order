@@ -44,18 +44,18 @@ export class OrdersComponent implements OnInit, AfterViewInit {
     }, 1500);
   }
 
-  changeStatus(order: ServerOrder, status: OrderStatus) {
+  changeStatus(order: ServerOrder, status: OrderStatus): void {
     this.adminService.changeStatus(order.id, status).pipe(first()).subscribe(result => {
       const eOrder = this.orders.find(e => e.id === result.id);
       if (eOrder) {
         eOrder.status = result.status;
       }
-    })
+    });
   }
 
-  openMessageDialog(order: ServerOrder) {
+  openMessageDialog(order: ServerOrder): void {
     const dialogRef = this.dialog.open(OrderMessageDialogComponent, {
-      maxWidth: "400px",
+      maxWidth: '400px',
       data: {order}
     });
 
@@ -66,17 +66,17 @@ export class OrdersComponent implements OnInit, AfterViewInit {
           if (eOrder) {
             eOrder.orderMessage = result.orderMessage;
           }
-        })
+        });
       }
     });
   }
 
-  filterUnfinished(entry: ServerOrder) {
-    return entry.status === OrderStatus.Finished || entry.status === OrderStatus.Canceled; 
+  filterUnfinished(entry: ServerOrder): boolean {
+    return entry.status === OrderStatus.Finished || entry.status === OrderStatus.Canceled;
   }
-  
-  filterFinished(entry: ServerOrder) {
-    return entry.status !== OrderStatus.Finished && entry.status !== OrderStatus.Canceled; 
+
+  filterFinished(entry: ServerOrder): boolean {
+    return entry.status !== OrderStatus.Finished && entry.status !== OrderStatus.Canceled;
   }
 
 }

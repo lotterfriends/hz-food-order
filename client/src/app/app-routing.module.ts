@@ -11,26 +11,26 @@ import { OrderGuard } from './order.guard';
 import { OrderRedirectComponent } from './order-redirect/order-redirect.component';
 
 const routes: Routes = [
-  { 
-    path: 'login', 
+  {
+    path: 'login',
     component: LoginComponent
   },
-  { 
-    path: 'order/:secret', 
+  {
+    path: 'order/:secret',
     component: OrderRedirectComponent,
   },
-  { 
-    path: 'order-table', 
+  {
+    path: 'order-table',
     component: OrderComponent,
     canActivate: [OrderGuard]
   },
-  { 
+  {
     path: 'admin',
     component: AdminComponent,
     children: adminRoutes,
     canActivate: [AuthGuardService] ,
   },
-  { 
+  {
     path: 'print-table',
     component: PrintTableComponent,
     canActivate: [AuthGuardService] ,

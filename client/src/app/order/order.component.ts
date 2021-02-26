@@ -25,17 +25,17 @@ export class OrderComponent implements OnInit, AfterViewInit {
 
   static readonly MIN_PRODUCT = 0;
   static readonly MAX_PRODUCT = 15;
-  
+
   orderStatus = OrderStatus;
   orders: ServerOrder[] = [];
-  products: OrderProduct[] = []
+  products: OrderProduct[] = [];
   comment = '';
   secret: string | null = '';
   table: Table | undefined;
 
   ngOnInit(): void {
 
-    
+
     this.secret = sessionStorage.getItem('secret');
     if (this.secret) {
       this.orderService.getTabeForSecret(this.secret).subscribe(table => {
@@ -44,16 +44,16 @@ export class OrderComponent implements OnInit, AfterViewInit {
         } else {
           this.router.navigate(['/empty']);
         }
-      })
+      });
     }
 
     this.orderService.getProducts().subscribe(result => {
-      for(const item of result) {
+      for (const item of result) {
         this.products.push({
           id: item.id,
           name: item.name,
           count: 0
-        })
+        });
       }
     });
 
@@ -67,7 +67,7 @@ export class OrderComponent implements OnInit, AfterViewInit {
         eOrder.status = order.status;
         eOrder.orderMessage = order.orderMessage;
       }
-    })
+    });
   }
 
   ngAfterViewInit(): void {
@@ -79,20 +79,20 @@ export class OrderComponent implements OnInit, AfterViewInit {
     }, 1500);
   }
 
-  minus(product: OrderProduct) {
+  minus(product: OrderProduct): void {
     if (product.count > OrderComponent.MIN_PRODUCT) {
-      product.count--
+      product.count--;
     }
   }
-  
-  plus(product: OrderProduct) {
+
+  plus(product: OrderProduct): void {
     if (product.count < OrderComponent.MAX_PRODUCT) {
-      product.count++
+      product.count++;
     }
   }
 
   somethingOrdered(): boolean {
-    for(const product of this.products) {
+    for (const product of this.products) {
       if (product.count > 0) {
         return true;
       }
@@ -100,9 +100,9 @@ export class OrderComponent implements OnInit, AfterViewInit {
     return false;
   }
 
-  placeOrder() {
-    let order: Order = {items: [], status: OrderStatus.InPreparation};
-    for(const product of this.products) {
+  placeOrder(): void {
+    const order: Order = {items: [], status: OrderStatus.InPreparation};
+    for (const product of this.products) {
       if (product.count > 0) {
         order.items.push({...product});
       }
@@ -113,11 +113,11 @@ export class OrderComponent implements OnInit, AfterViewInit {
     if (order.items.length) {
       this.orderService.createOrder(order).pipe(first()).subscribe(serverOrder => {
         this.orders.push(serverOrder);
-      })
+      });
     }
   }
 
-  sendOrder() {
+  sendOrder(): void {
     if (!this.somethingOrdered()) {
       this.snackBar.open('Es wurde nichts ausgewählt', 'OK', {
         duration: 2000,
@@ -126,7 +126,7 @@ export class OrderComponent implements OnInit, AfterViewInit {
     }
 
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      maxWidth: "400px",
+      maxWidth: '400px',
       data: new ConfirmDialogModel('Achtung', 'Jetzt Kostenpflichtig bestellen?')
     });
 
@@ -137,8 +137,8 @@ export class OrderComponent implements OnInit, AfterViewInit {
     });
   }
 
-  filterFinished(entry: ServerOrder) {
-    return entry.status !== OrderStatus.Finished && entry.status !== OrderStatus.Canceled; 
+  filterFinished(entry: ServerOrder): boolean {
+    return entry.status !== OrderStatus.Finished && entry.status !== OrderStatus.Canceled;
   }
 
 }

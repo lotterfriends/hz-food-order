@@ -7,18 +7,15 @@ import { ServerOrder } from 'src/app/order/order.service';
   templateUrl: './order-message-dialog.html',
   styleUrls: []
 })
-export class OrderMessageDialogComponent implements OnInit {
+export class OrderMessageDialogComponent {
 
-  message: string = '';
+  message = '';
 
   constructor(
     public dialogRef: MatDialogRef<OrderMessageDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: {order: ServerOrder}
   ) {
     this.message = data.order.orderMessage;
-  }
-
-  ngOnInit() {
   }
 
   onConfirm(): void {

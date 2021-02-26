@@ -3,7 +3,7 @@ import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { JwtModule } from "@auth0/angular-jwt";
+import { JwtModule } from '@auth0/angular-jwt';
 import { NgxQRCodeModule } from '@techiediaries/ngx-qrcode';
 import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 import { environment } from 'src/environments/environment';
@@ -22,7 +22,7 @@ import { TokenInterceptor } from './token.interceptor';
 import { PrintTableComponent } from './print-table/print-table.component';
 import { OrderRedirectComponent } from './order-redirect/order-redirect.component';
 
-export function tokenGetter() {
+export function tokenGetter(): string | null {
   return localStorage.getItem('token');
 }
 
@@ -53,7 +53,7 @@ const socketConfig: SocketIoConfig = {
     AdminModule,
     JwtModule.forRoot({
       config: {
-        tokenGetter: tokenGetter,
+        tokenGetter,
         allowedDomains: [environment.apiPath],
         disallowedRoutes: [],
       },

@@ -12,12 +12,12 @@ export class OrderWSService {
     constructor(
       private socket: Socket,
       private authService: AuthService
-    ) { 
+    ) {
 
       this.socket.on('connect', () => {
         this.isConnected.next(true);
       });
-      
+
       this.socket.on('disconnect', () => {
         this.isConnected.next(false);
       });
@@ -27,11 +27,11 @@ export class OrderWSService {
     public isConnected: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
 
-    registerAsTable(secret: string) {
+    registerAsTable(secret: string): void {
       this.socket.emit('table-register', secret);
     }
-    
-    registerAsUser() {
+
+    registerAsUser(): void {
       const token = this.authService.getToken();
       this.socket.emit('user-register', token);
     }
@@ -44,5 +44,4 @@ export class OrderWSService {
       return this.socket.fromEvent<ServerOrder>('order-update');
     }
 
-    
 }

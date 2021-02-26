@@ -1,16 +1,16 @@
-import { HttpClient } from "@angular/common/http";
-import { Injectable } from "@angular/core";
-import { Observable } from "rxjs";
-import { environment } from "../../environments/environment";
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 export interface Table {
-  name:string;
+  name: string;
   code: string;
 }
 
 export interface Product {
   id: number;
-  name:string;
+  name: string;
   stock: number;
 }
 
@@ -37,7 +37,7 @@ export interface ServerOrder {
   comment: string;
   id: number;
   code: string;
-  items:{
+  items: {
     count: number;
     id: number;
     product: {
@@ -50,7 +50,7 @@ export interface ServerOrder {
   table: {
     id: number;
     name: string;
-  }
+  };
 }
 
 @Injectable({
@@ -65,15 +65,15 @@ export class OrderService {
   }
 
   getOrders(): Observable<ServerOrder[]> {
-    return this.http.get<ServerOrder[]>(`${environment.apiPath}/table-orders`)
+    return this.http.get<ServerOrder[]>(`${environment.apiPath}/table-orders`);
   }
 
   getTabeForSecret(secret: string): Observable<Table> {
-    return this.http.get<Table>(`${environment.apiPath}/table-orders/${secret}`)
+    return this.http.get<Table>(`${environment.apiPath}/table-orders/${secret}`);
   }
 
   getProducts(): Observable<Product[]> {
-    return this.http.get<Product[]>(`${environment.apiPath}/table-orders/products`)
+    return this.http.get<Product[]>(`${environment.apiPath}/table-orders/products`);
   }
 
   getTextForOrderStatus(status: OrderStatus): string {
