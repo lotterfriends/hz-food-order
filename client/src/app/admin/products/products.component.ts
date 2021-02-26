@@ -16,9 +16,9 @@ export class ProductsComponent implements OnInit {
   products: ViewProduct[] = [];
   editProducts: ViewProduct[] = [];
   productName = '';
+  productPrice = 0;
   productDesciption = '';
   productStock = 0;
-
 
   constructor(
     private adminProductsService: AdminProductsService
@@ -28,12 +28,14 @@ export class ProductsComponent implements OnInit {
     this.adminProductsService.createProduct({
       name: this.productName,
       stock: this.productStock,
+      price: this.productPrice,
       description: this.productDesciption
     } as Product).pipe(first()).subscribe((product: Product) => {
       this.products.push({ edit: false, ...product});
       this.productName = '';
       this.productDesciption = '';
       this.productStock = 0;
+      this.productPrice = 0;
     });
   }
 
@@ -46,6 +48,7 @@ export class ProductsComponent implements OnInit {
     this.adminProductsService.updateProduct(product.id, {
       name: product.name,
       stock: product.stock,
+      price: product.price,
       description: product.description
     } as Product).pipe(first()).subscribe(result => {
       const pIndex = this.products.findIndex(e => e.id === result.id);
@@ -64,6 +67,10 @@ export class ProductsComponent implements OnInit {
 
   clearForm(form: any): void {
     form.reset();
+  }
+
+  convertPrice(price: any): number {
+    return parseFloat(price);
   }
 
   ngOnInit(): void {

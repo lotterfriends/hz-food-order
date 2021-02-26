@@ -1,4 +1,5 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { ProductCategory } from "./products-category.entity";
 
 @Entity()
 export class Product {
@@ -16,5 +17,12 @@ export class Product {
 
   @Column()
   stock?: number;
+  
+  @Column({ type: 'decimal', precision: 15, scale: 2 })
+  price?: number;
+
+  @OneToMany(() => ProductCategory, category => category.product, { cascade: true })
+  @JoinColumn()
+  category: ProductCategory
 
 }

@@ -14,7 +14,7 @@ import { OrdersComponent } from './orders/orders.component';
 import { AdminRoutingModule } from './admin-routing.module';
 import { OrderMessageDialogComponent } from './orders/order-message-dialog/order-message-dialog';
 import { SettingsComponent } from './settings/settings.component';
-
+import { CurrencyMaskModule } from 'ng2-currency-mask';
 @NgModule({
   declarations: [
     OrdersComponent,
@@ -33,7 +33,8 @@ import { SettingsComponent } from './settings/settings.component';
     BrowserModule,
     BrowserAnimationsModule,
     UiModule,
-    NgxQRCodeModule
+    NgxQRCodeModule,
+    CurrencyMaskModule
   ],
   bootstrap: [AdminComponent]
 })
