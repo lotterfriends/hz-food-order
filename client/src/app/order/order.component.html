@@ -9,7 +9,7 @@
     <mat-card *ngFor="let order of orders | callbackFilter: filterFinished" class="{{order.status}}">
       <mat-card-title>{{order.code}}</mat-card-title>
       <ul>
-        <li *ngFor="let item of order.items">{{item.count}}x - {{item.meal.name}}</li>
+        <li *ngFor="let item of order.items">{{item.count}}x - {{item.product.name}}</li>
       </ul>
     
       <em *ngIf="order.orderMessage && order.orderMessage.length">{{order.orderMessage}}</em>
@@ -26,14 +26,14 @@
   
   <h3 class="mat-headline">Karte</h3>
     
-  <mat-card  *ngFor="let meal of meals"  fxLayout="row" fxLayoutAlign="space-between">
+  <mat-card  *ngFor="let product of products"  fxLayout="row" fxLayoutAlign="space-between">
     <span>
-      {{meal.name}}
+      {{product.name}}
     </span>
     <span fxLayoutAlign="end center">
-      <button (click)="mealMinus(meal)" mat-mini-fab aria-label="">-</button>
-      <span class="meal-count">{{meal.count}}</span>
-      <button (click)="mealPlus(meal)" mat-mini-fab aria-label="">+</button>
+      <button (click)="minus(product)" mat-mini-fab aria-label="">-</button>
+      <span class="item-count">{{product.count}}</span>
+      <button (click)="plus(product)" mat-mini-fab aria-label="">+</button>
     </span>
   </mat-card>
   

@@ -5,7 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { first } from 'rxjs/operators';
 import { ConfirmDialogComponent, ConfirmDialogModel } from '../confirm-dialog/confirm-dialog.component';
 import { OrderWSService } from '../order-ws.service';
-import { Order, OrderMeal, OrderService, OrderStatus, ServerOrder, Table } from './order.service';
+import { Order, OrderProduct, OrderService, OrderStatus, ServerOrder, Table } from './order.service';
 
 @Component({
   selector: 'app-order',
@@ -23,12 +23,12 @@ export class OrderComponent implements OnInit, AfterViewInit {
     private orderWSService: OrderWSService
   ) { }
 
-  static readonly MIN_MEAL = 0;
-  static readonly MAX_MEAL = 15;
+  static readonly MIN_PRODUCT = 0;
+  static readonly MAX_PRODUCT = 15;
   
   orderStatus = OrderStatus;
   orders: ServerOrder[] = [];
-  meals: OrderMeal[] = []
+  products: OrderProduct[] = []
   comment = '';
   secret: string | null = '';
   table: Table | undefined;
@@ -47,11 +47,11 @@ export class OrderComponent implements OnInit, AfterViewInit {
       })
     }
 
-    this.orderService.getMeals().subscribe(result => {
-      for(const meal of result) {
-        this.meals.push({
-          id: meal.id,
-          name: meal.name,
+    this.orderService.getProducts().subscribe(result => {
+      for(const item of result) {
+        this.products.push({
+          id: item.id,
+          name: item.name,
           count: 0
         })
       }
@@ -79,21 +79,21 @@ export class OrderComponent implements OnInit, AfterViewInit {
     }, 1500);
   }
 
-  mealMinus(meal: OrderMeal) {
-    if (meal.count > OrderComponent.MIN_MEAL) {
-      meal.count--
+  minus(product: OrderProduct) {
+    if (product.count > OrderComponent.MIN_PRODUCT) {
+      product.count--
     }
   }
   
-  mealPlus(meal: OrderMeal) {
-    if (meal.count < OrderComponent.MAX_MEAL) {
-      meal.count++
+  plus(product: OrderProduct) {
+    if (product.count < OrderComponent.MAX_PRODUCT) {
+      product.count++
     }
   }
 
   somethingOrdered(): boolean {
-    for(const meal of this.meals) {
-      if (meal.count > 0) {
+    for(const product of this.products) {
+      if (product.count > 0) {
         return true;
       }
     }
@@ -102,11 +102,11 @@ export class OrderComponent implements OnInit, AfterViewInit {
 
   placeOrder() {
     let order: Order = {items: [], status: OrderStatus.InPreparation};
-    for(const meal of this.meals) {
-      if (meal.count > 0) {
-        order.items.push({...meal});
+    for(const product of this.products) {
+      if (product.count > 0) {
+        order.items.push({...product});
       }
-      meal.count = 0;
+      product.count = 0;
     }
     order.comment = this.comment;
     this.comment = '';

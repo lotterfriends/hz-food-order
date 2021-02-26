@@ -7,7 +7,7 @@ import { NgxQRCodeModule } from '@techiediaries/ngx-qrcode';
 import { AdminComponent } from './admin.component';
 import { AppHeaderComponent } from './app-header/app-header.component';
 import { AppNavigationComponent } from './app-navigation/app-navigation.component';
-import { MealsComponent } from './meals/meals.component';
+import { ProductsComponent } from './products/products.component';
 import { TablesComponent } from './tables/tables.component';
 import { UiModule } from '../ui/ui.module';
 import { OrdersComponent } from './orders/orders.component';
@@ -20,7 +20,7 @@ import { SettingsComponent } from './settings/settings.component';
     OrdersComponent,
     TablesComponent,
     AdminComponent,
-    MealsComponent,
+    ProductsComponent,
     AppHeaderComponent,
     AppNavigationComponent,
     OrderMessageDialogComponent,

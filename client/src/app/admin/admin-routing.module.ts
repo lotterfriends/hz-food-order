@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuardService } from '../auth-guard.service';
-import { MealsComponent } from './meals/meals.component';
+import { ProductsComponent } from './products/products.component';
 import { OrdersComponent } from './orders/orders.component';
 import { SettingsComponent } from './settings/settings.component';
 import { TablesComponent } from './tables/tables.component';
@@ -27,7 +27,7 @@ export const adminRoutes: Routes = [
   },
   { 
     path: 'offers',
-    component: MealsComponent,
+    component: ProductsComponent,
     canActivate: [AuthGuardService],
     data: {
       title: 'Angebot',

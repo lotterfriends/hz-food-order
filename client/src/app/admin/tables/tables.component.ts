@@ -48,9 +48,9 @@ export class TablesComponent implements OnInit {
     })
   }
 
-  startEdit(meal: ViewTable) {
-    this.editTables.push({ ...meal});
-    meal.edit = true;
+  startEdit(item: ViewTable) {
+    this.editTables.push({ ...item});
+    item.edit = true;
   }
   
   saveEdit(table: ViewTable) {
@@ -60,11 +60,11 @@ export class TablesComponent implements OnInit {
     })
   }
 
-  cancelEdit(meal: ViewTable) {
-    const editTableIndex = this.editTables.findIndex(e => e.id === meal.id);
+  cancelEdit(item: ViewTable) {
+    const editTableIndex = this.editTables.findIndex(e => e.id === item.id);
     if (editTableIndex > -1) {
-      const mealIndex = this.tables.findIndex(e => e.id === this.editTables[editTableIndex].id);
-      this.tables[mealIndex] = this.editTables[editTableIndex];
+      const itemIndex = this.tables.findIndex(e => e.id === this.editTables[editTableIndex].id);
+      this.tables[itemIndex] = this.editTables[editTableIndex];
       this.editTables.splice(editTableIndex, 1);
     }
   }

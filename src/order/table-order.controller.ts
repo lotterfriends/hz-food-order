@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Headers, Param, Post, UnauthorizedException } from '@nestjs/common';
-import { MealService } from 'src/meal/meal.service';
+import { ProductsService } from 'src/products/products.service';
 import { TableService } from 'src/tables/table.service';
 import { OrderGateway } from './order-gateway';
 import { OrderService } from './order.service';
@@ -11,7 +11,7 @@ export class TableOrderController {
   constructor(
     private readonly orderService: OrderService,
     private readonly tableService: TableService,
-    private readonly mealService: MealService,
+    private readonly productService: ProductsService,
     private readonly orderGateway: OrderGateway
   ) {}
 
@@ -38,13 +38,13 @@ export class TableOrderController {
     return this.orderService.getAllForTable(table);
   }
 
-  @Get('meals')
-  async getAllMeals(@Headers('X-secret') secretHeader) {
+  @Get('products')
+  async getAllProducts(@Headers('X-secret') secretHeader) {
     const table = await this.tableService.getTableForSecret(secretHeader);
     if (!table) {
       throw new UnauthorizedException();
     }
-    return this.mealService.getAll();
+    return this.productService.getAll();
   }
 
   @Get(':secret')

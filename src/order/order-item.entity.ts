@@ -1,4 +1,4 @@
-import { Meal } from "src/meal/meal.entity";
+import { Product } from "src/products/products.entity";
 import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Order } from "./order.entity";
 
@@ -13,9 +13,9 @@ export class OrderItem {
   @Column()
   count: number;
 
-  @ManyToOne(() => Meal)
+  @ManyToOne(() => Product)
   @JoinColumn()
-  meal: Meal
+  product: Product
 
   @ManyToOne(() => Order, order => order.items, { eager: false })
   order: Order;

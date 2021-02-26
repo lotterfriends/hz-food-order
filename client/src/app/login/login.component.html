@@ -3,11 +3,11 @@
     <mat-card-title>Login</mat-card-title>
 
     <mat-form-field fxFlexFill>
-      <input matInput placeholder="Benutzername" type="text" [(ngModel)]="username">
+      <input matInput placeholder="Benutzername" type="text" (keyup.enter)="login()" [(ngModel)]="username">
     </mat-form-field>
 
     <mat-form-field fxFlexFill>
-      <input matInput placeholder="Passwort" type="password" [(ngModel)]="password">
+      <input matInput placeholder="Passwort" type="password" (keyup.enter)="login()" [(ngModel)]="password">
     </mat-form-field>
 
     <div class="text-right">

@@ -8,7 +8,7 @@ export interface Table {
   code: string;
 }
 
-export interface Meal {
+export interface Product {
   id: number;
   name:string;
   stock: number;
@@ -21,14 +21,14 @@ export enum OrderStatus {
   Canceled = 'canceled',
 }
 
-export interface OrderMeal {
+export interface OrderProduct {
   id: number;
   name: string;
   count: number;
 }
 
 export interface Order {
-  items: OrderMeal[];
+  items: OrderProduct[];
   comment?: string;
   status: OrderStatus;
 }
@@ -40,7 +40,7 @@ export interface ServerOrder {
   items:{
     count: number;
     id: number;
-    meal: {
+    product: {
       name: string;
       description: string;
     }
@@ -72,8 +72,8 @@ export class OrderService {
     return this.http.get<Table>(`${environment.apiPath}/table-orders/${secret}`)
   }
 
-  getMeals(): Observable<Meal[]> {
-    return this.http.get<Meal[]>(`${environment.apiPath}/table-orders/meals`)
+  getProducts(): Observable<Product[]> {
+    return this.http.get<Product[]>(`${environment.apiPath}/table-orders/products`)
   }
 
   getTextForOrderStatus(status: OrderStatus): string {

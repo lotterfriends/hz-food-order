@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AppService } from 'src/app.service';
-import { MealService } from 'src/meal/meal.service';
+import { ProductsService } from 'src/products/products.service';
 import { Table } from 'src/tables/table.entity';
 import { Not, Repository} from 'typeorm';
 import { OrderItem } from './order-item.entity';
@@ -13,7 +13,7 @@ export class OrderService {
 
   constructor(
     @InjectRepository(Order) private orderRepository: Repository<Order>,
-    private readonly mealService: MealService,
+    private readonly productsService: ProductsService,
     private readonly appService: AppService
   ) {}
 
@@ -24,12 +24,12 @@ export class OrderService {
     order.table = table;
     order.items = [];
     order.code = `${this.appService.randomString(3, true, true)}-${this.appService.randomString(3, true, true)}`.toUpperCase();
-    for(const mealItem of createOrderDto.items) {
+    for(const item of createOrderDto.items) {
       const orderItem = new OrderItem();
-      const currentMeal = await this.mealService.findOneWithId(mealItem.id);
-      await this.mealService.decreaseStock(currentMeal.id, mealItem.count);
-      orderItem.meal = currentMeal;
-      orderItem.count = mealItem.count;
+      const currentItem = await this.productsService.findOneWithId(item.id);
+      await this.productsService.decreaseStock(currentItem.id, item.count);
+      orderItem.product = currentItem;
+      orderItem.count = item.count;
       order.items.push(orderItem);
     }
     return this.orderRepository.save(order);
@@ -38,7 +38,7 @@ export class OrderService {
   getAllForTable(table: Table) {
     return this.orderRepository.find({
       select: ['id', 'status', 'orderMessage', 'comment', 'code'],
-      relations: ['table', 'items', 'items.meal'],
+      relations: ['table', 'items', 'items.product'],
       order: {
         created: 'ASC'
       },
@@ -51,7 +51,7 @@ export class OrderService {
 
   getAll() {
     return this.orderRepository.find({
-      relations: ['table', 'items', 'items.meal'],
+      relations: ['table', 'items', 'items.product'],
       where: {
         status: Not(OrderStatus.Archived)
       },

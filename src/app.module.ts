@@ -4,7 +4,7 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TablesModule } from './tables/table.module';
 import { OrderModule } from './order/order.module';
-import { MealModule } from './meal/meal.module';
+import { ProductsModule } from './products/products.module';
 import { SettingsModule } from './settings/settings.module';
 import { ConfigModule } from '@nestjs/config';
 import { ServeStaticModule } from '@nestjs/serve-static';
@@ -29,7 +29,7 @@ import { UsersModule } from './users/users.module';
     }),
     TablesModule,
     OrderModule,
-    MealModule,
+    ProductsModule,
     SettingsModule,
     AuthModule,
     UsersModule
