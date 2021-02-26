@@ -18,4 +18,12 @@ export class AppNavigationComponent {
 
   mainRoutes = adminRoutes.filter(e => e.path?.length && e.path !== '**') as NavRoute[];
 
+  onOpen(): void {
+    setTimeout(() => {
+      if (document.getElementsByClassName('list-item-active').length) {
+        (document.getElementsByClassName('list-item-active')[0] as HTMLAnchorElement).focus();
+      }
+    }, 200);
+  }
+
 }

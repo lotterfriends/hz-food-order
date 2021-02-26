@@ -1,6 +1,6 @@
 <mat-sidenav-container fullscreen>
 
-  <mat-sidenav #navigationSidenav mode="over" role="navigation" >
+  <mat-sidenav #navigationSidenav mode="over" role="navigation" (openedStart)="onOpen()" [autoFocus]="false">
 
     <mat-toolbar>
       <mat-toolbar-row>
@@ -8,14 +8,9 @@
       </mat-toolbar-row>
     </mat-toolbar>
 
-    <!-- <mat-nav-list dense> -->
     <mat-nav-list>
 
       <ng-container>
-
-        <!-- <h2 matSubheader> subheader </h2> -->
-
-        <a mat-list-item routerLink="/" style="height: 0;"></a>
 
         <a *ngFor="let item of mainRoutes"
           mat-list-item
