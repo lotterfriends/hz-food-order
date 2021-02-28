@@ -20,8 +20,6 @@ export class AppHeaderComponent implements OnInit {
     private router: Router
   ) {
 
-    console.log(this.route.snapshot.data);
-
     this.router.events.pipe(filter(e => e instanceof NavigationEnd), untilDestroyed(this)).subscribe(event => {
 
       const adminRouts = this.router.config.find(e => e.path === 'admin')?.children;

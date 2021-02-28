@@ -12,6 +12,8 @@ export interface Product {
   id: number;
   name: string;
   stock: number;
+  price: string;
+  category: ProducCategory;
 }
 
 export enum OrderStatus {
@@ -21,10 +23,19 @@ export enum OrderStatus {
   Canceled = 'canceled',
 }
 
+export interface ProducCategory {
+  id: number;
+  name: string;
+  description?: string;
+  order: number;
+}
+
 export interface OrderProduct {
   id: number;
   name: string;
   count: number;
+  price: string;
+  category: ProducCategory;
 }
 
 export interface Order {
@@ -43,6 +54,7 @@ export interface ServerOrder {
     product: {
       name: string;
       description: string;
+      price: string;
     }
   }[];
   orderMessage: string;
@@ -89,6 +101,14 @@ export class OrderService {
       default:
         return 'unbekannter Status';
     }
+  }
+
+  getSum(order: ServerOrder): number {
+    let sum = 0;
+    for (const item of order.items) {
+      sum += parseFloat(item.product.price);
+    }
+    return sum;
   }
 
 

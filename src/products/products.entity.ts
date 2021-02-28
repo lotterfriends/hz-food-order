@@ -11,13 +11,16 @@ export class Product {
 
   @Column()
   name?: string;
-  
+
   @Column({nullable: true})
   description?: string;
 
   @Column()
   stock?: number;
-  
+
+  @Column({default: 100})
+  order: number;
+
   @Column({ type: 'decimal', precision: 15, scale: 2 })
   price?: number;
 

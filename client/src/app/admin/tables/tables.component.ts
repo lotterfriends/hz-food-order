@@ -71,7 +71,6 @@ export class TablesComponent implements OnInit {
 
   openPrintDocument(table: ViewTable): void {
     const url = this.value + table.secret;
-    console.log(table);
     this.router.navigateByUrl('/print-table', {
       state: {
         url,

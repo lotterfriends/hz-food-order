@@ -1,3 +1,4 @@
+import { CurrencyPipe } from '@angular/common';
 import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -5,12 +6,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { first } from 'rxjs/operators';
 import { ConfirmDialogComponent, ConfirmDialogModel } from '../confirm-dialog/confirm-dialog.component';
 import { OrderWSService } from '../order-ws.service';
-import { Order, OrderProduct, OrderService, OrderStatus, ServerOrder, Table } from './order.service';
+import { Order, OrderProduct, OrderService, OrderStatus, ProducCategory, Product, ServerOrder, Table } from './order.service';
 
 @Component({
   selector: 'app-order',
   templateUrl: './order.component.html',
-  styleUrls: ['./order.component.scss']
+  styleUrls: ['./order.component.scss'],
+  providers: [CurrencyPipe]
 })
 export class OrderComponent implements OnInit, AfterViewInit {
 
@@ -20,7 +22,8 @@ export class OrderComponent implements OnInit, AfterViewInit {
     public orderService: OrderService,
     private snackBar: MatSnackBar,
     private dialog: MatDialog,
-    private orderWSService: OrderWSService
+    private orderWSService: OrderWSService,
+    private currencyPipe: CurrencyPipe
   ) { }
 
   static readonly MIN_PRODUCT = 0;
@@ -28,13 +31,16 @@ export class OrderComponent implements OnInit, AfterViewInit {
 
   orderStatus = OrderStatus;
   orders: ServerOrder[] = [];
-  products: OrderProduct[] = [];
   comment = '';
   secret: string | null = '';
   table: Table | undefined;
+  sum = 0;
+  card: {
+    category: ProducCategory,
+    producs: OrderProduct[]
+  }[] = [];
 
   ngOnInit(): void {
-
 
     this.secret = sessionStorage.getItem('secret');
     if (this.secret) {
@@ -49,12 +55,24 @@ export class OrderComponent implements OnInit, AfterViewInit {
 
     this.orderService.getProducts().subscribe(result => {
       for (const item of result) {
-        this.products.push({
-          id: item.id,
-          name: item.name,
-          count: 0
-        });
+        if (!item.category) {
+          item.category = {
+            id: -1,
+            name: 'Ohne Katergorie',
+            order: 100
+          };
+        }
+        const e = this.card.find(c => c.category.id === item.category.id);
+        if (e) {
+          e.producs.push(this.productToOrderProduct(item));
+        } else {
+          this.card.push({
+            category: item.category,
+            producs: [this.productToOrderProduct(item)]
+          });
+        }
       }
+      this.card.sort((a, b) => a.category.order - b.category.order);
     });
 
     this.orderService.getOrders().subscribe(result => {
@@ -70,6 +88,16 @@ export class OrderComponent implements OnInit, AfterViewInit {
     });
   }
 
+  productToOrderProduct(product: Product): OrderProduct {
+    return {
+      id: product.id,
+      name: product.name,
+      count: 0,
+      price: product.price,
+      category: product.category
+    } as OrderProduct;
+  }
+
   ngAfterViewInit(): void {
     // after connected event not working
     setTimeout(() => {
@@ -83,18 +111,22 @@ export class OrderComponent implements OnInit, AfterViewInit {
     if (product.count > OrderComponent.MIN_PRODUCT) {
       product.count--;
     }
+    this.sum -= parseFloat(product.price);
   }
 
   plus(product: OrderProduct): void {
     if (product.count < OrderComponent.MAX_PRODUCT) {
       product.count++;
     }
+    this.sum += parseFloat(product.price);
   }
 
   somethingOrdered(): boolean {
-    for (const product of this.products) {
-      if (product.count > 0) {
-        return true;
+    for (const cItem of this.card) {
+      for (const product of cItem.producs) {
+        if (product.count > 0) {
+          return true;
+        }
       }
     }
     return false;
@@ -102,14 +134,17 @@ export class OrderComponent implements OnInit, AfterViewInit {
 
   placeOrder(): void {
     const order: Order = {items: [], status: OrderStatus.InPreparation};
-    for (const product of this.products) {
-      if (product.count > 0) {
-        order.items.push({...product});
+    for (const cItem of this.card) {
+      for (const product of cItem.producs) {
+        if (product.count > 0) {
+          order.items.push({...product});
+        }
+        product.count = 0;
       }
-      product.count = 0;
     }
     order.comment = this.comment;
     this.comment = '';
+    this.sum = 0;
     if (order.items.length) {
       this.orderService.createOrder(order).pipe(first()).subscribe(serverOrder => {
         this.orders.push(serverOrder);
@@ -127,7 +162,7 @@ export class OrderComponent implements OnInit, AfterViewInit {
 
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       maxWidth: '400px',
-      data: new ConfirmDialogModel('Achtung', 'Jetzt Kostenpflichtig bestellen?')
+      data: new ConfirmDialogModel('Achtung', `Jetzt Kostenpflichtig für ${this.currencyPipe.transform(this.sum, 'EUR')} bestellen?`)
     });
 
     dialogRef.afterClosed().pipe(first()).subscribe(dialogResult => {

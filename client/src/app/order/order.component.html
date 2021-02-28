@@ -15,29 +15,38 @@
       <em *ngIf="order.orderMessage && order.orderMessage.length">{{order.orderMessage}}</em>
       <em *ngIf="order.comment && order.comment.length">{{order.comment}}</em>
     
-      <div fxLayoutAlign="end center" class="order-status">
-        {{orderService.getTextForOrderStatus(order.status)}}
+      <div fxLayoutAlign="space-between center" class="order-status">
+        <span class="sum">{{orderService.getSum(order) | currency:'EUR'}}</span>
+        <span>{{orderService.getTextForOrderStatus(order.status)}}</span>
       </div>
-    
+      
     </mat-card>
     
     
   </ng-container>
   
-  <h3 class="mat-headline">Karte</h3>
-    
-  <mat-card  *ngFor="let product of products"  fxLayout="row" fxLayoutAlign="space-between">
-    <span>
-      {{product.name}}
-    </span>
-    <span fxLayoutAlign="end center">
-      <button (click)="minus(product)" mat-mini-fab aria-label="">-</button>
-      <span class="item-count">{{product.count}}</span>
-      <button (click)="plus(product)" mat-mini-fab aria-label="">+</button>
-    </span>
-  </mat-card>
-  
-  
+  <h1 class="mat-title">Karte</h1>
+
+  <div *ngIf="card && card.length">
+    <div *ngFor="let productByCategory of this.card ">
+      <h3 class="mat-headline" *ngIf="productByCategory.category.id > -1">{{productByCategory.category.name}}</h3>
+      <div *ngFor="let product of productByCategory.producs">
+        <mat-card fxLayout="column">
+          <span fxLayout="row" fxLayoutAlign="space-between">
+            <span  fxLayout="column">
+              <span>{{product.name}}</span>
+              <strong>{{product.price | currency:'EUR' }}</strong>
+            </span>
+            <span fxLayoutAlign="end center">
+              <button (click)="minus(product)" mat-mini-fab aria-label="">-</button>
+              <span class="item-count">{{product.count}}</span>
+              <button (click)="plus(product)" mat-mini-fab aria-label="">+</button>
+            </span>
+          </span>
+        </mat-card>
+      </div>
+    </div>
+  </div>
   
   <section>
     <mat-form-field class="comment">
@@ -46,6 +55,12 @@
     </mat-form-field>
   </section>
   
+  <div class="order-sum" *ngIf="sum > 0">
+    <section fxLayout="row" fxLayoutAlign="start center">
+      <strong class="mat-headline sum">{{sum | currency:'EUR' }}</strong>
+    </section>
+  </div>
+
   <section>
     <button mat-raised-button color="primary" (click)="sendOrder()">Abschicken</button>
   </section>

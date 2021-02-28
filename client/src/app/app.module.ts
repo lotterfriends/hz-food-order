@@ -1,5 +1,5 @@
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { APP_INITIALIZER, NgModule } from '@angular/core';
+import { APP_INITIALIZER, LOCALE_ID, NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -21,6 +21,9 @@ import { SecretInterceptor } from './secret.interceptor';
 import { TokenInterceptor } from './token.interceptor';
 import { PrintTableComponent } from './print-table/print-table.component';
 import { OrderRedirectComponent } from './order-redirect/order-redirect.component';
+import { registerLocaleData } from '@angular/common';
+import localeDe from '@angular/common/locales/de';
+registerLocaleData(localeDe, 'de');
 
 export function tokenGetter(): string | null {
   return localStorage.getItem('token');
@@ -58,12 +61,13 @@ const socketConfig: SocketIoConfig = {
         disallowedRoutes: [],
       },
     }),
-    SocketIoModule.forRoot(socketConfig),
+    SocketIoModule.forRoot(socketConfig)
   ],
   providers: [
     {provide: APP_INITIALIZER, useFactory: appInitializer, multi: true, deps: [AuthService] },
     {provide: HTTP_INTERCEPTORS, useClass: SecretInterceptor, multi: true},
     {provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true},
+    {provide: LOCALE_ID, useValue: 'de' },
   ],
   bootstrap: [AppComponent]
 })

@@ -33,6 +33,13 @@ export class ProductsService {
     }
   }
 
+  async updateProductOrder(entries: { id: number; order: number; }[]) {
+    for (const entry of entries) {
+      const c = await this.productsRepository.findOne(entry.id);
+      c.order = entry.order;
+      await this.productsRepository.save(c);
+    }
+  }
 
   save(table: ProductDto): Promise<Product> {
     return this.productsRepository.save(table);

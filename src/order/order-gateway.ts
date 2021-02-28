@@ -45,7 +45,6 @@ export class OrderGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('message')
   handleEvent(@MessageBody() data: string): string {
-    console.log(data);
     return data;
   }
 

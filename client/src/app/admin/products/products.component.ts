@@ -25,11 +25,17 @@ export class ProductsComponent implements OnInit {
   productStock = 0;
   productCategory: ProducCategory | null = null;
 
+  productsByCategory: {
+    category: ProducCategory,
+    producs: ViewProduct[]
+  }[] = [];
+
+
   constructor(
     private adminProductsService: AdminProductsService
   ) { }
 
-  async drop(event: CdkDragDrop<string[]>) {
+  async drop(event: CdkDragDrop<string[]>): Promise<void> {
     moveItemInArray(this.categories, event.previousIndex, event.currentIndex);
     this.categories.forEach((e, i) => {
       e.order = i;
@@ -55,7 +61,7 @@ export class ProductsComponent implements OnInit {
       description: this.productDesciption,
       category: this.productCategory
     } as Product).pipe(first()).subscribe((product: Product) => {
-      this.products.push({ edit: false, ...product});
+      this.addProductToCategory(product);
       this.productName = '';
       this.productDesciption = '';
       this.productStock = 0;
@@ -67,7 +73,6 @@ export class ProductsComponent implements OnInit {
   }
 
   startEdit(product: ViewProduct): void {
-    console.log(product);
     this.editProducts.push({ ...product});
     product.edit = true;
   }
@@ -80,16 +85,39 @@ export class ProductsComponent implements OnInit {
       description: product.description,
       category: product.category
     } as Product).pipe(first()).subscribe(result => {
-      const pIndex = this.products.findIndex(e => e.id === result.id);
-      this.products[pIndex] = { edit: false, ...result};
+
+      const editProductIndex = this.editProducts.findIndex(e => e.id === product.id);
+      let categoryChanged = false;
+      if (editProductIndex > -1 && result.category?.id !== this.editProducts[editProductIndex].category?.id) {
+        categoryChanged = true;
+      }
+      this.productsByCategory.forEach(pc => {
+        const prpductIndex = pc.producs.findIndex(p => p.id === result.id);
+        if (prpductIndex > -1) {
+          if (categoryChanged) {
+            pc.producs.splice(prpductIndex, 1);
+            this.addProductToCategory(result);
+          } else {
+            pc.producs[prpductIndex] = { edit: false, ...result };
+          }
+        }
+      });
+
+      this.editProducts.splice(editProductIndex, 1);
     });
   }
 
   cancelEdit(product: ViewProduct): void {
     const editProductIndex = this.editProducts.findIndex(e => e.id === product.id);
     if (editProductIndex > -1) {
-      const pIndex = this.products.findIndex(e => e.id === this.editProducts[editProductIndex].id);
-      this.products[pIndex] = this.editProducts[editProductIndex];
+
+      this.productsByCategory.forEach(pc => {
+        const prpductIndex = pc.producs.findIndex(p => p.id === product.id);
+        if (prpductIndex > -1) {
+          pc.producs[prpductIndex] = this.editProducts[editProductIndex];
+        }
+      });
+
       this.editProducts.splice(editProductIndex, 1);
     }
   }
@@ -102,14 +130,39 @@ export class ProductsComponent implements OnInit {
     return parseFloat(price);
   }
 
-  init() {
-    this.adminProductsService.getProducts().pipe(first()).subscribe(result => {
-      this.products = result.map((e) => {
-        return {
-          edit: false,
-          ...e
-        };
+  addProductToCategory(product: Product): void {
+    if (!product.category) {
+      product.category = {
+        id: -1,
+        name: 'Ohne Katergorie',
+        order: 100
+      };
+    }
+    const e = this.productsByCategory.find(c => c.category.id === product.category.id);
+    if (e) {
+      e.producs.push({
+        edit: false,
+        ...product
       });
+    } else {
+      this.productsByCategory.push({
+        category: product.category,
+        producs: [
+          {
+            edit: false,
+            ...product
+          }
+        ]
+      });
+    }
+  }
+
+  init(): void {
+    this.adminProductsService.getProducts().pipe(first()).subscribe(result => {
+
+      for (const item of result) {
+        this.addProductToCategory(item);
+      }
     });
 
     this.adminProductsService.getCategories().pipe(first()).subscribe(result => {

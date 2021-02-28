@@ -77,61 +77,68 @@
       </span>
     </mat-card-content>
   </mat-card>
-  
-  
-  <div *ngFor="let product of products">
-    <mat-card>
-      <ng-container *ngIf="!product.edit; else edit">
-        <mat-card-title fxLayout="row" fxLayoutAlign="space-between">
-          <span>{{product.name}}</span>
-          <span fxLayoutAlign="end center"><button (click)="startEdit(product)" mat-icon-button aria-label="Bearbeiten">
-            <mat-icon>mode_edit</mat-icon>
-          </button></span>
-        </mat-card-title>
-        <mat-card-content>
-          <div *ngIf="product.description && product.description.length"><em>{{product.description}}</em></div>
-          <div *ngIf="product.stock">Bestand: {{product.stock}}</div>
-          <div *ngIf="product.price">Preis: {{product.price}}€</div>
-          <div *ngIf="product.category">Kategorie: {{product.category.name}}</div>
-        </mat-card-content>
-      </ng-container>
-      <ng-template #edit>
-        <mat-form-field fxFlexFill class="">
-          <mat-label>Name</mat-label>
-          <input (keydown.enter)="saveEdit(product)" required minlength="2" autocomplete="off" [(ngModel)]="product.name" type="text" matInput>
-        </mat-form-field>
-  
-        <mat-form-field fxFlexFill class="">
-          <mat-label>Beschreibung</mat-label>
-          <textarea autocomplete="off" [(ngModel)]="product.description" type="search" placeholder="z.B. Inhalsstoffe" matInput></textarea>
-        </mat-form-field>
-  
-        <mat-form-field fxFlexFill class="">
-          <mat-label>Bestand</mat-label>
-          <input (keydown.enter)="saveEdit(product)" type="number" required autocomplete="off" [(ngModel)]="product.stock" matInput>
-        </mat-form-field>
-        
-        <mat-form-field fxFlexFill class="">
-          <mat-label>Preis</mat-label>
-          <input class="price-field" currencyMask  [options]="{ prefix: '', suffix: '€', allowNegative: false, thousands: '.', decimal: ',' }" (keydown.enter)="saveEdit(product)" required autocomplete="off" [(ngModel)]="product.price" matInput>
-        </mat-form-field>
-
-        <mat-form-field fxFlexFill>
-          <mat-label>Kategorie</mat-label>
-          <mat-select [(value)]="product.category" [compareWith]="categoryCompareFkt">
-            <mat-option *ngFor="let category of categories" [value]="category">{{category.name}}</mat-option>
-          </mat-select>
-        </mat-form-field>
-  
-        <mat-card-actions>
-          <button mat-raised-button color="primary" (click)="saveEdit(product)">speichern</button>
-          <button mat-raised-button color="secondary" type="cancel" (click)="cancelEdit(product)">abbrechen</button>
-        </mat-card-actions>
-  
-      </ng-template>
+  <!--
+  TODO: use table
+  https://stackblitz.com/edit/angular-igmugp
+  -->
+  <div *ngIf="productsByCategory && productsByCategory.length">
+    <div *ngFor="let productByCategory of this.productsByCategory ">
+      <h3 class="mat-headline" *ngIf="productByCategory.producs && productByCategory.producs.length">{{productByCategory.category.name}}</h3>
+      <div *ngFor="let product of productByCategory.producs">
+        <mat-card>
+          <ng-container *ngIf="!product.edit; else edit">
+            <mat-card-title fxLayout="row" fxLayoutAlign="space-between">
+              <span>{{product.name}}</span>
+              <span fxLayoutAlign="end center"><button (click)="startEdit(product)" mat-icon-button aria-label="Bearbeiten">
+                <mat-icon>mode_edit</mat-icon>
+              </button></span>
+            </mat-card-title>
+            <mat-card-content>
+              <div *ngIf="product.description && product.description.length"><em>{{product.description}}</em></div>
+              <div *ngIf="product.stock">Bestand: {{product.stock}}</div>
+              <div *ngIf="product.price">Preis: {{product.price | currency: 'EUR'}}</div>
+              <div *ngIf="product.category">Kategorie: {{product.category.name}}</div>
+            </mat-card-content>
+          </ng-container>
+          <ng-template #edit>
+            <mat-form-field fxFlexFill class="">
+              <mat-label>Name</mat-label>
+              <input (keydown.enter)="saveEdit(product)" required minlength="2" autocomplete="off" [(ngModel)]="product.name" type="text" matInput>
+            </mat-form-field>
       
-    </mat-card>
+            <mat-form-field fxFlexFill class="">
+              <mat-label>Beschreibung</mat-label>
+              <textarea autocomplete="off" [(ngModel)]="product.description" type="search" placeholder="z.B. Inhalsstoffe" matInput></textarea>
+            </mat-form-field>
+      
+            <mat-form-field fxFlexFill class="">
+              <mat-label>Bestand</mat-label>
+              <input (keydown.enter)="saveEdit(product)" type="number" required autocomplete="off" [(ngModel)]="product.stock" matInput>
+            </mat-form-field>
+            
+            <mat-form-field fxFlexFill class="">
+              <mat-label>Preis</mat-label>
+              <input class="price-field" currencyMask  [options]="{ prefix: '', suffix: '€', allowNegative: false, thousands: '.', decimal: ',' }" (keydown.enter)="saveEdit(product)" required autocomplete="off" [(ngModel)]="product.price" matInput>
+            </mat-form-field>
     
+            <mat-form-field fxFlexFill>
+              <mat-label>Kategorie</mat-label>
+              <mat-select [(value)]="product.category" [compareWith]="categoryCompareFkt">
+                <mat-option *ngFor="let category of categories" [value]="category">{{category.name}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+      
+            <mat-card-actions>
+              <button mat-raised-button color="primary" (click)="saveEdit(product)">speichern</button>
+              <button mat-raised-button color="secondary" type="cancel" (click)="cancelEdit(product)">abbrechen</button>
+            </mat-card-actions>
+      
+          </ng-template>
+          
+        </mat-card>
+      </div>
+    </div>
   </div>
+  
 </div>
 

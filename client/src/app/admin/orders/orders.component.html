@@ -25,8 +25,9 @@
             </button>
           </div>
   
-          <div fxLayoutAlign="end" class="order-status">
-            {{orderService.getTextForOrderStatus(order.status)}}
+          <div fxLayoutAlign="space-between center" class="order-status">
+            <span class="sum">{{orderService.getSum(order) | currency:'EUR'}}</span>
+            <span>{{orderService.getTextForOrderStatus(order.status)}}</span>
           </div>
   
         </mat-card-content>

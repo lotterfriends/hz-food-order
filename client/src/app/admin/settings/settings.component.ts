@@ -59,7 +59,7 @@ export class SettingsComponent implements OnInit {
     dialogRef.afterClosed().pipe(first()).subscribe(dialogResult => {
       if (dialogResult) {
         this.adminOrderService.archive().pipe(first()).subscribe(e => {
-          console.log(e);
+          // 
         });
       }
     });

@@ -40,4 +40,10 @@ export class ProductsController {
     return this.productService.delete(id);
   }
 
+  @Post('order')
+  order(@Body() data: {id: number, order: number}[]) {
+    return this.productService.updateProductOrder(data);
+  }
+
+
 }
