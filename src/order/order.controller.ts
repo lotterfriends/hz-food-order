@@ -36,7 +36,7 @@ export class OrderController {
         name: order.table.name
       }
     } as Order;
-    this.orderGateway.sendOrderUpdateToTable(respnseOrder);
+    this.orderGateway.sendOrderUpdateToTable(respnseOrder, order.table);
     return respnseOrder;
   }
   
@@ -54,7 +54,7 @@ export class OrderController {
           name: order.table.name
         }
       } as Order;
-      this.orderGateway.sendOrderUpdateToTable(respnseOrder);
+      this.orderGateway.sendOrderUpdateToTable(respnseOrder, order.table);
       return respnseOrder;
     }
   }

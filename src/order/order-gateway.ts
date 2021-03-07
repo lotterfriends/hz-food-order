@@ -1,12 +1,12 @@
 
 import {
-  MessageBody, OnGatewayConnection,
+  OnGatewayConnection,
   OnGatewayDisconnect,
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer
 } from '@nestjs/websockets';
-import { Socket } from 'socket.io';
+import { Socket, Server } from 'socket.io';
 import { AuthService } from '../auth/auth.service';
 import { Order } from './order.entity';
 import { Table } from '../tables/table.entity';
@@ -26,35 +26,25 @@ export class OrderGateway implements OnGatewayConnection, OnGatewayDisconnect {
   constructor(
     private readonly tableService: TableService,
     private readonly authService: AuthService
-  ) {}
-  
-  @WebSocketServer() server;
+  ) { }
 
-  connections: ClientConnection[] = [];
+  @WebSocketServer() server: Server;
+
+  // connections: ClientConnection[] = [];
 
   async handleDisconnect(client: Socket): Promise<void> {
-    this.connections = this.connections.filter(e => e.socket.id === client.id)
-  }
-  
-  async handleConnection(client: Socket): Promise<void> {
-    const clientConnection = {
-      socket: client,
-    }
-    this.connections = [...this.connections, clientConnection];
+    // console.log('disconnect', client.id);
   }
 
-  @SubscribeMessage('message')
-  handleEvent(@MessageBody() data: string): string {
-    return data;
+  async handleConnection(client: Socket): Promise<void> {
+    // console.log('connect', client.id);
   }
 
   @SubscribeMessage('table-register')
   async handleRegisterTable(client: Socket, secret: string) {
     const table = await this.tableService.getTableForSecret(secret);
-    for (const currentConnection of this.connections) {
-      if (currentConnection.socket.id === client.id) {
-        currentConnection.table = table;
-      }
+    if (table) {
+      client.join(secret);
     }
   }
 
@@ -62,28 +52,17 @@ export class OrderGateway implements OnGatewayConnection, OnGatewayDisconnect {
   async handleRegisterUser(client: Socket, token: string) {
     const user = await this.authService.validateToken(token);
     if (user) {
-      for (const currentConnection of this.connections) {
-        if (currentConnection.socket.id === client.id) {
-          currentConnection.user = user;
-        }
-      }
+      client.join('orders');
     }
   }
 
   sendOrderUpdateToUser(order: Order) {
-    for (const currentConnection of this.connections) {
-      if (currentConnection.user) {
-        currentConnection.socket.emit('order-update', order);
-      }
-    }
+    this.server.to('orders').emit('order-update', order);
   }
 
-  sendOrderUpdateToTable(order: Order) {
-    for (const currentConnection of this.connections) {
-      if (currentConnection.table && currentConnection.table.id === order.table.id) {
-        currentConnection.socket.emit('table-order-update', order);
-      }
-    }
+  async sendOrderUpdateToTable(order: Order, table: Table) {
+    const { secret } = await this.tableService.addSecretToTable(table);
+    this.server.to(secret).emit('table-order-update', order);
   }
 
 }

@@ -4,7 +4,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AuthService } from './auth.service';
 import { ServerOrder } from './order/order.service';
-
+// TODO: new register on reconnect
 @Injectable({
   providedIn: 'root'
 })

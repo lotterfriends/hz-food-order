@@ -14,7 +14,7 @@ import { first } from 'rxjs/operators';
   styleUrls: ['./orders.component.scss']
 })
 @UntilDestroy()
-export class OrdersComponent implements OnInit, AfterViewInit {
+export class OrdersComponent implements OnInit {
 
   orderStatus = OrderStatus;
   orderStatusArray = Object.values(OrderStatus);
@@ -35,14 +35,16 @@ export class OrdersComponent implements OnInit, AfterViewInit {
     this.wsService.orderUpdate().pipe(untilDestroyed(this)).subscribe(order => {
       this.orders = [ ...this.orders, order];
     });
+
+    this.wsService.isConnected.subscribe((connected: boolean) => {
+      if (connected) {
+        setTimeout(() => {
+          this.wsService.registerAsUser();
+        }, 500);
+      }
+    });
   }
 
-  ngAfterViewInit(): void {
-    // after connected event not working
-    setTimeout(() => {
-      this.wsService.registerAsUser();
-    }, 1500);
-  }
 
   changeStatus(order: ServerOrder, status: OrderStatus): void {
     this.adminService.changeStatus(order.id, status).pipe(first()).subscribe(result => {

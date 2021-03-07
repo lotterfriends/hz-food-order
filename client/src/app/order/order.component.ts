@@ -14,7 +14,7 @@ import { Order, OrderProduct, OrderService, OrderStatus, ProducCategory, Product
   styleUrls: ['./order.component.scss'],
   providers: [CurrencyPipe]
 })
-export class OrderComponent implements OnInit, AfterViewInit {
+export class OrderComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
@@ -87,6 +87,16 @@ export class OrderComponent implements OnInit, AfterViewInit {
         eOrder.orderMessage = order.orderMessage;
       }
     });
+
+    this.orderWSService.isConnected.subscribe(connected => {
+      if (connected) {
+        setTimeout(() => {
+          if (this.secret) {
+            this.orderWSService.registerAsTable(this.secret);
+          }
+        }, 500);
+      }
+    });
   }
 
   productToOrderProduct(product: Product): OrderProduct {
@@ -99,14 +109,6 @@ export class OrderComponent implements OnInit, AfterViewInit {
     } as OrderProduct;
   }
 
-  ngAfterViewInit(): void {
-    // after connected event not working
-    setTimeout(() => {
-      if (this.secret) {
-        this.orderWSService.registerAsTable(this.secret);
-      }
-    }, 1500);
-  }
 
   minus(product: OrderProduct): void {
     if (product.count > OrderComponent.MIN_PRODUCT) {
