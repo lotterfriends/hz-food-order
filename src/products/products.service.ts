@@ -13,7 +13,13 @@ export class ProductsService {
     @InjectRepository(ProductCategory) private categoryRepository: Repository<ProductCategory>,
   ) {}
     
-  saveCategory(categoryDto: CatergoryDto) {
+  async saveCategory(categoryDto: CatergoryDto) {
+    const query = this.categoryRepository.createQueryBuilder('ProductCategory');
+    query.select("MAX(ProductCategory.order)", "max");
+    let { max } = await query.getRawOne();
+    if (max) {
+      categoryDto.order = ++max;
+    }
     return this.categoryRepository.save(categoryDto);
   }
 
@@ -41,7 +47,13 @@ export class ProductsService {
     }
   }
 
-  save(table: ProductDto): Promise<Product> {
+  async save(table: ProductDto): Promise<Product> {
+    const query = this.categoryRepository.createQueryBuilder('Product');
+    query.select("MAX(Product.order)", "max");
+    let { max } = await query.getRawOne();
+    if (max) {
+      table.order = ++max;
+    }
     return this.productsRepository.save(table);
   }
 

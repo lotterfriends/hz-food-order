@@ -36,6 +36,7 @@ export interface OrderProduct {
   count: number;
   price: string;
   category: ProducCategory;
+  order: number;
 }
 
 export interface Order {

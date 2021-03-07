@@ -10,7 +10,8 @@ export interface ProductDto {
   stock: number;
   price: number;
   description?: string;
-  categorie?: ProductCategory
+  categorie?: ProductCategory;
+  order: number;
 }
 
 @Controller('products')

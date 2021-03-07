@@ -1,39 +1,64 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { first } from 'rxjs/operators';
 import { AdminProductsService, ProducCategory, Product } from '../services/admin-products.service';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
+import { animate, state, style, transition, trigger } from '@angular/animations';
+import { Observable } from 'rxjs';
+import { MatTable } from '@angular/material/table';
 
 interface ViewProduct extends Product {
   edit: boolean;
 }
 
+interface CatergoryProducts {
+  category: ProducCategory,
+  producs: ViewProduct[]
+}
+
 @Component({
   selector: 'app-products',
   templateUrl: './products.component.html',
-  styleUrls: ['./products.component.scss']
+  styleUrls: ['./products.component.scss'],
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed', style({height: '0px', minHeight: '0'})),
+      state('expanded', style({height: '*'})),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProductsComponent implements OnInit {
 
+  @ViewChildren(MatTable) table !: QueryList<MatTable<ViewProduct>>;
   categories: ProducCategory[] = [];
   categoryName = '';
 
   products: ViewProduct[] = [];
-  editProducts: ViewProduct[] = [];
   productName = '';
   productPrice = 0;
   productDesciption = '';
   productStock = 0;
   productCategory: ProducCategory | null = null;
+  columnsToDisplay = ['name', 'stock', 'price', 'category', 'deleteProduct'];
+  productsByCategory: CatergoryProducts[] = [];
 
-  productsByCategory: {
-    category: ProducCategory,
-    producs: ViewProduct[]
-  }[] = [];
-
+  expandedElement: ViewProduct | null = null;
+  editElement: ViewProduct = { id: -1, category: {id: -1} } as ViewProduct;
 
   constructor(
-    private adminProductsService: AdminProductsService
+    private adminProductsService: AdminProductsService,
+    private ref: ChangeDetectorRef
   ) { }
+
+  async dropProduct(event: CdkDragDrop<ViewProduct[]>, catergoryProducts: CatergoryProducts): Promise<void> {
+    moveItemInArray(catergoryProducts.producs, event.previousIndex, event.currentIndex);
+    catergoryProducts.producs.forEach((e, i) => {
+      e.order = i;
+    });
+    await this.adminProductsService.orderProducs(catergoryProducts.producs).toPromise();
+    this.updateTables();
+  }
 
   async drop(event: CdkDragDrop<string[]>): Promise<void> {
     moveItemInArray(this.categories, event.previousIndex, event.currentIndex);
@@ -50,6 +75,7 @@ export class ProductsComponent implements OnInit {
       this.categories.push(product);
       this.categoryName = '';
       this.productCategory = this.categories[0];
+      this.ref.detectChanges();
     });
   }
 
@@ -69,15 +95,35 @@ export class ProductsComponent implements OnInit {
       if (this.categories.length) {
         this.productCategory = this.categories[0];
       }
+      this.ref.detectChanges();
+      this.updateTables();
     });
   }
 
-  startEdit(product: ViewProduct): void {
-    this.editProducts.push({ ...product});
-    product.edit = true;
+
+  updateTables(): void {
+    // this.categories = this.categories.sort((a, b) => a.order - b.order);
+    this.table.toArray().forEach(data => data.renderRows());
   }
 
-  saveEdit(product: ViewProduct): void {
+  startEdit(product: ViewProduct): void {
+    this.expandedElement = this.expandedElement?.id === product.id ? null : product;
+    this.editElement = { ...product};
+  }
+
+  getProductById(id: number): ViewProduct | null {
+    let element = null;
+    for (const pc of this.productsByCategory) {
+      const result = pc.producs.find(p => p.id === id);
+      if (result) {
+        element = result;
+        break;
+      }
+    }
+    return element;
+  }
+
+  saveEdit(product: ViewProduct, table: MatTable<ViewProduct>): void {
     this.adminProductsService.updateProduct(product.id, {
       name: product.name,
       stock: product.stock,
@@ -85,10 +131,9 @@ export class ProductsComponent implements OnInit {
       description: product.description,
       category: product.category
     } as Product).pipe(first()).subscribe(result => {
-
-      const editProductIndex = this.editProducts.findIndex(e => e.id === product.id);
       let categoryChanged = false;
-      if (editProductIndex > -1 && result.category?.id !== this.editProducts[editProductIndex].category?.id) {
+      const currentElement = this.getProductById(this.editElement.id);
+      if (currentElement && result.category?.id !== currentElement.category?.id) {
         categoryChanged = true;
       }
       this.productsByCategory.forEach(pc => {
@@ -103,23 +148,12 @@ export class ProductsComponent implements OnInit {
         }
       });
 
-      this.editProducts.splice(editProductIndex, 1);
-    });
-  }
-
-  cancelEdit(product: ViewProduct): void {
-    const editProductIndex = this.editProducts.findIndex(e => e.id === product.id);
-    if (editProductIndex > -1) {
-
-      this.productsByCategory.forEach(pc => {
-        const prpductIndex = pc.producs.findIndex(p => p.id === product.id);
-        if (prpductIndex > -1) {
-          pc.producs[prpductIndex] = this.editProducts[editProductIndex];
-        }
+      this.updateTables();
+      setTimeout(() => {
+        this.expandedElement = null;
+        this.ref.detectChanges();
       });
-
-      this.editProducts.splice(editProductIndex, 1);
-    }
+    });
   }
 
   clearForm(form: any): void {
@@ -159,10 +193,14 @@ export class ProductsComponent implements OnInit {
 
   init(): void {
     this.adminProductsService.getProducts().pipe(first()).subscribe(result => {
-
       for (const item of result) {
         this.addProductToCategory(item);
       }
+      this.productsByCategory.sort((a, b) => a.category.order - b.category.order);
+      this.productsByCategory.forEach(e => e.producs.sort((a, b) => a.order - b.order));
+      // console.log(this.productsByCategory);
+      // this.categories = result.sort((a, b) => a.order - b.order);
+      this.ref.markForCheck();
     });
 
     this.adminProductsService.getCategories().pipe(first()).subscribe(result => {
@@ -170,6 +208,7 @@ export class ProductsComponent implements OnInit {
       if (this.categories.length) {
         this.productCategory = this.categories[0];
       }
+      this.ref.markForCheck();
     });
   }
 
@@ -184,6 +223,18 @@ export class ProductsComponent implements OnInit {
   deleteCategory(category: ProducCategory): void {
     this.adminProductsService.deleteCategory(category).pipe(first()).subscribe(result => {
       this.init();
+    });
+  }
+
+  deleteProduct(product: ViewProduct): void {
+    this.adminProductsService.deleteProduct(product.id).pipe(first()).subscribe(_ => {
+      this.productsByCategory.forEach(pc => {
+        const prpductIndex = pc.producs.findIndex(p => p.id === product.id);
+        if (prpductIndex > -1) {
+          pc.producs.splice(prpductIndex, 1);
+        }
+      });
+      this.updateTables();
     });
   }
 

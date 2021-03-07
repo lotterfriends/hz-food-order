@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { ProductCategory } from "./products-category.entity";
 
 @Entity()
@@ -9,6 +9,9 @@ export class Product {
   @CreateDateColumn()
   created: Date;
 
+  @DeleteDateColumn()
+  deleted: boolean;
+
   @Column()
   name?: string;
 
@@ -18,7 +21,7 @@ export class Product {
   @Column()
   stock?: number;
 
-  @Column({default: 100})
+  @Column({default: 0})
   order: number;
 
   @Column({ type: 'decimal', precision: 15, scale: 2 })

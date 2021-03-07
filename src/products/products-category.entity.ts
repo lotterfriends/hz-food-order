@@ -19,7 +19,7 @@ export class ProductCategory {
   @JoinColumn()
   product: Product;
 
-  @Column({default: 100})
+  @Column({default: 0})
   order: number;
 
 }

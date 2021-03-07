@@ -1,13 +1,11 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { Table } from 'typeorm';
-import { ProductCategory } from './products-category.entity';
-import { Product } from './products.entity';
 import { ProductsService } from './products.service';
 
 export interface CatergoryDto {
   name: string;
   description?: string;
+  order?: number;
 }
 
 @Controller('product-categories')

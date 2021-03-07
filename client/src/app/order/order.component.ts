@@ -73,6 +73,7 @@ export class OrderComponent implements OnInit, AfterViewInit {
         }
       }
       this.card.sort((a, b) => a.category.order - b.category.order);
+      this.card.forEach(e => e.producs.sort((a, b) => a.order - b.order));
     });
 
     this.orderService.getOrders().subscribe(result => {

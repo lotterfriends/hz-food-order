@@ -1,4 +1,5 @@
-.mat-card {
+.mat-card,
+.mat-table {
   margin-bottom: 1em;
 }
 
@@ -6,20 +7,24 @@
   text-align: left !important;
 }
 
-.cdk-drag-preview {
-  box-sizing: border-box;
-  border-radius: 4px;
-  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
-              0 8px 10px 1px rgba(0, 0, 0, 0.14),
-              0 3px 14px 2px rgba(0, 0, 0, 0.12);
+.categories {
 
-  button {
-    display: none;
+  .cdk-drag-preview {
+    box-sizing: border-box;
+    border-radius: 4px;
+    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+                0 8px 10px 1px rgba(0, 0, 0, 0.14),
+                0 3px 14px 2px rgba(0, 0, 0, 0.12);
+  
+    button {
+      display: none;
+    }
   }
-}
-
-.cdk-drag-placeholder {
-  opacity: 0;
+  
+  .cdk-drag-placeholder {
+    opacity: 0;
+  }
+  
 }
 
 .cdk-drag-animating {
@@ -38,4 +43,58 @@
   padding: 0 16px;
   position: relative;
   height: inherit;
+}
+
+table {
+  width: 100%;
+}
+
+tr.product-table-detail-row {
+  height: 0;
+}
+
+tr.product-table-element-row:not(.product-table-expanded-row):hover {
+  background: whitesmoke;
+}
+
+tr.product-table-element-row:not(.product-table-expanded-row):active {
+  background: #efefef;
+}
+
+.product-table-element-row {
+  cursor: pointer;
+
+  td {
+    border-bottom-width: 0;
+  } 
+}
+
+.product-table-element-detail {
+  overflow: hidden;
+  display: flex;
+}
+
+.align-center {
+  text-align: center;
+}
+
+.mat-column-expandedDetail {
+  background-color: #f7f7f7;
+
+}
+
+.form {
+  padding-top: 1.5em;
+}
+
+.form-actions {
+  margin-bottom: 1.5em;
+
+  button:first-of-type {
+    margin-right: 1em;
+  }
+}
+
+.icon-column {
+  width: 24px;
 }

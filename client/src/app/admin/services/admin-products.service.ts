@@ -9,7 +9,8 @@ export interface Product {
   stock: number;
   price: number;
   description?: string;
-  category: ProducCategory
+  category: ProducCategory;
+  order: number;
 }
 
 export interface ProducCategory {
@@ -41,9 +42,13 @@ export class AdminProductsService {
   createCategory(category: ProducCategory): Observable<ProducCategory> {
     return this.http.post<ProducCategory>(`${environment.apiPath}/product-categories`, category);
   }
-  
+
   deleteCategory(category: ProducCategory): Observable<ProducCategory> {
     return this.http.delete<ProducCategory>(`${environment.apiPath}/product-categories/${category.id}`);
+  }
+
+  deleteProduct(id: number): Observable<void> {
+    return this.http.delete<void>(`${environment.apiPath}/products/${id}`);
   }
 
   updateProduct(id: number, product: Product): Observable<Product> {
@@ -52,7 +57,13 @@ export class AdminProductsService {
 
   orderCategories(categories: ProducCategory[]) {
     return this.http.post<ProducCategory>(`${environment.apiPath}/product-categories/order`, categories.map(e => {
-      return {id: e.id, order: e.order}
+      return {id: e.id, order: e.order};
+    }));
+  }
+  
+  orderProducs(products: Product[]) {
+    return this.http.post<Product>(`${environment.apiPath}/products/order`, products.map(e => {
+      return {id: e.id, order: e.order};
     }));
   }
 
