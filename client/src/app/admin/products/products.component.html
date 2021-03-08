@@ -7,7 +7,7 @@
       <div fxFlex.gt-md="50%" fxLayout="column">
         <mat-card style="padding: .75em;" *ngIf="categories && categories.length; else emptyCategories">
           <mat-card-content>
-            <mat-list class="categories" cdkDropList (cdkDropListDropped)="drop($event)">
+            <mat-list class="categories" cdkDropList (cdkDropListDropped)="dropCategory($event)">
               <mat-list-item class="category" cdkDrag *ngFor="let category of categories">
                 <span mat-line>{{category.name}}</span>
                 <button mat-icon-button (click)="deleteCategory(category)">
@@ -30,11 +30,11 @@
           <mat-card-content>
             <mat-form-field fxFlexFill class="">
               <mat-label>Name</mat-label>
-              <input (keyup.enter)="addCategory()" required minlength="2" autocomplete="off" [(ngModel)]="categoryName" type="text" matInput>
+              <input #categoryNameRef="ngModel" (keyup.enter)="addCategory()" required minlength="2" autocomplete="off" [(ngModel)]="categoryName" type="text" matInput>
             </mat-form-field>
 
             <span>
-              <button mat-raised-button color="primary" (click)="addCategory()">erstellen</button>
+              <button [disabled]="categoryNameRef.invalid" mat-raised-button color="primary" (click)="addCategory()">erstellen</button>
             </span>
 
           </mat-card-content>
@@ -86,98 +86,100 @@
   <div *ngIf="productsByCategory && productsByCategory.length">
     <div *ngFor="let productByCategory of this.productsByCategory">
       <h3 class="mat-headline" *ngIf="productByCategory.producs && productByCategory.producs.length">{{productByCategory.category.name}}</h3>
-        <table mat-table
-          #currentTable
-          [dataSource]="productByCategory.producs" multiTemplateDataRows
-          class="mat-elevation-z2"
-          cdkDropList
-          [cdkDropListData]="productByCategory.producs"
-          (cdkDropListDropped)="dropProduct($event, productByCategory)">
+      <table
+        *ngIf="productByCategory.producs && productByCategory.producs.length"
+        mat-table
+        #currentTable
+        [dataSource]="productByCategory.producs" multiTemplateDataRows
+        class="mat-elevation-z2"
+        cdkDropList
+        [cdkDropListData]="productByCategory.producs"
+        (cdkDropListDropped)="dropProduct($event, productByCategory)">
+        
+        <!-- name Column -->
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>Name</th>
+          <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+        </ng-container>
+
+        <!-- stock Column -->
+        <ng-container matColumnDef="stock">
+          <th mat-header-cell *matHeaderCellDef  class="align-center">Bestand</th>
+          <td mat-cell *matCellDef="let element" class="align-center"> {{element.stock}} </td>
+        </ng-container>
+
+        <!-- price Column -->
+        <ng-container matColumnDef="price">
+          <th mat-header-cell *matHeaderCellDef  class="align-center">Preis</th>
+          <td mat-cell *matCellDef="let element" class="align-center"> {{element.price | currency: 'EUR'}} </td>
+        </ng-container>
+
+        <!-- category Column -->
+        <ng-container matColumnDef="category">
+          <th mat-header-cell *matHeaderCellDef>Kategorie</th>
+          <td mat-cell *matCellDef="let element"> {{element.category.name}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="deleteProduct">
+          <th mat-header-cell *matHeaderCellDef class="icon-column"></th>
+          <td mat-cell *matCellDef="let element" class="icon-column">
+            <button (click)="deleteProduct(element)" mat-icon-button color="primary" aria-label="Example icon button with a home icon">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="expandedDetail">
+          <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplay.length">
+            <div class="product-table-element-detail" [@detailExpand]="element.id == expandedElement?.id ? 'expanded' : 'collapsed'">
+              
+              <div fxFlex fxLayout="column" class="form">
+                <mat-form-field class="">
+                  <mat-label>Name</mat-label>
+                  <input (keydown.enter)="saveEditProduct(editElement, currentTable)" required minlength="2" autocomplete="off" [(ngModel)]="editElement.name" type="text" matInput>
+                </mat-form-field>
           
-          <!-- name Column -->
-          <ng-container matColumnDef="name">
-            <th mat-header-cell *matHeaderCellDef>Name</th>
-            <td mat-cell *matCellDef="let element"> {{element.name}} </td>
-          </ng-container>
-
-          <!-- stock Column -->
-          <ng-container matColumnDef="stock">
-            <th mat-header-cell *matHeaderCellDef  class="align-center">Bestand</th>
-            <td mat-cell *matCellDef="let element" class="align-center"> {{element.stock}} </td>
-          </ng-container>
-
-          <!-- price Column -->
-          <ng-container matColumnDef="price">
-            <th mat-header-cell *matHeaderCellDef  class="align-center">Preis</th>
-            <td mat-cell *matCellDef="let element" class="align-center"> {{element.price | currency: 'EUR'}} </td>
-          </ng-container>
-
-          <!-- category Column -->
-          <ng-container matColumnDef="category">
-            <th mat-header-cell *matHeaderCellDef>Kategorie</th>
-            <td mat-cell *matCellDef="let element"> {{element.category.name}} </td>
-          </ng-container>
-
-          <ng-container matColumnDef="deleteProduct">
-            <th mat-header-cell *matHeaderCellDef class="icon-column"></th>
-            <td mat-cell *matCellDef="let element" class="icon-column">
-              <button (click)="deleteProduct(element)" mat-icon-button color="primary" aria-label="Example icon button with a home icon">
-                <mat-icon>delete</mat-icon>
-              </button>
-            </td>
-          </ng-container>
-
-          <ng-container matColumnDef="expandedDetail">
-            <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplay.length">
-              <div class="product-table-element-detail" [@detailExpand]="element.id == expandedElement?.id ? 'expanded' : 'collapsed'">
+                <mat-form-field class="">
+                  <mat-label>Beschreibung</mat-label>
+                  <textarea autocomplete="off" [(ngModel)]="editElement.description" type="search" placeholder="z.B. Inhalsstoffe" matInput></textarea>
+                </mat-form-field>
+          
+                <mat-form-field class="">
+                  <mat-label>Bestand</mat-label>
+                  <input (keydown.enter)="saveEditProduct(editElement, currentTable)" type="number" required autocomplete="off" [(ngModel)]="editElement.stock" matInput>
+                </mat-form-field>
                 
-                <div fxFlex fxLayout="column" class="form">
-                  <mat-form-field class="">
-                    <mat-label>Name</mat-label>
-                    <input (keydown.enter)="saveEdit(editElement, currentTable)" required minlength="2" autocomplete="off" [(ngModel)]="editElement.name" type="text" matInput>
-                  </mat-form-field>
-            
-                  <mat-form-field class="">
-                    <mat-label>Beschreibung</mat-label>
-                    <textarea autocomplete="off" [(ngModel)]="editElement.description" type="search" placeholder="z.B. Inhalsstoffe" matInput></textarea>
-                  </mat-form-field>
-            
-                  <mat-form-field class="">
-                    <mat-label>Bestand</mat-label>
-                    <input (keydown.enter)="saveEdit(editElement, currentTable)" type="number" required autocomplete="off" [(ngModel)]="editElement.stock" matInput>
-                  </mat-form-field>
-                  
-                  <mat-form-field class="">
-                    <mat-label>Preis</mat-label>
-                    <input class="price-field" currencyMask  [options]="{ prefix: '', suffix: '€', allowNegative: false, thousands: '.', decimal: ',' }" (keydown.enter)="saveEdit(editElement, currentTable)" required autocomplete="off" [(ngModel)]="editElement.price" matInput>
-                  </mat-form-field>
+                <mat-form-field class="">
+                  <mat-label>Preis</mat-label>
+                  <input class="price-field" currencyMask  [options]="{ prefix: '', suffix: '€', allowNegative: false, thousands: '.', decimal: ',' }" (keydown.enter)="saveEditProduct(editElement, currentTable)" required autocomplete="off" [(ngModel)]="editElement.price" matInput>
+                </mat-form-field>
+        
+                <mat-form-field>
+                  <mat-label>Kategorie</mat-label>
+                  <mat-select [(value)]="editElement.category" [compareWith]="categoryCompareFkt">
+                    <mat-option *ngFor="let category of categories" [value]="category">{{category.name}}</mat-option>
+                  </mat-select>
+                </mat-form-field>
           
-                  <mat-form-field>
-                    <mat-label>Kategorie</mat-label>
-                    <mat-select [(value)]="editElement.category" [compareWith]="categoryCompareFkt">
-                      <mat-option *ngFor="let category of categories" [value]="category">{{category.name}}</mat-option>
-                    </mat-select>
-                  </mat-form-field>
-            
-                  <div class="form-actions">
-                    <button mat-raised-button color="primary" (click)="saveEdit(editElement, currentTable)">speichern</button>
-                    <button mat-raised-button color="secondary" type="cancel" (click)="expandedElement = null">abbrechen</button>
-                  </div>
+                <div class="form-actions">
+                  <button mat-raised-button color="primary" (click)="saveEditProduct(editElement, currentTable)">speichern</button>
+                  <button mat-raised-button color="secondary" type="cancel" (click)="expandedElement = null">abbrechen</button>
                 </div>
-
               </div>
-            </td>
-          </ng-container>
 
-          <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
-          <tr mat-row *matRowDef="let element; columns: columnsToDisplay;"
-              class="product-table-element-row"
-              [class.product-table-expanded-row]="expandedElement?.id === element.id"
-              (click)="startEdit(element)"
-              cdkDrag [cdkDragData]="element">
-          </tr>
-          <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="product-table-detail-row"></tr>
-        </table>
+            </div>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+        <tr mat-row *matRowDef="let element; columns: columnsToDisplay;"
+            class="product-table-element-row"
+            [class.product-table-expanded-row]="expandedElement?.id === element.id"
+            (click)="startEditProduct(element)"
+            cdkDrag [cdkDragData]="element">
+        </tr>
+        <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="product-table-detail-row"></tr>
+      </table>
 
     </div>
   </div>

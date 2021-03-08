@@ -5,11 +5,11 @@
     
     <mat-form-field fxFlexFill>
       <mat-label>Name</mat-label>
-      <input (keyup.enter)="addTable()" required minlength="2" autocomplete="off" [(ngModel)]="tableName" type="text" matInput>
+      <input #tableNameRef="ngModel" (keyup.enter)="addTable()" required minlength="2" autocomplete="off" [(ngModel)]="tableName" type="text" matInput>
     </mat-form-field>
     
     <span>
-      <button mat-raised-button color="primary" (click)="addTable()">erstellen</button>
+      <button [disabled]="tableNameRef.invalid" mat-raised-button color="primary" (click)="addTable()">erstellen</button>
     </span>
   </mat-card-content>
 </mat-card>
