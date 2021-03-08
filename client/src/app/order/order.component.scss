@@ -59,3 +59,30 @@
     font-weight: bold;
   }
 }
+
+.code {
+  font-size: 5em;
+  position: absolute;
+  z-index: 99;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  background: #fff;
+
+  span {
+    display: flex;
+    justify-content: center; 
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+  }
+}
+
+
+@media (min-width: 450px) {
+  .code {
+    font-size: 7em;
+  }
+}

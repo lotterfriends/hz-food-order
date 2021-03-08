@@ -24,3 +24,17 @@ body {
 .sum {
   border-bottom: 4px double #000
 }
+
+.order-code {
+  font-weight: bold;
+  font-family: monospace;
+}
+
+body.modal-open {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  position: fixed;
+  overflow: hidden;
+}

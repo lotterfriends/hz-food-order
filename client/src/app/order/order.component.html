@@ -1,3 +1,10 @@
+
+<ng-container *ngIf="selectedCode">
+  <div class="code" (click)="closeCode()">
+    <span class="order-code">{{ selectedCode }}</span>
+  </div>
+</ng-container>
+
 <ng-container *ngIf="table">
 
   <h1 class="mat-title">{{table.name}}</h1>
@@ -6,8 +13,8 @@
   
   <ng-container *ngIf="orders.filter(filterFinished).length; else noOrder">
 
-    <mat-card *ngFor="let order of orders | callbackFilter: filterFinished" class="{{order.status}}">
-      <mat-card-title>{{order.code}}</mat-card-title>
+    <mat-card (click)="openCode(order.code)" *ngFor="let order of orders | callbackFilter: filterFinished" class="{{order.status}}">
+      <mat-card-title class="order-code">{{order.code}}</mat-card-title>
       <ul>
         <li *ngFor="let item of order.items">{{item.count}}x - {{item.product.name}}</li>
       </ul>

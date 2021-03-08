@@ -1,5 +1,5 @@
 import { CurrencyPipe } from '@angular/common';
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, HostBinding, OnDestroy, OnInit, Renderer2 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -14,7 +14,7 @@ import { Order, OrderProduct, OrderService, OrderStatus, ProducCategory, Product
   styleUrls: ['./order.component.scss'],
   providers: [CurrencyPipe]
 })
-export class OrderComponent implements OnInit {
+export class OrderComponent implements OnInit, OnDestroy {
 
   constructor(
     private route: ActivatedRoute,
@@ -23,7 +23,8 @@ export class OrderComponent implements OnInit {
     private snackBar: MatSnackBar,
     private dialog: MatDialog,
     private orderWSService: OrderWSService,
-    private currencyPipe: CurrencyPipe
+    private currencyPipe: CurrencyPipe,
+    private renderer: Renderer2
   ) { }
 
   static readonly MIN_PRODUCT = 0;
@@ -39,6 +40,7 @@ export class OrderComponent implements OnInit {
     category: ProducCategory,
     producs: OrderProduct[]
   }[] = [];
+  selectedCode: string | false = false;
 
   ngOnInit(): void {
 
@@ -97,6 +99,20 @@ export class OrderComponent implements OnInit {
         }, 500);
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    this.closeCode();
+  }
+
+  openCode(code: string) {
+    this.selectedCode = code;
+    this.renderer.addClass(document.body, 'modal-open');
+  }
+
+  closeCode() {
+    this.selectedCode = false
+    this.renderer.removeClass(document.body, 'modal-open');
   }
 
   productToOrderProduct(product: Product): OrderProduct {

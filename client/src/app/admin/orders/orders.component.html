@@ -7,7 +7,7 @@
     
       <mat-card class="{{order.status}}">
         <mat-card-title>
-          <span>{{order.table.name}} - {{order.code}}</span>
+          <span>{{order.table.name}} - <span class="order-code">{{order.code}}</span></span>
           <button mat-icon-button (click)="openMessageDialog(order)"><mat-icon>message</mat-icon></button>
         </mat-card-title>
         <mat-card-content>
