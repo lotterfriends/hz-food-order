@@ -11,14 +11,6 @@ import { AuthService } from '../auth/auth.service';
 import { Order } from './order.entity';
 import { Table } from '../tables/table.entity';
 import { TableService } from '../tables/table.service';
-import { User } from 'src/users/users.service';
-
-interface ClientConnection {
-  socket: Socket;
-  table?: Table;
-  user?: User;
-  tables?: Table[];
-}
 
 @WebSocketGateway()
 export class OrderGateway implements OnGatewayConnection, OnGatewayDisconnect {
@@ -30,7 +22,6 @@ export class OrderGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @WebSocketServer() server: Server;
 
-  // connections: ClientConnection[] = [];
 
   async handleDisconnect(client: Socket): Promise<void> {
     // console.log('disconnect', client.id);
