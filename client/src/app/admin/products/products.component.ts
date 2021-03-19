@@ -5,14 +5,15 @@ import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { Observable } from 'rxjs';
 import { MatTable } from '@angular/material/table';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 interface ViewProduct extends Product {
   edit: boolean;
 }
 
 interface CatergoryProducts {
-  category: ProducCategory,
-  producs: ViewProduct[]
+  category: ProducCategory;
+  producs: ViewProduct[];
 }
 
 @Component({
@@ -40,11 +41,12 @@ export class ProductsComponent implements OnInit {
   productDesciption = '';
   productStock = 0;
   productCategory: ProducCategory | null = null;
-  columnsToDisplay = ['name', 'stock', 'price', 'category', 'deleteProduct'];
+  productsTableColumns = ['name', 'stock', 'price', 'category', 'deleteProduct'];
   productsByCategory: CatergoryProducts[] = [];
-
   expandedElement: ViewProduct | null = null;
   editElement: ViewProduct = { id: -1, category: {id: -1} } as ViewProduct;
+  newProductForm: FormGroup | undefined;
+  editProductForm: FormGroup | undefined;
 
   constructor(
     private adminProductsService: AdminProductsService,
@@ -71,6 +73,7 @@ export class ProductsComponent implements OnInit {
         this.productCategory = this.categories[0];
       }
       this.ref.markForCheck();
+      this.newProductForm = this.createProductForm(null);
     });
   }
 
@@ -99,6 +102,19 @@ export class ProductsComponent implements OnInit {
     });
   }
 
+  createProductForm(p: ViewProduct | null): FormGroup {
+    return new FormGroup({
+      name: new FormControl(p?.name, [
+        Validators.required,
+        Validators.minLength(4)
+      ]),
+      description: new FormControl(p?.description),
+      stock: new FormControl(p?.stock || 0, Validators.required),
+      price: new FormControl(p?.price || 0, [Validators.required]),
+      category: new FormControl(p?.category || this.productCategory, Validators.required),
+    });
+  }
+
   async dropProduct(event: CdkDragDrop<ViewProduct[]>, catergoryProducts: CatergoryProducts): Promise<void> {
     moveItemInArray(catergoryProducts.producs, event.previousIndex, event.currentIndex);
     catergoryProducts.producs.forEach((e, i) => {
@@ -109,21 +125,10 @@ export class ProductsComponent implements OnInit {
   }
 
   addProduct(): void {
-    this.adminProductsService.createProduct({
-      name: this.productName,
-      stock: this.productStock,
-      price: this.productPrice,
-      description: this.productDesciption,
-      category: this.productCategory
-    } as Product).pipe(first()).subscribe((product: Product) => {
+    this.adminProductsService.createProduct(
+      this.newProductForm?.getRawValue() as Product
+    ).pipe(first()).subscribe((product: Product) => {
       this.addProductToCategory(product);
-      this.productName = '';
-      this.productDesciption = '';
-      this.productStock = 0;
-      this.productPrice = 0;
-      if (this.categories.length) {
-        this.productCategory = this.categories[0];
-      }
       this.ref.detectChanges();
       this.reRenderProductTables();
     });
@@ -134,6 +139,7 @@ export class ProductsComponent implements OnInit {
   }
 
   startEditProduct(product: ViewProduct): void {
+    this.editProductForm = this.createProductForm(product);
     this.expandedElement = this.expandedElement?.id === product.id ? null : product;
     this.editElement = { ...product};
   }
@@ -150,14 +156,11 @@ export class ProductsComponent implements OnInit {
     return element;
   }
 
-  saveEditProduct(product: ViewProduct, table: MatTable<ViewProduct>): void {
-    this.adminProductsService.updateProduct(product.id, {
-      name: product.name,
-      stock: product.stock,
-      price: product.price,
-      description: product.description,
-      category: product.category
-    } as Product).pipe(first()).subscribe(result => {
+  saveEditProduct(): void {
+    this.adminProductsService.updateProduct(
+      this.editElement.id,
+      this.editProductForm?.getRawValue() as Product
+    ).pipe(first()).subscribe(result => {
       let categoryChanged = false;
       const currentElement = this.getProductById(this.editElement.id);
       if (currentElement && result.category?.id !== currentElement.category?.id) {
@@ -211,7 +214,7 @@ export class ProductsComponent implements OnInit {
   }
 
   categoryCompareFkt(a: ProducCategory, b: ProducCategory): boolean {
-    return a.id === b.id;
+    return a && b && a.id === b.id;
   }
 
   deleteProduct(product: ViewProduct): void {

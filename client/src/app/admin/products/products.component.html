@@ -45,41 +45,41 @@
 
   </div>
 
+  <br />
+  <mat-divider></mat-divider>
+  <br />
 
   <h2 class="mat-headline">Angebot</h2>
 
-  <!--
-  TODO: use table
-  https://stackblitz.com/edit/angular-igmugp
-  -->
-
   <mat-card>
     <mat-card-content>
-      <mat-form-field fxFlexFill class="">
-        <mat-label>Name</mat-label>
-        <input (keyup.enter)="addProduct()" required minlength="2" autocomplete="off" [(ngModel)]="productName" type="text" matInput>
-      </mat-form-field>
-      <mat-form-field fxFlexFill class="">
-        <mat-label>Beschreibung</mat-label>
-        <textarea autocomplete="off" [(ngModel)]="productDesciption" placeholder="z.B. Inhalsstoffe" matInput></textarea>
-      </mat-form-field>
-      <mat-form-field fxFlexFill class="">
-        <mat-label>Bestand</mat-label>
-        <input (keyup.enter)="addProduct()" type="number" required autocomplete="off" [(ngModel)]="productStock" matInput>
-      </mat-form-field>
-      <mat-form-field fxFlexFill class="">
-        <mat-label>Preis</mat-label>
-        <input class="price-field" (keyup.enter)="addProduct()" currencyMask  [options]="{ prefix: '', suffix: '€', allowNegative: false, thousands: '.', decimal: ',' }" required autocomplete="off" [(ngModel)]="productPrice" matInput>
-      </mat-form-field>
-      <mat-form-field fxFlexFill>
-        <mat-label>Kategorie</mat-label>
-        <mat-select [(value)]="productCategory">
-          <mat-option  *ngFor="let category of categories" [value]="category">{{category.name}}</mat-option>
-        </mat-select>
-      </mat-form-field>
-      <span>
-        <button mat-raised-button color="primary" (click)="addProduct()">erstellen</button>
-      </span>
+      <div *ngIf="newProductForm" [formGroup]="newProductForm">
+        <mat-form-field fxFlexFill class="">
+          <mat-label>Name</mat-label>
+          <input formControlName="name" (keyup.enter)="addProduct()" required minlength="2" autocomplete="off" type="text" matInput>
+        </mat-form-field>
+        <mat-form-field fxFlexFill class="">
+          <mat-label>Beschreibung</mat-label>
+          <textarea formControlName="description" autocomplete="off" placeholder="z.B. Inhalsstoffe" matInput></textarea>
+        </mat-form-field>
+        <mat-form-field fxFlexFill class="">
+          <mat-label>Bestand</mat-label>
+          <input formControlName="stock" (keyup.enter)="addProduct()" type="number" required autocomplete="off" matInput>
+        </mat-form-field>
+        <mat-form-field fxFlexFill class="">
+          <mat-label>Preis</mat-label>
+          <input formControlName="price" class="price-field" (keyup.enter)="addProduct()" currencyMask  [options]="{ prefix: '', suffix: '€', allowNegative: false, thousands: '.', decimal: ',' }" required autocomplete="off" matInput>
+        </mat-form-field>
+        <mat-form-field fxFlexFill>
+          <mat-label>Kategorie</mat-label>
+          <mat-select required formControlName="category" [(value)]="productCategory">
+            <mat-option  *ngFor="let category of categories" [value]="category">{{category.name}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <span>
+          <button [disabled]="newProductForm.invalid" mat-raised-button color="primary" (click)="addProduct()">erstellen</button>
+        </span>
+      </div>
     </mat-card-content>
   </mat-card>
 
@@ -130,39 +130,39 @@
         </ng-container>
 
         <ng-container matColumnDef="expandedDetail">
-          <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplay.length">
+          <td mat-cell *matCellDef="let element" [attr.colspan]="productsTableColumns.length">
             <div class="product-table-element-detail" [@detailExpand]="element.id == expandedElement?.id ? 'expanded' : 'collapsed'">
               
-              <div fxFlex fxLayout="column" class="form">
+              <div fxFlex fxLayout="column" class="form" *ngIf="editProductForm" [formGroup]="editProductForm">
                 <mat-form-field class="">
                   <mat-label>Name</mat-label>
-                  <input (keydown.enter)="saveEditProduct(editElement, currentTable)" required minlength="2" autocomplete="off" [(ngModel)]="editElement.name" type="text" matInput>
+                  <input formControlName="name" (keydown.enter)="saveEditProduct()" required minlength="2" autocomplete="off" type="text" matInput>
                 </mat-form-field>
           
                 <mat-form-field class="">
                   <mat-label>Beschreibung</mat-label>
-                  <textarea autocomplete="off" [(ngModel)]="editElement.description" type="search" placeholder="z.B. Inhalsstoffe" matInput></textarea>
+                  <textarea formControlName="description" autocomplete="off" type="search" placeholder="z.B. Inhalsstoffe" matInput></textarea>
                 </mat-form-field>
           
                 <mat-form-field class="">
                   <mat-label>Bestand</mat-label>
-                  <input (keydown.enter)="saveEditProduct(editElement, currentTable)" type="number" required autocomplete="off" [(ngModel)]="editElement.stock" matInput>
+                  <input formControlName="stock" (keydown.enter)="saveEditProduct()" type="number" required autocomplete="off" matInput>
                 </mat-form-field>
                 
                 <mat-form-field class="">
                   <mat-label>Preis</mat-label>
-                  <input class="price-field" currencyMask  [options]="{ prefix: '', suffix: '€', allowNegative: false, thousands: '.', decimal: ',' }" (keydown.enter)="saveEditProduct(editElement, currentTable)" required autocomplete="off" [(ngModel)]="editElement.price" matInput>
+                  <input formControlName="price" class="price-field" currencyMask  [options]="{ prefix: '', suffix: '€', allowNegative: false, thousands: '.', decimal: ',' }" (keydown.enter)="saveEditProduct()" required autocomplete="off" matInput>
                 </mat-form-field>
         
                 <mat-form-field>
                   <mat-label>Kategorie</mat-label>
-                  <mat-select [(value)]="editElement.category" [compareWith]="categoryCompareFkt">
+                  <mat-select formControlName="category" [compareWith]="categoryCompareFkt">
                     <mat-option *ngFor="let category of categories" [value]="category">{{category.name}}</mat-option>
                   </mat-select>
                 </mat-form-field>
           
                 <div class="form-actions">
-                  <button mat-raised-button color="primary" (click)="saveEditProduct(editElement, currentTable)">speichern</button>
+                  <button mat-raised-button color="primary" (click)="saveEditProduct()">speichern</button>
                   <button mat-raised-button color="secondary" type="cancel" (click)="expandedElement = null">abbrechen</button>
                 </div>
               </div>
@@ -171,8 +171,8 @@
           </td>
         </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
-        <tr mat-row *matRowDef="let element; columns: columnsToDisplay;"
+        <tr mat-header-row *matHeaderRowDef="productsTableColumns"></tr>
+        <tr mat-row *matRowDef="let element; columns: productsTableColumns;"
             class="product-table-element-row"
             [class.product-table-expanded-row]="expandedElement?.id === element.id"
             (click)="startEditProduct(element)"
