@@ -50,6 +50,7 @@ export class AuthService {
           localStorage.setItem('refresh_token', result.payload.refresh_token);
         }
         this.router.navigate(['/admin']);
+        this.refreshTokenWithTimer();
       }
     });
   }
@@ -152,7 +153,9 @@ export class AuthService {
       // set a timeout to refresh the token a minute before it expires
       const expires = new Date(jwtToken.exp * 1000);
       const timeout = expires.getTime() - Date.now() - (60 * 1000);
-      this.refreshTokenTimeout = window.setTimeout(() => this.refreshTokenWithTimer(), timeout);
+      this.refreshTokenTimeout = window.setTimeout(() => {
+        this.refreshTokenWithTimer();
+      }, timeout);
     }
   }
 
