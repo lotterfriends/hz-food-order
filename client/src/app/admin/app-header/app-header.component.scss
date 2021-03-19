@@ -1,5 +1,13 @@
 $toolbar-title-padding: 16px !default;
 
+:host {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 2;
+}
+
 ul {
   list-style: none;
 }
