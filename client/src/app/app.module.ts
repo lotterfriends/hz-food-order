@@ -23,6 +23,10 @@ import { PrintTableComponent } from './print-table/print-table.component';
 import { OrderRedirectComponent } from './order-redirect/order-redirect.component';
 import { registerLocaleData } from '@angular/common';
 import localeDe from '@angular/common/locales/de';
+import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 registerLocaleData(localeDe, 'de');
 
 export function tokenGetter(): string | null {
@@ -54,6 +58,10 @@ const socketConfig: SocketIoConfig = {
     UiModule,
     NgxQRCodeModule,
     AdminModule,
+    MatCardModule,
+    MatIconModule,
+    MatFormFieldModule,
+    MatProgressSpinnerModule,
     JwtModule.forRoot({
       config: {
         tokenGetter,
