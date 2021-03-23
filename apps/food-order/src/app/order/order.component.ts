@@ -91,6 +91,7 @@ export class OrderComponent implements OnInit, OnDestroy {
     });
 
     this.orderWSService.isConnected.subscribe(connected => {
+      // console.log(`connected: ${connected}`);
       if (connected) {
         setTimeout(() => {
           if (this.secret) {
@@ -121,7 +122,8 @@ export class OrderComponent implements OnInit, OnDestroy {
       name: product.name,
       count: 0,
       price: product.price,
-      category: product.category
+      category: product.category,
+      description: product.description
     } as OrderProduct;
   }
 
@@ -181,7 +183,7 @@ export class OrderComponent implements OnInit, OnDestroy {
 
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       maxWidth: '400px',
-      data: new ConfirmDialogModel('Achtung', `Jetzt Kostenpflichtig für ${this.currencyPipe.transform(this.sum, 'EUR')} bestellen?`)
+      data: new ConfirmDialogModel('Achtung', `Jetzt kostenpflichtig für ${this.currencyPipe.transform(this.sum, 'EUR')} bestellen?`)
     });
 
     dialogRef.afterClosed().pipe(first()).subscribe(dialogResult => {

@@ -62,7 +62,7 @@
     "compression": "^1.7.4",
     "mysql2": "^2.2.5",
     "ng2-currency-mask": "^9.0.2",
-    "ngx-socket-io": "^3.3.0",
+    "ngx-socket-io": "3.2.0",
     "normalize.css": "^8.0.1",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
@@ -112,6 +112,7 @@
     "shelljs": "^0.8.4",
     "ts-jest": "26.4.0",
     "ts-node": "~9.1.1",
-    "typescript": "~4.0.3"
+    "typescript": "~4.0.3",
+    "webpack-bundle-analyzer": "^4.4.0"
   }
 }

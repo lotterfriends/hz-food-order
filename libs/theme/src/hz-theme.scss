@@ -211,16 +211,15 @@ $mat-warn: (
 $theme-warn: mat-palette($mat-warn, main, lighter, darker);;
 
 $theme: mat-light-theme($theme-primary, $theme-accent, $theme-warn);
-$altTheme: mat-dark-theme($theme-primary, $theme-accent, $theme-warn);
 
 // Theme Init
 @include angular-material-theme($theme);
 
-.theme-alternate {
-  @include angular-material-theme($altTheme);
-}
-
 // Specific component overrides, pieces that are not in line with the general theming
+
+body {
+  background-color: #efefef;
+}
 
 // Handle buttons appropriately, with respect to line-height
 .mat-raised-button, .mat-stroked-button, .mat-flat-button {

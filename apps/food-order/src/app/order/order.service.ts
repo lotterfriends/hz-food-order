@@ -14,6 +14,7 @@ export interface Product {
   stock: number;
   price: string;
   category: ProducCategory;
+  description: string;
 }
 
 export enum OrderStatus {
@@ -37,6 +38,7 @@ export interface OrderProduct {
   price: string;
   category: ProducCategory;
   order: number;
+  description: string;
 }
 
 export interface Order {

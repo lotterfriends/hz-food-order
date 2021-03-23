@@ -13,7 +13,7 @@
   
   <ng-container *ngIf="orders.filter(filterFinished).length; else noOrder">
 
-    <mat-card (click)="openCode(order.code)" *ngFor="let order of orders | callbackFilter: filterFinished" class="{{order.status}}">
+    <mat-card class="order" (click)="openCode(order.code)" *ngFor="let order of orders | callbackFilter: filterFinished" class="{{order.status}}">
       <mat-card-title class="order-code">{{order.code}}</mat-card-title>
       <ul>
         <li *ngFor="let item of order.items">{{item.count}}x - {{item.product.name}}</li>
@@ -40,8 +40,11 @@
       <div *ngFor="let product of productByCategory.producs">
         <mat-card fxLayout="column">
           <span fxLayout="row" fxLayoutAlign="space-between">
-            <span  fxLayout="column">
-              <span>{{product.name}}</span>
+            <span fxLayout="column">
+              <span fxLayout="row">
+                <span>{{product.name}}</span>
+                <span class="description" fxLayout="row" fxLayoutAlign="center center"><span>{{product.description}}</span></span>
+              </span>
               <strong>{{product.price | currency:'EUR' }}</strong>
             </span>
             <span fxLayoutAlign="end center">

@@ -21,7 +21,6 @@ export interface AuthenticationPayload {
   };
 }
 
-
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private userSubject: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(null);

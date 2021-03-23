@@ -1,5 +1,35 @@
 @import 'normalize.css/normalize.css';
-@import './mat-icon-font.scss';
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+
+.w-100 {
+  width: 100%;
+}
+
+
+.admin-qr {
+  display: block;
+}
+.admin-qr img {
+  max-width: 100%;
+}
+
+.sum {
+  border-bottom: 4px double #000
+}
+
+.order-code {
+  font-weight: bold;
+  font-family: monospace;
+}
+
+body.modal-open {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  position: fixed;
+  overflow: hidden;
+}
