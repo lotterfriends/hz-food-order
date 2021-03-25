@@ -8,6 +8,7 @@
     "nx": "nx",
     "start": "ng serve",
     "build": "ng build",
+    "build:prod": "npx ts-node tools/build.ts",
     "test": "ng test",
     "lint": "nx workspace-lint && ng lint",
     "e2e": "ng e2e",
@@ -28,7 +29,9 @@
     "help": "nx help",
     "db:create": "docker run --name hz-mysql -p=3306:3306 -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=hzoo -d mysql",
     "db:start": "docker container start hz-mysql",
-    "db:remove": "docker stop hz-mysql && docker rm hz-mysql"
+    "db:remove": "docker stop hz-mysql && docker rm hz-mysql",
+    "db:dump": "docker exec hz-mysql /usr/bin/mysqldump -u root --password=root hzoo > ./dumps/hzoo_$(date +\"%Y%m%d_%H%M%S\").backup.sql",
+    "db:restor": "docker exec hz-mysql /usr/bin/mysql -u root --password=root hzoo < $(ls -t dumps/*.backup | head -1)"
   },
   "private": true,
   "dependencies": {
