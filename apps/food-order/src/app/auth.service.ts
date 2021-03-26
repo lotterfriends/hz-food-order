@@ -7,7 +7,7 @@ import { first } from 'rxjs/operators';
 import { environment } from '../environments/environment';
 
 interface User {
-  userId: number;
+  id: number;
   username: string;
   password: string;
 }

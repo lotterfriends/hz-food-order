@@ -1,10 +1,11 @@
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
-import { User, UsersService } from '../users/users.service';
+import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { RefreshToken } from './refresh-token.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { SignOptions, TokenExpiredError } from 'jsonwebtoken'
+import { User } from '../users/user.entity';
 
 export interface RefreshTokenPayload {
   jti: number;
@@ -37,7 +38,7 @@ export class TokenService {
   public async createRefreshToken (user: User, ttl: number): Promise<RefreshToken> {
     const token = new RefreshToken()
 
-    token.userId = user.id;
+    token.userId = '' + user.id;
     token.isRevoked = false
     
     const expiration = new Date()
