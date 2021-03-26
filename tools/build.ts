@@ -23,7 +23,7 @@ shell.config.verbose = debug;
 
 shell.rm('-rf', 'work');
 shell.mkdir('-p', 'work');
-shell.cp('-r', ['apps', 'libs', 'angular.json', 'decorate-angular-cli.js', 'nx.json', 'package.json', 'package-lock.json', 'tsconfig.base.json', '.env'], 'work');
+shell.cp('-r', ['apps', 'libs', 'angular.json', 'decorate-angular-cli.js', 'nx.json', 'package.json', 'package-lock.json', 'tsconfig.base.json'], 'work');
 shell.cd('work/');
 shell.exec('npm install --only=production', {silent: !debug});
 shell.exec('npx nx build food-order --prod', {silent: !debug});
