@@ -136,6 +136,8 @@ stream.on('close', function () {
   if (debug) {
     console.log(`${archiveName} created - size: ${bytesToSize(archive.pointer())}`);
   }
+  shell.mkdir('-p', 'releases/');
+  shell.mv(archiveName, 'releases/');
 });
 
 archive.on('error', function(err){

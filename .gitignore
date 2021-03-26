@@ -6,6 +6,7 @@
 /out-tsc
 /work
 /dumps
+/releases
 
 # dependencies
 /node_modules

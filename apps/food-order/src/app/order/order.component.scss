@@ -32,16 +32,31 @@
 
 
 .in-preparation {
-  background-color: yellow;
+  background-color: gold;
 }
 .ready-for-pickup {
-  background-color: aqua;
+  background-color: cornflowerblue;
+  color: #fff;
+  
+  .sum {
+    border-color: #fff;
+  }
 }
 .finished {
-  background-color: green;
+  background-color: seagreen;
+  color: #fff;
+  
+  .sum {
+    border-color: #fff;
+  }
 }
 .canceled {
-  background-color: red;
+  background-color: tomato;
+  color: #fff;
+  
+  .sum {
+    border-color: #fff;
+  }
 }
 
 .no-order {

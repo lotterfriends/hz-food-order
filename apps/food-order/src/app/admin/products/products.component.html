@@ -3,8 +3,8 @@
   <h2 class="mat-headline">Kategorien</h2>
 
   <div class="categories">
-    <div fxFlex fxLayout="column" fxLayout.gt-md="row" fxLayoutAlign="space-between" fxLayoutGap="1em">
-      <div fxFlex.gt-md="50%" fxLayout="column">
+    <div fxFlex fxLayout="column" fxLayout.gt-xs="row" fxLayoutAlign="space-between" fxLayoutGap="1em">
+      <div fxFlex.gt-xs="50%" fxLayout="column">
         <mat-card style="padding: .75em;" *ngIf="categories && categories.length; else emptyCategories">
           <mat-card-content>
             <mat-list class="categories" cdkDropList (cdkDropListDropped)="dropCategory($event)">
@@ -25,7 +25,7 @@
           </mat-card>
         </ng-template>
       </div>
-      <div fxFlex.gt-md="50%" fxLayout="column">
+      <div fxFlex.gt-xs="50%" fxLayout="column">
         <mat-card>
           <mat-card-content>
             <mat-form-field fxFlexFill class="">

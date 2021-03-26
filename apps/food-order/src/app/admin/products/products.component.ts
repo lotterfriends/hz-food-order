@@ -75,6 +75,8 @@ export class ProductsComponent implements OnInit {
       this.ref.markForCheck();
       this.newProductForm = this.createProductForm(null);
     });
+
+    this.editProductForm = this.createProductForm(null);
   }
 
   async dropCategory(event: CdkDragDrop<string[]>): Promise<void> {
@@ -142,6 +144,7 @@ export class ProductsComponent implements OnInit {
     this.editProductForm = this.createProductForm(product);
     this.expandedElement = this.expandedElement?.id === product.id ? null : product;
     this.editElement = { ...product};
+    this.ref.detectChanges();
   }
 
   getProductById(id: number): ViewProduct | null {

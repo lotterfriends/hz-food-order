@@ -2,19 +2,51 @@
   margin-bottom: 1em;
 }
 
+.order {
+  border-radius: 10px;
+  background-color: #fff;
+  padding: 10px;
+  margin-bottom: 10px;
+
+  ul {
+    padding: 0 15px;
+  }
+}
+
+.order-status {
+  margin: 0;
+}
+
 .status-button:not(:last-of-type) {
   margin-right: .5em;
 }
 
 .in-preparation {
-  background-color: yellow;
+  background-color: gold;
 }
 .ready-for-pickup {
-  background-color: aqua;
+  background-color: cornflowerblue;
+  color: #fff;
+  
+  .sum {
+    border-color: #fff;
+  }
 }
+
 .finished {
-  background-color: green;
+  background-color: seagreen;
+  color: #fff;
+  
+  .sum {
+    border-color: #fff;
+  }
 }
 .canceled {
-  background-color: red;
+  background-color: tomato;
+
+  color: #fff;
+  
+  .sum {
+    border-color: #fff;
+  }
 }

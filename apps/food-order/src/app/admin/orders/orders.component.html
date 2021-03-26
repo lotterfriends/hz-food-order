@@ -1,37 +1,44 @@
-<h1>Offene Bestellungen</h1>
+<h2 class="mat-headline">Offene Bestellungen</h2>
 
 <ng-container *ngIf="orders && orders.length; else noOrder">
 
   <ng-container *ngIf="orders.filter(filterFinished).length">
-    <div *ngFor="let order of orders | callbackFilter: filterFinished">
+    <div class="order" fxLayout="column" fxLayoutGap="10px" *ngFor="let order of orders | callbackFilter: filterFinished">
+      <div fxLayout="row" fxFlexFill fxLayoutGap="10px">
+      
+        <mat-card fxFlex="grow" class="{{order.status}}">
+          <mat-card-title fxLayoutAlign="start center">
+            <span>{{order.table.name}} - <span class="order-code">{{order.code}}</span></span>
+            <button mat-icon-button (click)="openMessageDialog(order)"><mat-icon>message</mat-icon></button>
+          </mat-card-title>
+          <mat-card-content>
+            <div fxFlexFill>
+              <div fxFlexFill>
+                <div>{{order.comment}}</div>
+                <ul>
+                  <li *ngFor="let item of order.items">{{item.count}}x - {{item.product.name}}</li>
+                </ul>
+            
+                <em *ngIf="order.orderMessage && order.orderMessage.length">{{order.orderMessage}}</em>
+                <em *ngIf="order.comment && order.comment.length">{{order.comment}}</em>
+              </div>
+          
+              <div fxLayoutAlign="space-between center" class="order-status">
+                <span class="sum">{{orderService.getSum(order) | currency:'EUR'}}</span>
+                <span>{{orderService.getTextForOrderStatus(order.status)}}</span>
+              </div>
+            </div>
     
-      <mat-card class="{{order.status}}">
-        <mat-card-title>
-          <span>{{order.table.name}} - <span class="order-code">{{order.code}}</span></span>
-          <button mat-icon-button (click)="openMessageDialog(order)"><mat-icon>message</mat-icon></button>
-        </mat-card-title>
-        <mat-card-content>
-          <div>{{order.comment}}</div>
-          <ul>
-            <li *ngFor="let item of order.items">{{item.count}}x - {{item.product.name}}</li>
-          </ul>
-      
-          <em *ngIf="order.orderMessage && order.orderMessage.length">{{order.orderMessage}}</em>
-          <em *ngIf="order.comment && order.comment.length">{{order.comment}}</em>
-      
-          <div>
-            <button class="status-button" [disabled]="status === order.status" (click)="changeStatus(order, status)" mat-raised-button *ngFor="let status of orderStatusArray">
-              {{orderService.getTextForOrderStatus(status)}}
-            </button>
-          </div>
+          </mat-card-content>
+        </mat-card>
   
-          <div fxLayoutAlign="space-between center" class="order-status">
-            <span class="sum">{{orderService.getSum(order) | currency:'EUR'}}</span>
-            <span>{{orderService.getTextForOrderStatus(order.status)}}</span>
-          </div>
+        <div fxLayout="column" fxLayoutGap="10px">
+          <button class="status-button" [disabled]="status === order.status" (click)="changeStatus(order, status)" mat-stroked-button *ngFor="let status of orderStatusArray">
+            {{orderService.getTextForOrderStatus(status)}}
+          </button>
+        </div>
   
-        </mat-card-content>
-      </mat-card>
+      </div>
     </div>
   </ng-container>
 
@@ -45,34 +52,42 @@
           <mat-panel-description></mat-panel-description>
         </mat-expansion-panel-header>
         <div>
-          <div *ngFor="let order of orders | callbackFilter: filterUnfinished">
-    
-            <mat-card class="{{order.status}}">
-              <mat-card-title>
-                <span>{{order.table.name}} - {{order.code}}</span>
-                <button mat-icon-button (click)="openMessageDialog(order)"><mat-icon>message</mat-icon></button>
-              </mat-card-title>
-              <mat-card-content>
-                <div>{{order.comment}}</div>
-                <ul>
-                  <li *ngFor="let item of order.items">{{item.count}}x - {{item.product.name}}</li>
-                </ul>
+          <div class="order" fxLayout="column" fxLayoutGap="10px" *ngFor="let order of orders | callbackFilter: filterUnfinished">
+            <div fxLayout="row" fxFlexFill fxLayoutGap="10px">
             
-                <em *ngIf="order.orderMessage && order.orderMessage.length">{{order.orderMessage}}</em>
-                <em *ngIf="order.comment && order.comment.length">{{order.comment}}</em>
-            
-                <div>
-                  <button class="status-button" [disabled]="status === order.status" (click)="changeStatus(order, status)" mat-raised-button *ngFor="let status of orderStatusArray">
-                    {{orderService.getTextForOrderStatus(status)}}
-                  </button>
-                </div>
+              <mat-card fxFlex="grow" class="{{order.status}}">
+                <mat-card-title fxLayoutAlign="start center">
+                  <span>{{order.table.name}} - <span class="order-code">{{order.code}}</span></span>
+                  <button mat-icon-button (click)="openMessageDialog(order)"><mat-icon>message</mat-icon></button>
+                </mat-card-title>
+                <mat-card-content>
+                  <div fxFlexFill>
+                    <div fxFlexFill>
+                      <div>{{order.comment}}</div>
+                      <ul>
+                        <li *ngFor="let item of order.items">{{item.count}}x - {{item.product.name}}</li>
+                      </ul>
+                  
+                      <em *ngIf="order.orderMessage && order.orderMessage.length">{{order.orderMessage}}</em>
+                      <em *ngIf="order.comment && order.comment.length">{{order.comment}}</em>
+                    </div>
+                
+                    <div fxLayoutAlign="space-between center" class="order-status">
+                      <span class="sum">{{orderService.getSum(order) | currency:'EUR'}}</span>
+                      <span>{{orderService.getTextForOrderStatus(order.status)}}</span>
+                    </div>
+                  </div>
+          
+                </mat-card-content>
+              </mat-card>
         
-                <div fxLayoutAlign="end" class="order-status">
-                  {{orderService.getTextForOrderStatus(order.status)}}
-                </div>
+              <div fxLayout="column" fxLayoutGap="10px">
+                <button class="status-button" [disabled]="status === order.status" (click)="changeStatus(order, status)" mat-stroked-button *ngFor="let status of orderStatusArray">
+                  {{orderService.getTextForOrderStatus(status)}}
+                </button>
+              </div>
         
-              </mat-card-content>
-            </mat-card>
+            </div>
           </div>
         </div>
       </mat-expansion-panel>
