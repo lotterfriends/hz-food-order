@@ -67,11 +67,23 @@
   padding-left: .5em;
 }
 
+.order-list {
+  background-color: #fff;
+
+  ul {
+    padding-left: 1em;
+  }
+}
+
 .order-sum {
-  padding: 1em 0;
+  // padding: 1em 0;
 
   strong {
     font-weight: bold;
+  }
+
+  .sum {
+    margin: 0 !important;
   }
 }
 

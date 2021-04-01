@@ -32,6 +32,7 @@ export class OrderComponent implements OnInit, OnDestroy {
 
   orderStatus = OrderStatus;
   orders: ServerOrder[] = [];
+  order: Order | false = false;
   comment = '';
   secret: string | null = '';
   table: Table | undefined;
@@ -133,6 +134,7 @@ export class OrderComponent implements OnInit, OnDestroy {
       product.count--;
     }
     this.sum -= parseFloat(product.price);
+    this.updateOrder();
   }
 
   plus(product: OrderProduct): void {
@@ -140,6 +142,7 @@ export class OrderComponent implements OnInit, OnDestroy {
       product.count++;
     }
     this.sum += parseFloat(product.price);
+    this.updateOrder();
   }
 
   somethingOrdered(): boolean {
@@ -153,22 +156,40 @@ export class OrderComponent implements OnInit, OnDestroy {
     return false;
   }
 
-  placeOrder(): void {
-    const order: Order = {items: [], status: OrderStatus.InPreparation};
+  resetProductCount() {
     for (const cItem of this.card) {
       for (const product of cItem.producs) {
-        if (product.count > 0) {
-          order.items.push({...product});
-        }
         product.count = 0;
       }
     }
-    order.comment = this.comment;
-    this.comment = '';
-    this.sum = 0;
-    if (order.items.length) {
-      this.orderService.createOrder(order).pipe(first()).subscribe(serverOrder => {
+  }
+
+  updateOrder(): void {
+    this.order = {items: [], status: OrderStatus.InPreparation};
+    for (const cItem of this.card) {
+      for (const product of cItem.producs) {
+        if (product.count > 0) {
+          const productIndex = this.order.items.indexOf(product);
+          if (productIndex > -1) {
+            this.order.items[productIndex].count = product.count;
+          } else {
+            this.order.items.push({...product});
+          }
+        }
+      }
+    }
+    this.order.comment = this.comment;
+  }
+
+  placeOrder(): void {
+    this.updateOrder();
+    if (this.order && this.order.items.length) {
+      this.orderService.createOrder(this.order).pipe(first()).subscribe(serverOrder => {
         this.orders.push(serverOrder);
+        this.order = false;
+        this.resetProductCount();
+        this.comment = '';
+        this.sum = 0;
       });
     }
   }

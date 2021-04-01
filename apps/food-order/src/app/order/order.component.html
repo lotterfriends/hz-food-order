@@ -65,15 +65,26 @@
     </mat-form-field>
   </section>
   
-  <div class="order-sum" *ngIf="sum > 0">
-    <section fxLayout="row" fxLayoutAlign="start center">
-      <strong class="mat-headline sum">{{sum | currency:'EUR' }}</strong>
-    </section>
+  <div class="mat-card order-list" *ngIf="order && order.items.length">
+    <h3>Bestellung</h3>
+    <ul>
+      <li *ngFor="let item of order.items">{{item.count}}x - {{item.name}}</li>
+    </ul>
+
+    <span fxLayout="row" fxLayoutAlign="space-between">
+
+      <div class="order-sum" *ngIf="sum > 0">
+        <span fxLayout="row" fxLayoutAlign="start center">
+          <strong class="mat-headline sum">{{sum | currency:'EUR' }}</strong>
+        </span>
+      </div>
+      <div>
+        <button mat-raised-button color="primary" (click)="sendOrder()">Abschicken</button>
+      </div>
+    </span>
   </div>
 
-  <section>
-    <button mat-raised-button color="primary" (click)="sendOrder()">Abschicken</button>
-  </section>
+
 
 </ng-container>
 
