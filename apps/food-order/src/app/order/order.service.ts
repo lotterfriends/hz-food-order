@@ -109,7 +109,7 @@ export class OrderService {
   getSum(order: ServerOrder): number {
     let sum = 0;
     for (const item of order.items) {
-      sum += parseFloat(item.product.price);
+      sum += parseFloat(item.product.price) * item.count;
     }
     return sum;
   }
