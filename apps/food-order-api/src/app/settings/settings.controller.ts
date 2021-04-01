@@ -5,16 +5,17 @@ import { SettingsService } from './settings.service';
 
 
 @Controller('settings')
-@UseGuards(JwtAuthGuard)
 export class SettingsController {
   constructor(private readonly settingsService: SettingsService) {}
 
   @Put()
+  @UseGuards(JwtAuthGuard)
   async update(@Body() settings: Settings) {
     return this.settingsService.update(settings);
   }
   
   @Put('update-secret')
+  @UseGuards(JwtAuthGuard)
   async updateSecret(@Body() settingsSecret: {secret: string}) {
     if (settingsSecret && settingsSecret.secret.length && settingsSecret.secret.length> 5)  {
       const currentSettings = await this.settingsService.getSettings();
@@ -35,11 +36,20 @@ export class SettingsController {
   }
 
   @Get()
+  @UseGuards(JwtAuthGuard)
   getSettings() {
     return this.settingsService.getSettings();
   }
+  
+  @Get('client')
+  getClientSettings() {
+    return this.settingsService.getSettings({
+      select: ['seperateOrderPerProductCategory']
+    });
+  }
 
   @Get('random')
+  @UseGuards(JwtAuthGuard)
   getRandomString()  {
     return { secret: this.settingsService.getRandomString() };
   }

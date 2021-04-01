@@ -10,6 +10,9 @@ export class Settings {
 
   @Column()
   secret?: string;
+
+  @Column({ default: false })
+  seperateOrderPerProductCategory: boolean;
   
   @Column('simple-array')
   oldSecrets: string[];

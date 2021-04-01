@@ -30,6 +30,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { SettingsService } from './settings.service';
 registerLocaleData(localeDe, 'de');
 
 export function tokenGetter(): string | null {
@@ -78,7 +79,7 @@ const socketConfig: SocketIoConfig = {
     SocketIoModule.forRoot(socketConfig)
   ],
   providers: [
-    { provide: APP_INITIALIZER, useFactory: appInitializer, multi: true, deps: [AuthService] },
+    { provide: APP_INITIALIZER, useFactory: appInitializer, multi: true, deps: [AuthService, SettingsService] },
     { provide: HTTP_INTERCEPTORS, useClass: SecretInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },
     { provide: LOCALE_ID, useValue: 'de' },
