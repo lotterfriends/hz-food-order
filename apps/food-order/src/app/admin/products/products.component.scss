@@ -69,6 +69,11 @@ tr.product-table-element-row:not(.product-table-expanded-row):active {
   } 
 }
 
+.disabled {
+  opacity: .5;
+  text-decoration: line-through;
+}
+
 .product-table-element-detail {
   overflow: hidden;
   display: flex;
@@ -95,6 +100,24 @@ tr.product-table-element-row:not(.product-table-expanded-row):active {
   }
 }
 
+// .no-touch .icon-column button {
+//   opacity: 0;
+// }
+
+tr:hover .icon-column {
+  // background-color: #fff;
+  button {
+    opacity: 1;
+  }
+}
+
+// .mat-header-cell.icon-column {
+//   display: none;
+// }
+
 .icon-column {
+  margin: 0 !important;
+  padding: 0 !important;
+  height: 48px;
   width: 24px;
 }

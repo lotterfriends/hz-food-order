@@ -15,7 +15,7 @@ import { UsersModule } from './users/users.module';
   imports: [
     ConfigModule.forRoot(),
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'food-order'),
+      rootPath: join(__dirname, 'food-order'),
     }),
     TypeOrmModule.forRoot({
       type: 'mysql',

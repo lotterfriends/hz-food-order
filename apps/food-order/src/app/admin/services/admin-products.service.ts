@@ -9,6 +9,7 @@ export interface Product {
   stock: number;
   price: number;
   description?: string;
+  disabled: boolean;
   category: ProducCategory;
   order: number;
 }
@@ -49,6 +50,10 @@ export class AdminProductsService {
 
   deleteProduct(id: number): Observable<void> {
     return this.http.delete<void>(`${environment.apiPath}/products/${id}`);
+  }
+  
+  toggleDisableProduct(id: number, disabled: boolean = true): Observable<Product> {
+    return this.http.put<Product>(`${environment.apiPath}/products/${id}`, {disabled: disabled});
   }
 
   updateProduct(id: number, product: Product): Observable<Product> {

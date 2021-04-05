@@ -54,11 +54,7 @@ export interface ServerOrder {
   items: {
     count: number;
     id: number;
-    product: {
-      name: string;
-      description: string;
-      price: string;
-    }
+    product: OrderProduct
   }[];
   orderMessage: string;
   status: OrderStatus;
@@ -114,5 +110,12 @@ export class OrderService {
     return sum;
   }
 
+  getSumForProducts(products: OrderProduct[]): number {
+    let sum = 0;
+    for (const item of products) {
+      sum += parseFloat(item.price) * item.count;
+    }
+    return sum;
+  }
 
 }

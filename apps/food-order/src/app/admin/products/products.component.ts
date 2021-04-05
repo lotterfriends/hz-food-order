@@ -41,7 +41,7 @@ export class ProductsComponent implements OnInit {
   productDesciption = '';
   productStock = 0;
   productCategory: ProducCategory | null = null;
-  productsTableColumns = ['name', 'stock', 'price', 'category', 'deleteProduct'];
+  productsTableColumns = ['name', 'stock', 'price', 'category', 'disableProduct', 'deleteProduct'];
   productsByCategory: CatergoryProducts[] = [];
   expandedElement: ViewProduct | null = null;
   editElement: ViewProduct = { id: -1, category: {id: -1} } as ViewProduct;
@@ -229,6 +229,20 @@ export class ProductsComponent implements OnInit {
         }
       });
       this.reRenderProductTables();
+    });
+  }
+
+  toggleDisableProduct($event, product: ViewProduct): void {
+    $event.stopPropagation();
+    $event.preventDefault();
+    this.adminProductsService.toggleDisableProduct(product.id, !product.disabled).pipe(first()).subscribe(_ => {
+      this.productsByCategory.forEach(pc => {
+        const prpductIndex = pc.producs.findIndex(p => p.id === product.id);
+        if (prpductIndex > -1) {
+          pc.producs[prpductIndex].disabled = !pc.producs[prpductIndex].disabled;
+        }
+      });
+      this.ref.detectChanges();
     });
   }
 

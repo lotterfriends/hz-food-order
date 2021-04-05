@@ -44,7 +44,7 @@ export class TableOrderController {
     if (!table) {
       throw new UnauthorizedException();
     }
-    return this.productService.getAll();
+    return this.productService.getAllEnabled();
   }
 
   @Get(':secret')

@@ -61,6 +61,14 @@ export class ProductsService {
     return this.productsRepository.find();
   }
 
+  getAllEnabled() {
+    return this.productsRepository.find({
+      where: {
+        disabled: false
+      }
+    });
+  }
+
   findOneWithId(id: number) {
     return this.productsRepository.findOne(id);
   }
