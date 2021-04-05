@@ -34,3 +34,15 @@
     </div>
   </mat-card-content>
 </mat-card>
+
+<h2 class="mat-headline">Einstellungen</h2>
+<mat-card>
+  <mat-card-content>
+    <div>
+      <mat-checkbox [(ngModel)]="seperateOrderPerProductCategory">Seperate Betsllung pro Produkt-Kategorie</mat-checkbox>
+    </div>
+    <div>
+      <button (click)="saveSettings()" mat-raised-button color="primary">Speichern</button>
+    </div>
+  </mat-card-content>
+</mat-card>

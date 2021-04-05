@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity()
 export class Settings {
@@ -7,6 +7,9 @@ export class Settings {
 
   @CreateDateColumn()
   created: Date;
+  
+  @UpdateDateColumn()
+  updated: Date;
 
   @Column()
   secret?: string;

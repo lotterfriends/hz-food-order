@@ -11,7 +11,8 @@ export class SettingsController {
   @Put()
   @UseGuards(JwtAuthGuard)
   async update(@Body() settings: Settings) {
-    return this.settingsService.update(settings);
+    await this.settingsService.update(settings);
+    return await this.settingsService.getSettings();
   }
   
   @Put('update-secret')
@@ -44,7 +45,7 @@ export class SettingsController {
   @Get('client')
   getClientSettings() {
     return this.settingsService.getSettings({
-      select: ['seperateOrderPerProductCategory']
+      select: ['updated', 'seperateOrderPerProductCategory']
     });
   }
 

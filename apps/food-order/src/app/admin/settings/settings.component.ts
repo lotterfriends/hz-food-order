@@ -14,6 +14,7 @@ export class SettingsComponent implements OnInit {
 
   serverSecret = '';
   secret = '';
+  seperateOrderPerProductCategory = false;
 
   constructor(
     private adminOrderService: AdminOrderService,
@@ -25,6 +26,7 @@ export class SettingsComponent implements OnInit {
     this.adminSettingsService.getSettings().pipe(first()).subscribe(settings => {
       this.secret = settings.secret;
       this.serverSecret = this.secret;
+      this.seperateOrderPerProductCategory = settings.seperateOrderPerProductCategory;
     });
   }
 
@@ -62,6 +64,14 @@ export class SettingsComponent implements OnInit {
           // 
         });
       }
+    });
+  }
+
+  saveSettings(): void {
+    this.adminSettingsService.updateSettings({
+      seperateOrderPerProductCategory: this.seperateOrderPerProductCategory
+    }).pipe(first()).subscribe((settings: Settings) => {
+      this.seperateOrderPerProductCategory = settings.seperateOrderPerProductCategory;
     });
   }
 

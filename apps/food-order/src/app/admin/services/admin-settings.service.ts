@@ -4,13 +4,18 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
 export interface Settings {
-  secret: string;
+  secret?: string;
+  seperateOrderPerProductCategory?: boolean;
+  updated?: Date;
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class AdminSettingsService {
+  updateSettings(settings: Settings) {
+    return this.http.put<Settings>(`${environment.apiPath}/settings`, settings);
+  }
 
   constructor(private http: HttpClient) {}
 
