@@ -8,7 +8,7 @@
     "nx": "nx",
     "start": "ng serve",
     "build": "ng build",
-    "build:prod": "npx ts-node tools/build.ts",
+    "build:prod": "npx ts-node tools/build2.ts",
     "test": "ng test",
     "lint": "nx workspace-lint && ng lint",
     "e2e": "ng e2e",
