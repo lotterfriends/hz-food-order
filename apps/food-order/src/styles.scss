@@ -33,3 +33,7 @@ body.modal-open {
   position: fixed;
   overflow: hidden;
 }
+
+.no-touch .hidden-no-touch {
+  opacity: 0;
+}

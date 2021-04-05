@@ -6,4 +6,10 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
+
+  constructor(){
+    const supportsTouch = 'ontouchstart' in window || navigator.msMaxTouchPoints;
+    document.body.classList.add(supportsTouch ? 'touch' : 'no-touch');
+  }
+
 }
