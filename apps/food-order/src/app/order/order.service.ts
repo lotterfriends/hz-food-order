@@ -96,7 +96,7 @@ export class OrderService {
       case OrderStatus.Canceled:
         return 'Abgebrochen';
       case OrderStatus.Finished:
-        return 'Abgeschlossen';
+        return 'Bezahlt';
       default:
         return 'unbekannter Status';
     }
