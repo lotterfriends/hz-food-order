@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository} from 'typeorm';
-import { CatergoryDto } from './product-categories.controller';
+import { CategoryDto } from './product-categories.controller';
 import { ProductCategory } from './products-category.entity';
 import { ProductDto } from './products.controller';
 import { Product } from './products.entity';
@@ -13,7 +13,7 @@ export class ProductsService {
     @InjectRepository(ProductCategory) private categoryRepository: Repository<ProductCategory>,
   ) {}
     
-  async saveCategory(categoryDto: CatergoryDto) {
+  async saveCategory(categoryDto: CategoryDto) {
     const query = this.categoryRepository.createQueryBuilder('ProductCategory');
     query.select("MAX(ProductCategory.order)", "max");
     let { max } = await query.getRawOne();
@@ -21,6 +21,11 @@ export class ProductsService {
       categoryDto.order = ++max;
     }
     return this.categoryRepository.save(categoryDto);
+  }
+
+  async updateCategory(category: ProductCategory) {
+    await this.categoryRepository.update(category.id, category);
+    return this.categoryRepository.findOne(category.id);
   }
 
   getAllCategories() {

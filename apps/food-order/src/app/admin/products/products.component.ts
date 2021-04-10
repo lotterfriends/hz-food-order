@@ -16,6 +16,10 @@ interface CatergoryProducts {
   producs: ViewProduct[];
 }
 
+interface Icon {
+  value: string;
+}
+
 @Component({
   selector: 'hz-products',
   templateUrl: './products.component.html',
@@ -34,7 +38,8 @@ export class ProductsComponent implements OnInit {
   @ViewChildren(MatTable) table !: QueryList<MatTable<ViewProduct>>;
   categories: ProducCategory[] = [];
   categoryName = '';
-
+  categoryId;
+  categoryIcon;
   products: ViewProduct[] = [];
   productName = '';
   productPrice = 0;
@@ -47,6 +52,25 @@ export class ProductsComponent implements OnInit {
   editElement: ViewProduct = { id: -1, category: {id: -1} } as ViewProduct;
   newProductForm: FormGroup | undefined;
   editProductForm: FormGroup | undefined;
+  icons: Icon[] = [
+    { value: 'restaurant' },
+    { value: 'cake' },
+    { value: 'restaurant_menu' },
+    { value: 'lunch_dining' },
+    { value: 'local_cafe' },
+    { value: 'fastfood' },
+    { value: 'local_bar' },
+    { value: 'liquor' },
+    { value: 'ramen_dining' },
+    { value: 'kitchen' },
+    { value: 'emoji_food_beverage' },
+    { value: 'local_pizza' },
+    { value: 'bakery_dining' },
+    { value: 'dinner_dining' },
+    { value: 'icecream' },
+    { value: 'sports_bar' },
+    { value: 'wine_bar' },
+  ]
 
   constructor(
     private adminProductsService: AdminProductsService,
@@ -89,10 +113,12 @@ export class ProductsComponent implements OnInit {
 
   addCategory(): void {
     this.adminProductsService.createCategory({
-      name: this.categoryName
+      name: this.categoryName,
+      icon: this.categoryIcon
     } as ProducCategory).pipe(first()).subscribe((product: ProducCategory) => {
       this.categories.push(product);
       this.categoryName = '';
+      this.categoryIcon = '';
       this.productCategory = this.categories[0];
       this.ref.detectChanges();
     });
@@ -102,6 +128,36 @@ export class ProductsComponent implements OnInit {
     this.adminProductsService.deleteCategory(category).pipe(first()).subscribe(result => {
       this.init();
     });
+  }
+
+  editCategory(category: ProducCategory): void {
+    this.categoryIcon = category.icon;
+    this.categoryName = category.name;
+    this.categoryId = category.id;
+  }
+
+  saveEditCategory(): void {
+    this.adminProductsService.updateCategory({
+      id: this.categoryId,
+      name: this.categoryName,
+      icon: this.categoryIcon
+    } as ProducCategory).pipe(first()).subscribe(result => {
+      const catIndex = this.categories.findIndex(e => e.id === this.categoryId);
+      this.categories[catIndex] = result;
+      const pCatIndex = this.productsByCategory.findIndex(e => e.category.id === this.categoryId);
+      this.productsByCategory[pCatIndex].category = result;
+      this.categoryId = '';
+      this.categoryIcon = '';
+      this.categoryName = '';
+      this.init();
+      this.ref.detectChanges();
+    });
+  }
+
+  cancelCategory(): void {
+    this.categoryId = '';
+    this.categoryIcon = '';
+    this.categoryName = '';
   }
 
   createProductForm(p: ViewProduct | null): FormGroup {
@@ -193,6 +249,7 @@ export class ProductsComponent implements OnInit {
     if (!product.category) {
       product.category = {
         id: -1,
+        icon: '',
         name: 'Ohne Katergorie',
         order: 100
       };

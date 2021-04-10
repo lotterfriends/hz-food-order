@@ -17,6 +17,7 @@ export interface Product {
 export interface ProducCategory {
   id: number;
   name: string;
+  icon: string;
   description?: string;
   order: number;
 }
@@ -36,16 +37,20 @@ export class AdminProductsService {
     return this.http.get<ProducCategory[]>(`${environment.apiPath}/product-categories`);
   }
 
-  createProduct(product: Product): Observable<Product> {
-    return this.http.post<Product>(`${environment.apiPath}/products`, product);
-  }
-
   createCategory(category: ProducCategory): Observable<ProducCategory> {
     return this.http.post<ProducCategory>(`${environment.apiPath}/product-categories`, category);
   }
 
+  updateCategory(category: ProducCategory) {
+    return this.http.put<ProducCategory>(`${environment.apiPath}/product-categories`, category);
+  }
+
   deleteCategory(category: ProducCategory): Observable<ProducCategory> {
     return this.http.delete<ProducCategory>(`${environment.apiPath}/product-categories/${category.id}`);
+  }
+
+  createProduct(product: Product): Observable<Product> {
+    return this.http.post<Product>(`${environment.apiPath}/products`, product);
   }
 
   deleteProduct(id: number): Observable<void> {

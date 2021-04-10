@@ -41,7 +41,10 @@
 
   <div *ngIf="card && card.length">
     <div *ngFor="let productByCategory of this.card ">
-      <h3 class="mat-headline" *ngIf="productByCategory.category.id > -1">{{productByCategory.category.name}}</h3>
+      <h3 class="mat-headline" *ngIf="productByCategory.category.id > -1" fxLayout="row" fxLayoutAlign="start center">
+        <mat-icon *ngIf="productByCategory.category.icon">{{productByCategory.category.icon}}</mat-icon>
+        {{productByCategory.category.name}}
+      </h3>
       <div *ngFor="let product of productByCategory.producs">
         <mat-card fxLayout="column">
           <span fxLayout="row" fxLayoutAlign="space-between">

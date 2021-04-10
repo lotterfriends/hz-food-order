@@ -8,8 +8,8 @@
         <mat-card style="padding: .75em;" *ngIf="categories && categories.length; else emptyCategories">
           <mat-card-content>
             <mat-list class="categories" cdkDropList (cdkDropListDropped)="dropCategory($event)">
-              <mat-list-item class="category" cdkDrag *ngFor="let category of categories">
-                <span mat-line>{{category.name}}</span>
+              <mat-list-item (click)="editCategory(category)" class="category" cdkDrag *ngFor="let category of categories">
+                <span mat-line  fxLayout="row" fxLayoutAlign="start center"><mat-icon *ngIf="category.icon">{{category.icon}}</mat-icon> {{category.name}}</span>
                 <button mat-icon-button (click)="deleteCategory(category)">
                   <mat-icon>delete</mat-icon>
                 </button>
@@ -28,13 +28,30 @@
       <div fxFlex.gt-xs="50%" fxLayout="column">
         <mat-card>
           <mat-card-content>
+            
+            <mat-form-field fxFlexFill class="">
+              <mat-label>Icon</mat-label>
+              <mat-select [(ngModel)]="categoryIcon">
+                <mat-select-trigger>
+                  <span fxFlexFill *ngIf="categoryIcon">
+                    <mat-icon>{{categoryIcon}}</mat-icon>
+                  </span>
+                </mat-select-trigger>
+                <mat-option *ngFor="let icon of icons" [value]="icon.value">
+                  <mat-icon>{{icon.value}}</mat-icon>
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+
             <mat-form-field fxFlexFill class="">
               <mat-label>Name</mat-label>
               <input #categoryNameRef="ngModel" (keyup.enter)="addCategory()" required minlength="2" autocomplete="off" [(ngModel)]="categoryName" type="text" matInput>
             </mat-form-field>
 
             <span>
-              <button [disabled]="categoryNameRef.invalid" mat-raised-button color="primary" (click)="addCategory()">erstellen</button>
+              <button *ngIf="!categoryId" [disabled]="categoryNameRef.invalid" mat-raised-button color="primary" (click)="addCategory()">erstellen</button>
+              <button *ngIf="categoryId" [disabled]="categoryNameRef.invalid" mat-raised-button color="primary" (click)="saveEditCategory()">ändern</button>
+              <button color="secondary" (click)="cancelCategory()"  mat-raised-button>Abbrechen</button>
             </span>
 
           </mat-card-content>
@@ -85,7 +102,10 @@
 
   <div *ngIf="productsByCategory && productsByCategory.length">
     <div *ngFor="let productByCategory of this.productsByCategory">
-      <h3 class="mat-headline" *ngIf="productByCategory.producs && productByCategory.producs.length">{{productByCategory.category.name}}</h3>
+      <h3 class="mat-headline" *ngIf="productByCategory.producs && productByCategory.producs.length" fxLayout="row" fxLayoutAlign="start center">
+        <mat-icon *ngIf="productByCategory.category.icon">{{productByCategory.category.icon}}</mat-icon>
+        {{productByCategory.category.name}}
+      </h3>
       <table
         *ngIf="productByCategory.producs && productByCategory.producs.length"
         mat-table

@@ -1,8 +1,9 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { ProductCategory } from './products-category.entity';
 import { ProductsService } from './products.service';
 
-export interface CatergoryDto {
+export interface CategoryDto {
   name: string;
   description?: string;
   order?: number;
@@ -14,7 +15,7 @@ export class ProductCategoriesController {
   constructor(private readonly productService: ProductsService) {}
 
   @Post()
-  create(@Body() categoryDto: CatergoryDto) {
+  create(@Body() categoryDto: CategoryDto) {
     return this.productService.saveCategory(categoryDto);
   }
   
@@ -28,9 +29,16 @@ export class ProductCategoriesController {
     return this.productService.deleteCategory(id);
   }
 
+  @Put()
+  async update(@Body() category: ProductCategory) {
+    return this.productService.updateCategory(category);
+  }
+
   @Post('order')
   order(@Body() data: {id: number, order: number}[]) {
     return this.productService.updateCategoriesOrder(data);
   }
+
+  
 
 }

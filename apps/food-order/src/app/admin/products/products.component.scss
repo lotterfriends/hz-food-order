@@ -95,10 +95,12 @@ tr.product-table-element-row:not(.product-table-expanded-row):active {
 .form-actions {
   margin-bottom: 1.5em;
 
-  button:first-of-type {
-    margin-right: 1em;
-  }
 }
+
+button + button {
+  margin-left: 1em;
+}
+
 
 // .no-touch .icon-column button {
 //   opacity: 0;

@@ -11,6 +11,9 @@ export class ProductCategory {
 
   @Column()
   name?: string;
+
+  @Column()
+  icon?: string;
   
   @Column({nullable: true})
   description?: string;
