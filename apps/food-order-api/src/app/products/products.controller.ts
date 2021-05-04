@@ -4,6 +4,7 @@ import { Table } from 'typeorm';
 import { ProductCategory } from './products-category.entity';
 import { Product } from './products.entity';
 import { ProductsService } from './products.service';
+import { OrderGateway } from '../gateway/order-gateway';
 
 export interface ProductDto {
   name: string;
@@ -17,7 +18,10 @@ export interface ProductDto {
 @Controller('products')
 @UseGuards(JwtAuthGuard)
 export class ProductsController {
-  constructor(private readonly productService: ProductsService) {}
+  constructor(
+    private readonly productService: ProductsService,
+    private readonly orderGateway: OrderGateway
+  ) {}
 
 
   @Post()
@@ -26,9 +30,8 @@ export class ProductsController {
   }
   
   @Put(':id')
-  async update(@Param('id') id: number, @Body() product: Product) {
-    await this.productService.update(id, product);
-    return this.productService.findOneWithId(id);
+  update(@Param('id') id: number, @Body() product: Product) {
+    return this.productService.update(id, product);
   }
 
   @Get()

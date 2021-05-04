@@ -30,7 +30,8 @@ export class Product {
   @Column({ type: 'decimal', precision: 15, scale: 2 })
   price?: number;
 
-  @ManyToOne(() => ProductCategory, category => category.product, { eager: true, onDelete: 'SET NULL' })
+  // @ManyToOne(() => ProductCategory, category => category.product, { eager: true, onDelete: 'SET NULL' })
+  @ManyToOne('ProductCategory', 'product', { eager: true, onDelete: 'SET NULL' })
   @JoinColumn()
   category: ProductCategory
 

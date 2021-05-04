@@ -18,7 +18,8 @@ export class ProductCategory {
   @Column({nullable: true})
   description?: string;
 
-  @OneToMany(() => Product, product => product.category)
+  // @OneToMany(() => Product, product => product.category)
+  @OneToMany('Product', 'category')
   @JoinColumn()
   product: Product;
 

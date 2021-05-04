@@ -11,6 +11,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
+import { GatewayModule } from './gateway/gateways.module';
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -28,6 +29,7 @@ import { UsersModule } from './users/users.module';
       synchronize: true,
       entities: [__dirname + '/**/*.entity{.ts,.js}']
     }),
+    GatewayModule,
     TablesModule,
     OrderModule,
     ProductsModule,

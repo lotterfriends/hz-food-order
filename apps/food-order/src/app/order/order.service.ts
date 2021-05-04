@@ -13,13 +13,15 @@ export interface Product {
   name: string;
   stock: number;
   price: string;
+  disabled: boolean;
+  order: number;
   category: ProducCategory;
   description: string;
 }
 
 export enum OrderStatus {
   InPreparation = 'in-preparation',
-  ReadyForPickup = 'ready-for-pickup',
+  Ready = 'ready',
   Finished = 'finished',
   Canceled = 'canceled',
 }
@@ -91,8 +93,8 @@ export class OrderService {
     switch (status) {
       case OrderStatus.InPreparation:
         return 'Wird zubereitet';
-      case OrderStatus.ReadyForPickup:
-        return 'Bereit zum abholen';
+      case OrderStatus.Ready:
+        return 'Fertig';
       case OrderStatus.Canceled:
         return 'Abgebrochen';
       case OrderStatus.Finished:

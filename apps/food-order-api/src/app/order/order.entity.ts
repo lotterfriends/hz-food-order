@@ -27,12 +27,14 @@ export class Order {
   })
   status?: OrderStatus;
 
-  @ManyToOne(() => Table, table => table.orders, { eager: false })
+  // @ManyToOne(() => Table, table => table.orders, { eager: false })
+  @ManyToOne('Table', 'orders', { eager: false })
   @JoinColumn()
   table: Table;
   
 
-  @OneToMany(() => OrderItem, item => item.order, { cascade: true })
+  // @OneToMany(() => OrderItem, item => item.order, { cascade: true })
+  @OneToMany('OrderItem', 'order', { cascade: true })
   @JoinColumn()
   items: OrderItem[]
 

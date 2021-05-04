@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Socket } from 'ngx-socket-io';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { AuthService } from './auth.service';
-import { ServerOrder } from './order/order.service';
+import { Product, ServerOrder } from './order/order.service';
 @Injectable({
   providedIn: 'root'
 })
@@ -36,6 +36,10 @@ export class OrderWSService {
 
     tableOrderUpdate(): Observable<ServerOrder>{
       return this.socket.fromEvent<ServerOrder>('table-order-update');
+    }
+
+    tableProductUpdate(): Observable<Product>{
+      return this.socket.fromEvent<Product>('table-product-update');
     }
 
     orderUpdate(): Observable<ServerOrder>{

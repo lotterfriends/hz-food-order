@@ -100,21 +100,27 @@
     </mat-card-content>
   </mat-card>
 
-  <div *ngIf="productsByCategory && productsByCategory.length">
-    <div *ngFor="let productByCategory of this.productsByCategory">
+  <!-- <button (click)="showTable = !showTable">toggle show table</button> -->
+
+  <ng-container *ngIf="productsByCategory && productsByCategory.length && showTable">
+    <ng-container *ngFor="let productByCategory of this.productsByCategory">
+      
       <h3 class="mat-headline" *ngIf="productByCategory.producs && productByCategory.producs.length" fxLayout="row" fxLayoutAlign="start center">
         <mat-icon *ngIf="productByCategory.category.icon">{{productByCategory.category.icon}}</mat-icon>
         {{productByCategory.category.name}}
       </h3>
+      
       <table
         *ngIf="productByCategory.producs && productByCategory.producs.length"
         mat-table
         #currentTable
-        [dataSource]="productByCategory.producs" multiTemplateDataRows
+        [dataSource]="productByCategory.datasource"
+        multiTemplateDataRows
         class="mat-elevation-z2"
         cdkDropList
         [cdkDropListData]="productByCategory.producs"
-        (cdkDropListDropped)="dropProduct($event, productByCategory)">
+        (cdkDropListDropped)="dropProduct($event, productByCategory)"
+        >
         
         <!-- name Column -->
         <ng-container matColumnDef="name">
@@ -162,40 +168,42 @@
         <ng-container matColumnDef="expandedDetail">
           <td mat-cell *matCellDef="let element" [attr.colspan]="productsTableColumns.length">
             <div class="product-table-element-detail" [@detailExpand]="element.id == expandedElement?.id ? 'expanded' : 'collapsed'">
-              
-              <div fxFlex fxLayout="column" class="form" *ngIf="editProductForm" [formGroup]="editProductForm">
-                <mat-form-field class="">
-                  <mat-label>Name</mat-label>
-                  <input formControlName="name" (keydown.enter)="saveEditProduct()" required minlength="2" autocomplete="off" type="text" matInput>
-                </mat-form-field>
+
+              <ng-container *ngIf="element.id == expandedElement?.id">
+                <div fxFlex fxLayout="column" class="form" *ngIf="editProductForm" [formGroup]="editProductForm">
+                  <mat-form-field class="">
+                    <mat-label>Name</mat-label>
+                    <input formControlName="name" (keydown.enter)="saveEditProduct()" required minlength="2" autocomplete="off" type="text" matInput>
+                  </mat-form-field>
+            
+                  <mat-form-field class="">
+                    <mat-label>Beschreibung</mat-label>
+                    <textarea formControlName="description" autocomplete="off" type="search" placeholder="z.B. Inhalsstoffe" matInput></textarea>
+                  </mat-form-field>
+            
+                  <mat-form-field class="">
+                    <mat-label>Bestand</mat-label>
+                    <input formControlName="stock" (keydown.enter)="saveEditProduct()" type="number" required autocomplete="off" matInput>
+                  </mat-form-field>
+                  
+                  <mat-form-field class="">
+                    <mat-label>Preis</mat-label>
+                    <input formControlName="price" class="price-field" currencyMask  [options]="{ prefix: '', suffix: '€', allowNegative: false, thousands: '.', decimal: ',' }" (keydown.enter)="saveEditProduct()" required autocomplete="off" matInput>
+                  </mat-form-field>
           
-                <mat-form-field class="">
-                  <mat-label>Beschreibung</mat-label>
-                  <textarea formControlName="description" autocomplete="off" type="search" placeholder="z.B. Inhalsstoffe" matInput></textarea>
-                </mat-form-field>
-          
-                <mat-form-field class="">
-                  <mat-label>Bestand</mat-label>
-                  <input formControlName="stock" (keydown.enter)="saveEditProduct()" type="number" required autocomplete="off" matInput>
-                </mat-form-field>
-                
-                <mat-form-field class="">
-                  <mat-label>Preis</mat-label>
-                  <input formControlName="price" class="price-field" currencyMask  [options]="{ prefix: '', suffix: '€', allowNegative: false, thousands: '.', decimal: ',' }" (keydown.enter)="saveEditProduct()" required autocomplete="off" matInput>
-                </mat-form-field>
-        
-                <mat-form-field>
-                  <mat-label>Kategorie</mat-label>
-                  <mat-select formControlName="category" [compareWith]="categoryCompareFkt">
-                    <mat-option *ngFor="let category of categories" [value]="category">{{category.name}}</mat-option>
-                  </mat-select>
-                </mat-form-field>
-          
-                <div class="form-actions">
-                  <button mat-raised-button color="primary" (click)="saveEditProduct()">speichern</button>
-                  <button mat-raised-button color="secondary" type="cancel" (click)="expandedElement = null">abbrechen</button>
+                  <mat-form-field>
+                    <mat-label>Kategorie</mat-label>
+                    <mat-select formControlName="category" [compareWith]="categoryCompareFkt">
+                      <mat-option *ngFor="let category of categories" [value]="category">{{category.name}}</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+            
+                  <div class="form-actions">
+                    <button mat-raised-button color="primary" (click)="saveEditProduct()">speichern</button>
+                    <button mat-raised-button color="secondary" type="cancel" (click)="expandedElement = null">abbrechen</button>
+                  </div>
                 </div>
-              </div>
+              </ng-container>
 
             </div>
           </td>
@@ -211,8 +219,8 @@
         <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="product-table-detail-row"></tr>
       </table>
 
-    </div>
-  </div>
+    </ng-container>
+  </ng-container>
   
 </div>
 

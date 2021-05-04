@@ -6,6 +6,7 @@ import { environment } from '../../../environments/environment';
 export interface Settings {
   secret?: string;
   seperateOrderPerProductCategory?: boolean;
+  disableProductOnOutOfStock?: boolean;
   updated?: Date;
 }
 

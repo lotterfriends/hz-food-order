@@ -1,6 +1,6 @@
 import { BadRequestException, Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { OrderGateway } from '../order/order-gateway';
+import { OrderGateway } from '../gateway/order-gateway';
 import { Order } from './order.entity';
 import { OrderService } from './order.service';
 import { OrderStatus } from './types/order-status';

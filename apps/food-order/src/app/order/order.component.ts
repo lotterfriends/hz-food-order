@@ -22,7 +22,6 @@ interface CardCategory {
   providers: [CurrencyPipe]
 })
 export class OrderComponent implements OnInit, OnDestroy {
-  
   constructor(
     private router: Router,
     public orderService: OrderService,
@@ -47,6 +46,8 @@ export class OrderComponent implements OnInit, OnDestroy {
   sum = 0;
   card: CardCategory[] = [];
   selectedCode: string | false = false;
+  products: Product[] = [];
+  updateCardAfterPlaceOrder = false;
 
   ngOnInit(): void {
 
@@ -60,31 +61,7 @@ export class OrderComponent implements OnInit, OnDestroy {
         }
       });
     }
-
-    this.orderService.getProducts().subscribe(result => {
-      for (const item of result) {
-        if (!item.category) {
-          item.category = {
-            id: -1,
-            name: 'Ohne Katergorie',
-            order: 100
-          };
-        }
-        const e = this.card.find(c => c.category.id === item.category.id);
-        if (e) {
-          e.producs.push(this.productToOrderProduct(item));
-        } else {
-          this.card.push({
-            category: item.category,
-            producs: [this.productToOrderProduct(item)],
-            comment: ''
-          } as CardCategory);
-        }
-      }
-      this.card.sort((a, b) => a.category.order - b.category.order);
-      this.card.forEach(e => e.producs.sort((a, b) => a.order - b.order));
-    });
-
+    this.getProducts();
     this.orderService.getOrders().subscribe(result => {
       this.orders = result;
     });
@@ -94,6 +71,14 @@ export class OrderComponent implements OnInit, OnDestroy {
       if (eOrder) {
         eOrder.status = order.status;
         eOrder.orderMessage = order.orderMessage;
+      }
+    });
+
+    this.orderWSService.tableProductUpdate().subscribe(product => {
+      if (this.somethingOrderedForCard()) {
+        this.updateCardAfterPlaceOrder = true;
+      } else {
+        this.getProducts();
       }
     });
 
@@ -123,6 +108,40 @@ export class OrderComponent implements OnInit, OnDestroy {
   closeCode() {
     this.selectedCode = false
     this.renderer.removeClass(document.body, 'modal-open');
+  }
+
+  getProducts() {
+    this.orderService.getProducts().pipe(first()).subscribe(result => {
+      this.products = result;
+      this.updateCard();
+    });
+  }
+
+  updateCard() {
+    if (this.card.length) {
+      this.card = [];
+    }
+    for (const item of this.products) {
+      if (!item.category) {
+        item.category = {
+          id: -1,
+          name: 'Ohne Katergorie',
+          order: 100
+        };
+      }
+      const e = this.card.find(c => c.category.id === item.category.id);
+      if (e) {
+        e.producs.push(this.productToOrderProduct(item));
+      } else {
+        this.card.push({
+          category: item.category,
+          producs: [this.productToOrderProduct(item)],
+          comment: ''
+        } as CardCategory);
+      }
+    }
+    this.card.sort((a, b) => a.category.order - b.category.order);
+    this.card.forEach(e => e.producs.sort((a, b) => a.order - b.order));
   }
 
   productToOrderProduct(product: Product): OrderProduct {
@@ -210,6 +229,10 @@ export class OrderComponent implements OnInit, OnDestroy {
         this.comment = '';
         this.sum = 0;
       });
+    }
+    if (this.updateCardAfterPlaceOrder) {
+      this.getProducts();
+      this.updateCardAfterPlaceOrder = false;
     }
   }
 

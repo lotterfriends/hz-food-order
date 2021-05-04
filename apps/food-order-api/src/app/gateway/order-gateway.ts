@@ -8,9 +8,10 @@ import {
 } from '@nestjs/websockets';
 import { Socket, Server } from 'socket.io';
 import { AuthService } from '../auth/auth.service';
-import { Order } from './order.entity';
+import { Order } from '../order/order.entity';
 import { Table } from '../tables/table.entity';
 import { TableService } from '../tables/table.service';
+import { Product } from '../products/products.entity';
 
 @WebSocketGateway()
 export class OrderGateway implements OnGatewayConnection, OnGatewayDisconnect {
@@ -54,6 +55,10 @@ export class OrderGateway implements OnGatewayConnection, OnGatewayDisconnect {
   async sendOrderUpdateToTable(order: Order, table: Table) {
     const { secret } = await this.tableService.addSecretToTable(table);
     this.server.to(secret).emit('table-order-update', order);
+  }
+  
+  async sendProductUpdateToTable(product: Product) {
+    this.server.emit('table-product-update', product);
   }
 
 }

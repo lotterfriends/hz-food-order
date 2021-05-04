@@ -1,11 +1,11 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, QueryList, ViewChildren } from '@angular/core';
-import { first } from 'rxjs/operators';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { first, map } from 'rxjs/operators';
 import { AdminProductsService, ProducCategory, Product } from '../services/admin-products.service';
-import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { Observable } from 'rxjs';
-import { MatTable } from '@angular/material/table';
+import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { combineLatest } from 'rxjs';
 
 interface ViewProduct extends Product {
   edit: boolean;
@@ -14,6 +14,7 @@ interface ViewProduct extends Product {
 interface CatergoryProducts {
   category: ProducCategory;
   producs: ViewProduct[];
+  datasource: MatTableDataSource<ViewProduct>
 }
 
 interface Icon {
@@ -33,7 +34,7 @@ interface Icon {
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ProductsComponent implements OnInit {
+export class ProductsComponent implements OnInit, AfterViewInit {
 
   @ViewChildren(MatTable) table !: QueryList<MatTable<ViewProduct>>;
   categories: ProducCategory[] = [];
@@ -51,6 +52,8 @@ export class ProductsComponent implements OnInit {
   expandedElement: ViewProduct | null = null;
   editElement: ViewProduct = { id: -1, category: {id: -1} } as ViewProduct;
   newProductForm: FormGroup | undefined;
+  showTable = false;
+  hideEdit = true;
   editProductForm: FormGroup | undefined;
   icons: Icon[] = [
     { value: 'restaurant' },
@@ -76,31 +79,35 @@ export class ProductsComponent implements OnInit {
     private adminProductsService: AdminProductsService,
     private ref: ChangeDetectorRef
   ) { }
+  
+  ngAfterViewInit(): void {
+    this.showTable = true;
+  }
 
   ngOnInit(): void {
     this.init();
   }
 
   init(): void {
-    this.adminProductsService.getProducts().pipe(first()).subscribe(result => {
-      for (const item of result) {
-        this.addProductToCategory(item);
+
+    const products$ = this.adminProductsService.getProducts();
+    const categories$ = this.adminProductsService.getCategories();
+    this.editProductForm = this.createProductForm(null);
+
+    combineLatest([products$, categories$]).pipe(first()).subscribe(([products, categories]) => {
+      for (const product of products) {
+        this.addProductToCategory(product);
       }
       this.productsByCategory.sort((a, b) => a.category.order - b.category.order);
       this.productsByCategory.forEach(e => e.producs.sort((a, b) => a.order - b.order));
-      this.ref.markForCheck();
-    });
-
-    this.adminProductsService.getCategories().pipe(first()).subscribe(result => {
-      this.categories = result.sort((a, b) => a.order - b.order);
+      
+      this.categories = categories.sort((a, b) => a.order - b.order);
       if (this.categories.length) {
         this.productCategory = this.categories[0];
       }
-      this.ref.markForCheck();
       this.newProductForm = this.createProductForm(null);
+      this.ref.markForCheck();
     });
-
-    this.editProductForm = this.createProductForm(null);
   }
 
   async dropCategory(event: CdkDragDrop<string[]>): Promise<void> {
@@ -261,14 +268,16 @@ export class ProductsComponent implements OnInit {
         ...product
       });
     } else {
+      const viewProducts =  [
+        {
+          edit: false,
+          ...product
+        }
+      ];
       this.productsByCategory.push({
         category: product.category,
-        producs: [
-          {
-            edit: false,
-            ...product
-          }
-        ]
+        producs: viewProducts,
+        datasource: new MatTableDataSource(viewProducts)
       });
     }
   }

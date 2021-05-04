@@ -42,6 +42,9 @@
       <mat-checkbox [(ngModel)]="seperateOrderPerProductCategory">Seperate Bestellung pro Produkt-Kategorie</mat-checkbox>
     </div>
     <div>
+      <mat-checkbox [(ngModel)]="disableProductOnOutOfStock">Produkte automatisch deaktivieren, wenn der Bestand 0 erreicht</mat-checkbox>
+    </div>
+    <div>
       <button (click)="saveSettings()" mat-raised-button color="primary">Speichern</button>
     </div>
   </mat-card-content>

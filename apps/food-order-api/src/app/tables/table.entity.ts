@@ -15,7 +15,8 @@ export class Table {
   @Column()
   key: string;
 
-  @OneToMany(() => Order, order => order.table, { cascade: true })
+  // @OneToMany(() => Order, order => order.table, { cascade: true })
+  @OneToMany('Order', 'table', { cascade: true })
   @JoinColumn()
   orders: Order[]
 

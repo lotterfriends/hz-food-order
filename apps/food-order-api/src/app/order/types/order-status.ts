@@ -1,6 +1,6 @@
 export enum OrderStatus {
   InPreparation = 'in-preparation',
-  ReadyForPickup = 'ready-for-pickup',
+  Ready = 'ready',
   Finished = 'finished',
   Canceled = 'canceled',
   Archived = 'archived',

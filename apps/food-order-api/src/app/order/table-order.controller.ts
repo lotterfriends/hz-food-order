@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Headers, Param, Post, UnauthorizedException } from '@nestjs/common';
+import { OrderGateway } from '../gateway/order-gateway';
 import { ProductsService } from '../products/products.service';
 import { TableService } from '../tables/table.service';
-import { OrderGateway } from './order-gateway';
 import { OrderService } from './order.service';
 import { OrderDto } from './types/oder-dto';
 

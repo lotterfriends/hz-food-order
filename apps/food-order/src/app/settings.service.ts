@@ -4,6 +4,7 @@ import { environment } from '../environments/environment';
 
 export interface Settings {
   seperateOrderPerProductCategory: boolean;
+  disableProductOnOutOfStock: boolean;
 }
 
 @Injectable({ providedIn: 'root' })
