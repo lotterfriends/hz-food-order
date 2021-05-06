@@ -45,7 +45,7 @@ export class SettingsController {
   @Get('client')
   getClientSettings() {
     return this.settingsService.getSettings({
-      select: ['updated', 'seperateOrderPerProductCategory']
+      select: ['updated', 'seperateOrderPerProductCategory', 'orderCode', 'whileStocksLast', 'pickupOrder']
     });
   }
 

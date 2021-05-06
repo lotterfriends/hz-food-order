@@ -7,6 +7,8 @@ import { OrderMessageDialogComponent } from './order-message-dialog/order-messag
 import { OrderWSService } from '../../order-ws.service';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { first } from 'rxjs/operators';
+import { SettingsService, Settings } from '../../settings.service';
+import { AdminTablesService, Table } from '../services/admin-tables.service';
 
 @Component({
   selector: 'hz-orders',
@@ -19,16 +21,23 @@ export class OrdersComponent implements OnInit {
   orderStatus = OrderStatus;
   orderStatusArray = Object.values(OrderStatus);
   orders: ServerOrder[] = [];
+  tables: Table[] = [];
+  settings: Settings;
+  selectedTable: Table | null = null;
 
   constructor(
-    private adminService: AdminOrderService,
+    private adminOrderService: AdminOrderService,
+    private adminTableService: AdminTablesService,
     public orderService: OrderService,
     private dialog: MatDialog,
-    private wsService: OrderWSService
+    private wsService: OrderWSService,
+    private  settingsService: SettingsService
   ) { }
 
   ngOnInit(): void {
-    this.adminService.getOrders().pipe(first()).subscribe(result => {
+    this.settings = this.settingsService.getSettings();
+
+    this.adminOrderService.getOrders().pipe(first()).subscribe(result => {
       this.orders = result;
     });
 
@@ -43,11 +52,16 @@ export class OrdersComponent implements OnInit {
         }, 500);
       }
     });
+
+    this.adminTableService.getTables().pipe(first()).subscribe(tables => {
+      this.tables = tables;
+    });
+
   }
 
 
   changeStatus(order: ServerOrder, status: OrderStatus): void {
-    this.adminService.changeStatus(order.id, status).pipe(first()).subscribe(result => {
+    this.adminOrderService.changeStatus(order.id, status).pipe(first()).subscribe(result => {
       const eOrder = this.orders.find(e => e.id === result.id);
       if (eOrder) {
         eOrder.status = result.status;
@@ -63,7 +77,7 @@ export class OrdersComponent implements OnInit {
 
     dialogRef.afterClosed().pipe(first()).subscribe(dialogResult => {
       if (dialogResult && dialogResult.trim().length) {
-        this.adminService.sendOrderMessage(order.id, dialogResult).pipe(first()).subscribe(result => {
+        this.adminOrderService.sendOrderMessage(order.id, dialogResult).pipe(first()).subscribe(result => {
           const eOrder = this.orders.find(e => e.id === result.id);
           if (eOrder) {
             eOrder.orderMessage = result.orderMessage;
@@ -80,5 +94,5 @@ export class OrdersComponent implements OnInit {
   filterFinished(entry: ServerOrder): boolean {
     return entry.status !== OrderStatus.Finished && entry.status !== OrderStatus.Canceled;
   }
-
+  
 }

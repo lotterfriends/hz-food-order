@@ -16,6 +16,9 @@ export class SettingsComponent implements OnInit {
   secret = '';
   seperateOrderPerProductCategory = false;
   disableProductOnOutOfStock = false;
+  orderCode = false;
+  pickupOrder = false;
+  whileStocksLast = false;
 
   constructor(
     private adminOrderService: AdminOrderService,
@@ -29,6 +32,9 @@ export class SettingsComponent implements OnInit {
       this.serverSecret = this.secret;
       this.seperateOrderPerProductCategory = settings.seperateOrderPerProductCategory;
       this.disableProductOnOutOfStock = settings.disableProductOnOutOfStock;
+      this.orderCode = settings.orderCode;
+      this.pickupOrder = settings.pickupOrder;
+      this.whileStocksLast = settings.whileStocksLast;
     });
   }
 
@@ -72,10 +78,16 @@ export class SettingsComponent implements OnInit {
   saveSettings(): void {
     this.adminSettingsService.updateSettings({
       seperateOrderPerProductCategory: this.seperateOrderPerProductCategory,
-      disableProductOnOutOfStock: this.disableProductOnOutOfStock
+      disableProductOnOutOfStock: this.disableProductOnOutOfStock,
+      orderCode: this.orderCode,
+      pickupOrder: this.pickupOrder,
+      whileStocksLast: this.whileStocksLast
     }).pipe(first()).subscribe((settings: Settings) => {
       this.seperateOrderPerProductCategory = settings.seperateOrderPerProductCategory;
       this.disableProductOnOutOfStock = settings.disableProductOnOutOfStock;
+      this.orderCode = settings.orderCode;
+      this.pickupOrder = settings.pickupOrder;
+      this.whileStocksLast = settings.whileStocksLast;
     });
   }
 

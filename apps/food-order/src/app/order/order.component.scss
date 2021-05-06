@@ -119,6 +119,10 @@
 
 .order {
   cursor: pointer;
+
+  ul {
+    padding: 0 1em;
+  }
 }
 
 @media (min-width: 450px) {

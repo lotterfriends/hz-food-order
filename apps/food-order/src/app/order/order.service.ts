@@ -40,6 +40,7 @@ export interface OrderProduct {
   price: string;
   category: ProducCategory;
   order: number;
+  stock: number;
   description: string;
 }
 

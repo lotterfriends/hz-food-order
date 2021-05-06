@@ -29,6 +29,7 @@
     <div>
       Nach einer Veranstaltungen können alle Bestellungen archiviert werden, damit sie nicht  mehr angezeigt werden.
     </div>
+    <br>
     <div>
       <button (click)="archive()" mat-raised-button color="primary">Bestellungen archivieren</button>
     </div>
@@ -44,6 +45,16 @@
     <div>
       <mat-checkbox [(ngModel)]="disableProductOnOutOfStock">Produkte automatisch deaktivieren, wenn der Bestand 0 erreicht</mat-checkbox>
     </div>
+    <div>
+      <mat-checkbox [(ngModel)]="orderCode">Für jede Bestellung einen Code generieren</mat-checkbox>
+    </div>
+    <div>
+      <mat-checkbox [(ngModel)]="whileStocksLast">Produkte nur so lange der Vorrat reicht (Bestand ist bindent)</mat-checkbox>
+    </div>
+    <div>
+      <mat-checkbox [(ngModel)]="pickupOrder">Bestellungen müssen abgeholt werden</mat-checkbox>
+    </div>
+    <br>
     <div>
       <button (click)="saveSettings()" mat-raised-button color="primary">Speichern</button>
     </div>

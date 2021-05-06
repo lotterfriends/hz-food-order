@@ -7,6 +7,9 @@ export interface Settings {
   secret?: string;
   seperateOrderPerProductCategory?: boolean;
   disableProductOnOutOfStock?: boolean;
+  orderCode?: boolean;
+  whileStocksLast?: boolean;
+  pickupOrder?: boolean;
   updated?: Date;
 }
 

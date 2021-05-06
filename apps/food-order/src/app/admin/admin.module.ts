@@ -32,6 +32,8 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import {MatCheckboxModule} from '@angular/material/checkbox';
+import {MatChipsModule} from '@angular/material/chips';
+
 
 @NgModule({
   declarations: [
@@ -70,7 +72,8 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
     MatDialogModule,
     MatSidenavModule,
     MatListModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    MatChipsModule
   ],
   bootstrap: [AdminComponent]
 })

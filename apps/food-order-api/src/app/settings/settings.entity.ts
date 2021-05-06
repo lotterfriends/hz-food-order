@@ -21,6 +21,15 @@ export class Settings {
   @Column({ default: false })
   disableProductOnOutOfStock: boolean;
   
+  @Column({ default: true })
+  orderCode: boolean;
+  
+  @Column({ default: true })
+  pickupOrder: boolean;
+  
+  @Column({ default: false })
+  whileStocksLast: boolean;
+  
   @Column('simple-array')
   oldSecrets: string[];
 

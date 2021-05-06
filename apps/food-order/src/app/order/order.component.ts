@@ -40,6 +40,9 @@ export class OrderComponent implements OnInit, OnDestroy {
   orders: ServerOrder[] = [];
   order: Order | false = false;
   seperateOrderPerProductCategory: boolean;
+  orderCode: boolean;
+  pickupOrder: boolean;
+  whileStocksLast: boolean;
   comment = '';
   secret: string | null = '';
   table: Table | undefined;
@@ -93,7 +96,11 @@ export class OrderComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.seperateOrderPerProductCategory = this.settingsService.getSettings().seperateOrderPerProductCategory;
+    const settings = this.settingsService.getSettings();
+    this.seperateOrderPerProductCategory = settings.seperateOrderPerProductCategory;
+    this.orderCode = settings.orderCode;
+    this.pickupOrder = settings.pickupOrder;
+    this.whileStocksLast = settings.whileStocksLast;
   }
 
   ngOnDestroy(): void {
@@ -151,7 +158,8 @@ export class OrderComponent implements OnInit, OnDestroy {
       count: 0,
       price: product.price,
       category: product.category,
-      description: product.description
+      description: product.description,
+      stock: product.stock
     } as OrderProduct;
   }
 
@@ -164,10 +172,11 @@ export class OrderComponent implements OnInit, OnDestroy {
   }
 
   plus(product: OrderProduct): void {
-    if (product.count < OrderComponent.MAX_PRODUCT) {
+    console.log(product, this.whileStocksLast);
+    if (product.count < OrderComponent.MAX_PRODUCT && (!this.whileStocksLast || product.count < product.stock)) {
       product.count++;
+      this.sum += parseFloat(product.price);
     }
-    this.sum += parseFloat(product.price);
   }
 
   somethingOrderedForCard(): boolean {

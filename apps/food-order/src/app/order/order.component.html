@@ -1,5 +1,5 @@
 
-<ng-container *ngIf="selectedCode">
+<ng-container *ngIf="selectedCode && orderCode">
   <div class="code" (click)="closeCode()">
     <span class="order-code">{{ selectedCode }}</span>
   </div>
@@ -13,12 +13,12 @@
   
   <ng-container *ngIf="orders.filter(filterFinished).length; else noOrder">
 
-    <div class="order-help">
+    <div class="order-help" *ngIf="orderCode && pickupOrder">
       Klicke auf die Bestellung und zeige den Code, wenn du die Bestellung abholst.
     </div>
 
-    <mat-card class="order" (click)="openCode(order.code)" *ngFor="let order of orders | callbackFilter: filterFinished" class="{{order.status}}">
-      <mat-card-title class="order-code">{{order.code}}</mat-card-title>
+    <mat-card class="order" (click)="orderCode && openCode(order.code)" *ngFor="let order of orders | callbackFilter: filterFinished" class="{{order.status}}">
+      <mat-card-title *ngIf="orderCode" class="order-code">{{order.code}}</mat-card-title>
       <ul>
         <li *ngFor="let item of order.items">{{item.count}}x - {{item.product.name}}</li>
       </ul>
@@ -54,11 +54,11 @@
                 <span class="description" fxLayout="row" fxLayoutAlign="center center"><span>{{product.description}}</span></span>
               </span>
               <strong>{{product.price | currency:'EUR' }}</strong>
-            </span>
+            </span> 
             <span fxLayoutAlign="end center">
               <button (click)="minus(product)" mat-mini-fab aria-label="">-</button>
               <span class="item-count">{{product.count}}</span>
-              <button (click)="plus(product)" mat-mini-fab aria-label="">+</button>
+              <button [disabled]="whileStocksLast && (product.stock <= 0  || product.stock - product.count <= 0)" (click)="plus(product)" mat-mini-fab aria-label="">+</button>
             </span>
           </span>
         </mat-card>
