@@ -1,0 +1,80 @@
+<div fxLayout="row">
+  <div fxFlex="grow">
+    <h2 class="mat-headline">
+      Offene Bestellungen
+    </h2>
+  </div>
+
+  <button mat-button [matMenuTriggerFor]="menu">
+    <mat-icon *ngIf="selectedTable; else isTableNotSelected">filter_alt</mat-icon>
+    <ng-template #isTableNotSelected><mat-icon fontSet="material-icons-outlined">filter_alt</mat-icon></ng-template>
+    
+    {{ selectedTable ? selectedTable.name : 'Alle Tische' }}
+  </button>
+  <mat-menu #menu="matMenu">
+    <button (click)="selectedTable = null"  mat-menu-item>Alle Tische</button>
+    <button (click)="selectedTable = table" *ngFor="let table of tables" mat-menu-item>{{table.name}}</button>
+  </mat-menu>
+  
+</div>
+
+<ng-container *ngIf="orders && orders.length; else noOrder">
+
+  <mat-chip-list [multiple]="true" [selectable]="true">
+    <mat-chip [ngClass]="{'active': displayedCategories.includes(status)}" class="chip-{{status}}" (click)="toggleStatusSelection(status)" [selected]="displayedCategories.includes(status)" *ngFor="let status of orderStatusArray">
+      {{orderService.getTextForOrderStatus(status)}}
+    </mat-chip>
+    <mat-chip (click)="displayedCategories = orderStatusArray" [selected]="orderStatusArray.length === displayedCategories.length">Alle</mat-chip>
+    <mat-chip (click)="displayedCategories = []" [selected]="!displayedCategories.length">Keine</mat-chip>
+  </mat-chip-list>
+
+  <br />
+
+  <ng-container>
+    <ng-container  *ngFor="let order of orders">
+      <div class="order" fxLayout="column" fxLayoutGap="10px" *ngIf="(!selectedTable || selectedTable.id === order.table.id) && displayedCategories.includes(order.status)">
+        <div fxLayout="row" fxFlexFill fxLayoutGap="10px">
+        
+          <mat-card fxFlex="grow" class="{{order.status}}">
+            <mat-card-title fxLayoutAlign="start center">
+              <span>{{order.table.name}} <ng-container *ngIf="settings?.orderCode">- <span class="order-code">{{order.code}}</span></ng-container></span>
+              <button mat-icon-button (click)="openMessageDialog(order)"><mat-icon>message</mat-icon></button>
+            </mat-card-title>
+            <mat-card-content>
+              <div fxFlexFill>
+                <div fxFlexFill>
+                  <div>{{order.comment}}</div>
+                  <ul>
+                    <li *ngFor="let item of order.items">{{item.count}}x - {{item.product.name}}</li>
+                  </ul>
+              
+                  <em *ngIf="order.orderMessage && order.orderMessage.length">{{order.orderMessage}}</em>
+                  <em *ngIf="order.comment && order.comment.length">{{order.comment}}</em>
+                </div>
+            
+                <div fxLayoutAlign="space-between center" class="order-status">
+                  <span class="sum">{{orderService.getSum(order) | currency:'EUR'}}</span>
+                  <span>{{orderService.getTextForOrderStatus(order.status)}}</span>
+                </div>
+              </div>
+      
+            </mat-card-content>
+          </mat-card>
+    
+          <div fxLayout="column" fxLayoutGap="10px">
+            <button class="status-button" [disabled]="status === order.status" (click)="changeStatus(order, status)" mat-stroked-button *ngFor="let status of orderStatusArray">
+              {{orderService.getTextForOrderStatus(status)}}
+            </button>
+          </div>
+    
+        </div>
+      </div>
+    </ng-container>
+  </ng-container>
+
+
+</ng-container>
+
+<ng-template #noOrder>
+  Keine offene Bestellung
+</ng-template>

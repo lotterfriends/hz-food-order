@@ -1,0 +1,141 @@
+
+<ng-container *ngIf="selectedCode && orderCode">
+  <div class="code" (click)="closeCode()">
+    <span class="order-code">{{ selectedCode }}</span>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="table">
+
+  <h1 class="mat-title">{{table.name}}</h1>
+
+  <h3 class="mat-headline">Bestellungen</h3>
+  
+  <ng-container *ngIf="orders.filter(filterFinished).length; else noOrder">
+
+    <div class="order-help" *ngIf="orderCode && pickupOrder">
+      <div>Klicke auf die Bestellung und zeige den Code, wenn du die Bestellung abholst.</div>
+      <div>Du kannst die Bestellung abholen, wenn sie den Status "fertig" (blau) erreicht.</div>
+    </div>
+
+    <mat-card class="order" (click)="orderCode && openCode(order.code)" *ngFor="let order of orders | callbackFilter: filterFinished" class="{{order.status}}">
+      <mat-card-title *ngIf="orderCode" class="order-code">{{order.code}}</mat-card-title>
+      <ul>
+        <li *ngFor="let item of order.items">{{item.count}}x - {{item.product.name}}</li>
+      </ul>
+    
+      <em *ngIf="order.orderMessage && order.orderMessage.length">{{order.orderMessage}}</em>
+      <em *ngIf="order.comment && order.comment.length">{{order.comment}}</em>
+    
+      <div fxLayoutAlign="space-between center" class="order-status">
+        <span class="sum">{{orderService.getSum(order) | currency:'EUR'}}</span>
+        <span>{{orderService.getTextForOrderStatus(order.status)}}</span>
+      </div>
+      
+    </mat-card>
+    
+    
+  </ng-container>
+
+  
+  <h1 class="mat-title">Karte</h1>
+
+  <div *ngIf="card && card.length">
+    <div *ngFor="let productByCategory of this.card ">
+      <h3 class="mat-headline" *ngIf="productByCategory.category.id > -1" fxLayout="row" fxLayoutAlign="start center">
+        <mat-icon *ngIf="productByCategory.category.icon">{{productByCategory.category.icon}}</mat-icon>
+        {{productByCategory.category.name}}
+      </h3>
+      <div *ngFor="let product of productByCategory.producs">
+        <mat-card fxLayout="column">
+          <span fxLayout="row" fxLayoutAlign="space-between">
+            <span fxLayout="column">
+              <span fxLayout="row">
+                <span>{{product.name}}</span>
+                <span class="description" fxLayout="row" fxLayoutAlign="center center"><span>{{product.description}}</span></span>
+              </span>
+              <strong>{{product.price | currency:'EUR' }}</strong>
+            </span> 
+            <span fxLayoutAlign="end center">
+              <button (click)="minus(product)" mat-mini-fab aria-label="">-</button>
+              <span class="item-count">{{product.count}}</span>
+              <button [disabled]="whileStocksLast && (product.stock <= 0  || product.stock - product.count <= 0)" (click)="plus(product)" mat-mini-fab aria-label="">+</button>
+            </span>
+          </span>
+        </mat-card>
+      </div>
+
+      <div class="mat-card order-list" *ngIf="seperateOrderPerProductCategory && filterProducsWithCount(productByCategory.producs).length">
+
+        <h3>Bestellung</h3>
+        
+        <section>
+          <mat-form-field class="comment">
+            <mat-label>Bemerkung</mat-label>
+            <textarea [(ngModel)]="productByCategory.comment" matInput></textarea>
+          </mat-form-field>
+        </section>
+
+        <ul>
+          <li *ngFor="let item of filterProducsWithCount(productByCategory.producs)">{{item.count}}x - {{item.name}}</li>
+        </ul>
+        <span fxLayout="row" fxLayoutAlign="space-between">
+    
+          <div class="order-sum">
+            <span fxLayout="row" fxLayoutAlign="start center">
+              <strong class="mat-headline sum">{{orderService.getSumForProducts(filterProducsWithCount(productByCategory.producs)) | currency:'EUR' }}</strong>
+            </span>
+          </div>
+          <div>
+            <button mat-raised-button color="primary" (click)="sendOrderForCategory(productByCategory)">Abschicken</button>
+          </div>
+        </span>
+
+      </div>
+
+    </div>
+  </div>
+  
+  <div class="mat-card order-list" *ngIf="somethingOrderedForCard() && !seperateOrderPerProductCategory">
+  
+    <h3>Bestellung</h3>
+  
+    <section>
+      <mat-form-field class="comment">
+        <mat-label>Bemerkung</mat-label>
+        <textarea [(ngModel)]="comment" matInput></textarea>
+      </mat-form-field>
+    </section>
+
+    <div *ngFor="let productByCategory of this.card ">
+      <div *ngIf="filterProducsWithCount(productByCategory.producs).length">
+        <strong>{{productByCategory.category.name}}</strong>
+        <ul>
+          <li *ngFor="let item of filterProducsWithCount(productByCategory.producs)">{{item.count}}x - {{item.name}}</li>
+        </ul>
+      </div>
+    </div>
+
+    <span fxLayout="row" fxLayoutAlign="space-between">
+
+      <div class="order-sum" *ngIf="sum > 0">
+        <span fxLayout="row" fxLayoutAlign="start center">
+          <strong class="mat-headline sum">{{sum | currency:'EUR' }}</strong>
+        </span>
+      </div>
+      <div>
+        <button mat-raised-button color="primary" (click)="sendOrder()">Abschicken</button>
+      </div>
+    </span>
+  </div>
+
+
+
+</ng-container>
+
+
+<ng-template #noOrder>
+  <div class="no-order" fxLayout="row" fxLayoutAlign="start center">
+    <div>Keine Bestellung</div> <mat-icon>sentiment_very_dissatisfied</mat-icon>
+  </div>
+</ng-template>

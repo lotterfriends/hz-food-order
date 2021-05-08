@@ -1,0 +1,76 @@
+.mat-card {
+  height: 100%;
+  margin-bottom: 1em;
+}
+
+.order {
+  border-radius: 10px;
+  background-color: #fff;
+  padding: 10px;
+  margin-bottom: 10px;
+
+  ul {
+    padding: 0 15px;
+  }
+}
+
+.order-status {
+  margin: 0;
+}
+
+.status-button:not(:last-of-type) {
+  margin-right: .5em;
+}
+
+.in-preparation {
+  background-color: gold;
+}
+.ready {
+  background-color: cornflowerblue;
+  color: #fff;
+  
+  .sum {
+    border-color: #fff;
+  }
+}
+
+.finished {
+  background-color: seagreen;
+  color: #fff;
+  
+  .sum {
+    border-color: #fff;
+  }
+}
+.canceled {
+  background-color: tomato;
+
+  color: #fff;
+  
+  .sum {
+    border-color: #fff;
+  }
+}
+
+.active {
+
+  &.chip-in-preparation {
+    background-color: gold !important;
+    color: #333 !important;
+  }
+
+  &.chip-ready {
+    background-color: cornflowerblue !important;
+    color: #fff !important;
+  }
+
+  &.chip-finished {
+    background-color: seagreen !important;
+    color: #fff !important;
+  }
+  
+  &.chip-canceled {
+    background-color: tomato !important;
+    color: #fff !important;
+  }
+}

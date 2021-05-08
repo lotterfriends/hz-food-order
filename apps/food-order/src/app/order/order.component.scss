@@ -1,0 +1,132 @@
+:host {
+  display: block;
+  font-family: sans-serif;
+  min-width: 300px;
+  max-width: 600px;
+  padding: 1em;
+}
+
+@media (min-width: 605px) {
+  :host {
+    padding: 0;
+    margin: 50px auto;
+  }
+}
+
+.mat-card {
+  margin-bottom: 1em;
+}
+
+.comment {
+  width: 100%;
+}
+
+.item-count {
+  margin: 0 1em;
+  font-weight: bold;
+}
+
+.order-help {
+  margin-bottom: 1em;
+}
+
+.order-status {
+  font-weight: bold;
+}
+
+
+.in-preparation {
+  background-color: gold;
+}
+.ready {
+  background-color: cornflowerblue;
+  color: #fff;
+  
+  .sum {
+    border-color: #fff;
+  }
+}
+.finished {
+  background-color: seagreen;
+  color: #fff;
+  
+  .sum {
+    border-color: #fff;
+  }
+}
+.canceled {
+  background-color: tomato;
+  color: #fff;
+  
+  .sum {
+    border-color: #fff;
+  }
+}
+
+.no-order {
+  padding-bottom: 1em;
+}
+
+.no-order .mat-icon{
+  padding-left: .5em;
+}
+
+.order-list {
+  background-color: #fff;
+
+  ul {
+    padding-left: 1em;
+  }
+}
+
+.order-sum {
+  // padding: 1em 0;
+
+  strong {
+    font-weight: bold;
+  }
+
+  .sum {
+    margin: 0 !important;
+  }
+}
+
+.description {
+  font-size: .75em;
+  color: rgb(114, 114, 114);
+  margin-left: 1em;
+}
+
+.code {
+  font-size: 5em;
+  position: absolute;
+  z-index: 99;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  background: #fff;
+
+  span {
+    display: flex;
+    justify-content: center; 
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+  }
+}
+
+.order {
+  cursor: pointer;
+
+  ul {
+    padding: 0 1em;
+  }
+}
+
+@media (min-width: 450px) {
+  .code {
+    font-size: 7em;
+  }
+}

@@ -1,0 +1,70 @@
+<h2 class="mat-headline">QR-Code Schlüssel</h2>
+<mat-card>
+  <!-- <mat-card-title>Schlüssel</mat-card-title> -->
+
+  <mat-card-content>
+    <section fxFlexFill>
+      <em>Es ist nur möglich eine Bestellung abzuschicken, wenn man einen URL aufruft, der mit diesem Schlüssel abgesichert ist. Der Schlüssel sollte für <strong>jede</strong> Veranstaltung geändert werden, sodass Besucher die den Schlüssel von vorherigen Veranstaltungen noch besitzen (Seite ist noch im Browser geöffnet, Foto vom QR-Code erstellt), nicht mehr bestellen können.</em>
+    </section>
+  
+    <br />
+  
+    <mat-form-field fxFlexFill>
+      <mat-label>Schlüssel</mat-label>
+      <input readonly (keyup.enter)="updateSecret()" required minlength="6" autocomplete="off" [(ngModel)]="secret" type="text" matInput>
+      <button mat-button matSuffix mat-icon-button aria-label="refresh" (click)="getNewSecret()">
+        <mat-icon>refresh</mat-icon>
+      </button>
+    </mat-form-field>
+    <mat-card-actions>
+      <button mat-raised-button color="primary" [disabled]="this.secret === this.serverSecret" (click)="updateSecret()">speichern</button>
+      <button mat-raised-button color="secondary" (click)="this.secret = this.serverSecret">Abbrechen</button>
+    </mat-card-actions>
+  </mat-card-content>
+</mat-card>
+
+<h2 class="mat-headline">Bestellungen archivieren</h2>
+<mat-card>
+  <mat-card-content>
+    <div>
+      Nach einer Veranstaltungen können alle Bestellungen archiviert werden, damit sie nicht  mehr angezeigt werden.
+    </div>
+    <br>
+    <div>
+      <button (click)="archive()" mat-raised-button color="primary">Bestellungen archivieren</button>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<h2 class="mat-headline">Einstellungen</h2>
+<mat-card>
+  <mat-card-content>
+    <div class="">
+      Die Einstellungen werden erst mit einen neuen Browsertab geladen.
+      <br />
+      <br />
+    </div>
+    <div>
+      <mat-checkbox [(ngModel)]="seperateOrderPerProductCategory">Seperate Bestellung pro Produkt-Kategorie</mat-checkbox>
+    </div>
+    <div>
+      <mat-checkbox [(ngModel)]="disableProductOnOutOfStock">Produkte automatisch deaktivieren, wenn der Bestand 0 erreicht</mat-checkbox>
+    </div>
+    <div>
+      <mat-checkbox [(ngModel)]="orderCode">Für jede Bestellung einen Code generieren</mat-checkbox>
+    </div>
+    <div>
+      <mat-checkbox [(ngModel)]="whileStocksLast">Produkte nur so lange der Vorrat reicht (Bestand ist bindent)</mat-checkbox>
+    </div>
+    <div>
+      <mat-checkbox [(ngModel)]="pickupOrder">Bestellungen müssen abgeholt werden</mat-checkbox>
+    </div>
+    <div>
+      <mat-checkbox [(ngModel)]="orderSound">Bei neuen Bestellungen einen Sound abspielen.</mat-checkbox>
+    </div>
+    <br>
+    <div>
+      <button (click)="saveSettings()" mat-raised-button color="primary">Speichern</button>
+    </div>
+  </mat-card-content>
+</mat-card>
