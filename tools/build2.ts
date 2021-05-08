@@ -33,7 +33,7 @@ shell.rm('-rf', 'work');
 shell.mkdir('-p', 'work');
 
 shell.cp('-r', 'dist/apps/food-order', 'work')
-shell.exec('ncc build dist/apps/food-order-api/main.js -o work');
+shell.exec('npx ncc build dist/apps/food-order-api/main.js -o work');
 
 shell.ShellString(JSON.stringify({
   version: pkg.version,

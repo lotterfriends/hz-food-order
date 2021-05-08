@@ -61,6 +61,7 @@
     "@ngneat/until-destroy": "^8.0.4",
     "@nrwl/angular": "11.5.1",
     "@techiediaries/ngx-qrcode": "^9.1.0",
+    "@vercel/ncc": "^0.28.5",
     "class-transformer": "^0.4.0",
     "class-validator": "^0.13.1",
     "compression": "^1.7.4",
