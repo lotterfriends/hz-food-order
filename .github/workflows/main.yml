@@ -27,4 +27,4 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
       - run: npm install
-      - run: npm build:prod
+      - run: npm run build:prod
