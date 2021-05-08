@@ -1,5 +1,9 @@
-on: push
 name: 🚀 Deploy website on push
+
+on:
+  push:
+    branches: [ main ]
+
 jobs:
   web-deploy:
     name: 🎉 Deploy
@@ -22,6 +26,6 @@ jobs:
       uses: SamKirkland/FTP-Deploy-Action@4.0.0
       with:
         server: hosting123838.a2fd9.netcup.net
-        username: ${{ secret.FTP_USER }}
+        username: ${{ secrets.FTP_USER }}
         password: ${{ secrets.FTP_PASSWORD }}
         local-dir: ./work
