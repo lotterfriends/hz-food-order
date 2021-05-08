@@ -26,6 +26,9 @@ export class Settings {
   
   @Column({ default: true })
   pickupOrder: boolean;
+
+  @Column({ default: true })
+  orderSound: boolean;
   
   @Column({ default: false })
   whileStocksLast: boolean;

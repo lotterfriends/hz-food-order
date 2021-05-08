@@ -14,7 +14,8 @@
   <ng-container *ngIf="orders.filter(filterFinished).length; else noOrder">
 
     <div class="order-help" *ngIf="orderCode && pickupOrder">
-      Klicke auf die Bestellung und zeige den Code, wenn du die Bestellung abholst.
+      <div>Klicke auf die Bestellung und zeige den Code, wenn du die Bestellung abholst.</div>
+      <div>Du kannst die Bestellung abholen, wenn sie den Status "fertig" (blau) erreicht.</div>
     </div>
 
     <mat-card class="order" (click)="orderCode && openCode(order.code)" *ngFor="let order of orders | callbackFilter: filterFinished" class="{{order.status}}">

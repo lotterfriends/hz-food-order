@@ -1,12 +1,47 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { OrderWSService } from '../order-ws.service';
+import { SettingsService, Settings } from '../settings.service';
 
 @Component({
   selector: 'hz-admin',
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.scss']
 })
-export class AdminComponent {
+@UntilDestroy()
+export class AdminComponent implements OnInit {
 
-  constructor() { }
+  audio: HTMLAudioElement;
+  settings: Settings;
 
+  constructor(
+    private wsService: OrderWSService,
+    private  settingsService: SettingsService
+  ) {
+    this.settings = this.settingsService.getSettings();
+    if (this.settings.orderSound) {
+      this.audio = new Audio();
+      this.audio.src = "../../../assets/sounds/egg-timer.wav";
+      this.audio.load();
+    }
+  }
+
+
+  ngOnInit(): void {
+
+    this.wsService.isConnected.subscribe((connected: boolean) => {
+      if (connected) {
+        setTimeout(() => {
+          this.wsService.registerAsUser();
+        }, 500);
+      }
+    });
+
+    if (this.settings.orderSound) {
+      this.wsService.orderUpdate().pipe(untilDestroyed(this)).subscribe(order => {
+        this.audio.play();
+      });
+    }
+
+  }
 }

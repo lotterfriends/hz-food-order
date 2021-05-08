@@ -10,6 +10,7 @@ export interface Settings {
   orderCode?: boolean;
   whileStocksLast?: boolean;
   pickupOrder?: boolean;
+  orderSound?: boolean;
   updated?: Date;
 }
 

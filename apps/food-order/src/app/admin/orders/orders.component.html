@@ -20,19 +20,19 @@
 
 <ng-container *ngIf="orders && orders.length; else noOrder">
 
-  <!-- <mat-chip-list>
-    <mat-chip *ngFor="let status of orderStatusArray">
+  <mat-chip-list [multiple]="true" [selectable]="true">
+    <mat-chip [ngClass]="{'active': displayedCategories.includes(status)}" class="chip-{{status}}" (click)="toggleStatusSelection(status)" [selected]="displayedCategories.includes(status)" *ngFor="let status of orderStatusArray">
       {{orderService.getTextForOrderStatus(status)}}
     </mat-chip>
-    <mat-chip>Alle</mat-chip>
-    <mat-chip>Keine</mat-chip>
+    <mat-chip (click)="displayedCategories = orderStatusArray" [selected]="orderStatusArray.length === displayedCategories.length">Alle</mat-chip>
+    <mat-chip (click)="displayedCategories = []" [selected]="!displayedCategories.length">Keine</mat-chip>
   </mat-chip-list>
 
-  <br /> -->
+  <br />
 
-  <ng-container *ngIf="orders.filter(filterFinished).length">
-    <ng-container  *ngFor="let order of orders | callbackFilter: filterFinished">
-      <div class="order" fxLayout="column" fxLayoutGap="10px" *ngIf="!selectedTable || selectedTable.id === order.table.id">
+  <ng-container>
+    <ng-container  *ngFor="let order of orders">
+      <div class="order" fxLayout="column" fxLayoutGap="10px" *ngIf="(!selectedTable || selectedTable.id === order.table.id) && displayedCategories.includes(order.status)">
         <div fxLayout="row" fxFlexFill fxLayoutGap="10px">
         
           <mat-card fxFlex="grow" class="{{order.status}}">
@@ -72,58 +72,6 @@
     </ng-container>
   </ng-container>
 
-  <ng-container *ngIf="orders.filter(filterUnfinished).length">
-    <mat-accordion>
-      <mat-expansion-panel hideToggle>
-        <mat-expansion-panel-header>
-          <mat-panel-title>
-            Abgeschlossen
-          </mat-panel-title>
-          <mat-panel-description></mat-panel-description>
-        </mat-expansion-panel-header>
-        <div>
-          <div class="order" fxLayout="column" fxLayoutGap="10px" *ngFor="let order of orders | callbackFilter: filterUnfinished">
-            <div fxLayout="row" fxFlexFill fxLayoutGap="10px" *ngIf="!selectedTable || selectedTable.id === order.table.id">
-            
-              <mat-card fxFlex="grow" class="{{order.status}}">
-                <mat-card-title fxLayoutAlign="start center">
-                  <span>{{order.table.name}} <ng-container *ngIf="settings?.orderCode">- <span class="order-code">{{order.code}}</span></ng-container></span>
-                  <button mat-icon-button (click)="openMessageDialog(order)"><mat-icon>message</mat-icon></button>
-                </mat-card-title>
-                <mat-card-content>
-                  <div fxFlexFill>
-                    <div fxFlexFill>
-                      <div>{{order.comment}}</div>
-                      <ul>
-                        <li *ngFor="let item of order.items">{{item.count}}x - {{item.product.name}}</li>
-                      </ul>
-                  
-                      <em *ngIf="order.orderMessage && order.orderMessage.length">{{order.orderMessage}}</em>
-                      <em *ngIf="order.comment && order.comment.length">{{order.comment}}</em>
-                    </div>
-                
-                    <div fxLayoutAlign="space-between center" class="order-status">
-                      <span class="sum">{{orderService.getSum(order) | currency:'EUR'}}</span>
-                      <span>{{orderService.getTextForOrderStatus(order.status)}}</span>
-                    </div>
-                  </div>
-          
-                </mat-card-content>
-              </mat-card>
-        
-              <div fxLayout="column" fxLayoutGap="10px">
-                <button class="status-button" [disabled]="status === order.status" (click)="changeStatus(order, status)" mat-stroked-button *ngFor="let status of orderStatusArray">
-                  {{orderService.getTextForOrderStatus(status)}}
-                </button>
-              </div>
-        
-            </div>
-          </div>
-        </div>
-      </mat-expansion-panel>
-    </mat-accordion>
-  </ng-container>
-  
 
 </ng-container>
 

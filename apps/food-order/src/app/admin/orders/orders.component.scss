@@ -51,3 +51,26 @@
     border-color: #fff;
   }
 }
+
+.active {
+
+  &.chip-in-preparation {
+    background-color: gold !important;
+    color: #333 !important;
+  }
+
+  &.chip-ready {
+    background-color: cornflowerblue !important;
+    color: #fff !important;
+  }
+
+  &.chip-finished {
+    background-color: seagreen !important;
+    color: #fff !important;
+  }
+  
+  &.chip-canceled {
+    background-color: tomato !important;
+    color: #fff !important;
+  }
+}

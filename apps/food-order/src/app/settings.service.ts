@@ -8,6 +8,7 @@ export interface Settings {
   orderCode: boolean;
   whileStocksLast: boolean;
   pickupOrder: boolean;
+  orderSound: boolean;
 }
 
 @Injectable({ providedIn: 'root' })

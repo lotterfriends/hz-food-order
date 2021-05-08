@@ -24,6 +24,7 @@ export class OrdersComponent implements OnInit {
   tables: Table[] = [];
   settings: Settings;
   selectedTable: Table | null = null;
+  displayedCategories = [OrderStatus.InPreparation, OrderStatus.Ready];
 
   constructor(
     private adminOrderService: AdminOrderService,
@@ -43,14 +44,6 @@ export class OrdersComponent implements OnInit {
 
     this.wsService.orderUpdate().pipe(untilDestroyed(this)).subscribe(order => {
       this.orders = [ ...this.orders, order];
-    });
-
-    this.wsService.isConnected.subscribe((connected: boolean) => {
-      if (connected) {
-        setTimeout(() => {
-          this.wsService.registerAsUser();
-        }, 500);
-      }
     });
 
     this.adminTableService.getTables().pipe(first()).subscribe(tables => {
@@ -85,6 +78,14 @@ export class OrdersComponent implements OnInit {
         });
       }
     });
+  }
+
+  toggleStatusSelection(status: OrderStatus) {
+    if (this.displayedCategories.includes(status)) {
+      this.displayedCategories = this.displayedCategories.filter(e => e !== status);
+    } else {
+      this.displayedCategories.push(status);
+    }
   }
 
   filterUnfinished(entry: ServerOrder): boolean {

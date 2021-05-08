@@ -39,6 +39,11 @@
 <h2 class="mat-headline">Einstellungen</h2>
 <mat-card>
   <mat-card-content>
+    <div class="">
+      Die Einstellungen werden erst mit einen neuen Browsertab geladen.
+      <br />
+      <br />
+    </div>
     <div>
       <mat-checkbox [(ngModel)]="seperateOrderPerProductCategory">Seperate Bestellung pro Produkt-Kategorie</mat-checkbox>
     </div>
@@ -53,6 +58,9 @@
     </div>
     <div>
       <mat-checkbox [(ngModel)]="pickupOrder">Bestellungen müssen abgeholt werden</mat-checkbox>
+    </div>
+    <div>
+      <mat-checkbox [(ngModel)]="orderSound">Bei neuen Bestellungen einen Sound abspielen.</mat-checkbox>
     </div>
     <br>
     <div>

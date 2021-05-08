@@ -19,6 +19,7 @@ export class SettingsComponent implements OnInit {
   orderCode = false;
   pickupOrder = false;
   whileStocksLast = false;
+  orderSound = false;
 
   constructor(
     private adminOrderService: AdminOrderService,
@@ -35,6 +36,7 @@ export class SettingsComponent implements OnInit {
       this.orderCode = settings.orderCode;
       this.pickupOrder = settings.pickupOrder;
       this.whileStocksLast = settings.whileStocksLast;
+      this.orderSound = settings.orderSound;
     });
   }
 
@@ -81,12 +83,14 @@ export class SettingsComponent implements OnInit {
       disableProductOnOutOfStock: this.disableProductOnOutOfStock,
       orderCode: this.orderCode,
       pickupOrder: this.pickupOrder,
+      orderSound: this.orderSound,
       whileStocksLast: this.whileStocksLast
     }).pipe(first()).subscribe((settings: Settings) => {
       this.seperateOrderPerProductCategory = settings.seperateOrderPerProductCategory;
       this.disableProductOnOutOfStock = settings.disableProductOnOutOfStock;
       this.orderCode = settings.orderCode;
       this.pickupOrder = settings.pickupOrder;
+      this.orderSound = settings.orderSound;
       this.whileStocksLast = settings.whileStocksLast;
     });
   }
