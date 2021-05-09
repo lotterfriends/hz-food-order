@@ -4,7 +4,7 @@
 
   <mat-card-content>
     <section fxFlexFill>
-      <em>Es ist nur möglich eine Bestellung abzuschicken, wenn man einen URL aufruft, der mit diesem Schlüssel abgesichert ist. Der Schlüssel sollte für <strong>jede</strong> Veranstaltung geändert werden, sodass Besucher die den Schlüssel von vorherigen Veranstaltungen noch besitzen (Seite ist noch im Browser geöffnet, Foto vom QR-Code erstellt), nicht mehr bestellen können.</em>
+      <em>Es ist nur möglich eine Bestellung abzuschicken, wenn man einen URL aufruft, der mit diesem Schlüssel abgesichert ist. Der Schlüssel sollte für <strong>jede</strong> Veranstaltung geändert werden, sodass Besucher, die den Schlüssel von vorherigen Veranstaltungen noch besitzen (Seite ist noch im Browser geöffnet, Foto vom QR-Code erstellt), nicht mehr bestellen können.</em>
     </section>
   
     <br />
@@ -27,7 +27,7 @@
 <mat-card>
   <mat-card-content>
     <div>
-      Nach einer Veranstaltungen können alle Bestellungen archiviert werden, damit sie nicht  mehr angezeigt werden.
+      Nach einer Veranstaltung können alle Bestellungen archiviert werden, damit sie nicht  mehr angezeigt werden.
     </div>
     <br>
     <div>
@@ -45,7 +45,7 @@
       <br />
     </div>
     <div>
-      <mat-checkbox [(ngModel)]="seperateOrderPerProductCategory">Seperate Bestellung pro Produkt-Kategorie</mat-checkbox>
+      <mat-checkbox [(ngModel)]="seperateOrderPerProductCategory">Separate Bestellung pro Produkt-Kategorie</mat-checkbox>
     </div>
     <div>
       <mat-checkbox [(ngModel)]="disableProductOnOutOfStock">Produkte automatisch deaktivieren, wenn der Bestand 0 erreicht</mat-checkbox>
@@ -54,7 +54,7 @@
       <mat-checkbox [(ngModel)]="orderCode">Für jede Bestellung einen Code generieren</mat-checkbox>
     </div>
     <div>
-      <mat-checkbox [(ngModel)]="whileStocksLast">Produkte nur so lange der Vorrat reicht (Bestand ist bindent)</mat-checkbox>
+      <mat-checkbox [(ngModel)]="whileStocksLast">Produkte nur so lange der Vorrat reicht (Bestand ist bindend)</mat-checkbox>
     </div>
     <div>
       <mat-checkbox [(ngModel)]="pickupOrder">Bestellungen müssen abgeholt werden</mat-checkbox>
