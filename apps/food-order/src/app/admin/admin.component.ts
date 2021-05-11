@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { first } from 'rxjs/operators';
 import { OrderWSService } from '../order-ws.service';
 import { SettingsService, Settings } from '../settings.service';
 
@@ -18,7 +19,11 @@ export class AdminComponent implements OnInit {
     private wsService: OrderWSService,
     private  settingsService: SettingsService
   ) {
-    this.settings = this.settingsService.getSettings();
+
+    this.settingsService.getSettings().pipe(first()).subscribe(settings => {
+      this.settings = settings;
+    });
+
     if (this.settings.orderSound) {
       this.audio = new Audio();
       this.audio.src = "../../../assets/sounds/egg-timer.wav";

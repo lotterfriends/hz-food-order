@@ -96,11 +96,13 @@ export class OrderComponent implements OnInit, OnDestroy {
       }
     });
 
-    const settings = this.settingsService.getSettings();
-    this.seperateOrderPerProductCategory = settings.seperateOrderPerProductCategory;
-    this.orderCode = settings.orderCode;
-    this.pickupOrder = settings.pickupOrder;
-    this.whileStocksLast = settings.whileStocksLast;
+    this.settingsService.getSettings().pipe(first()).subscribe(settings => {
+      this.seperateOrderPerProductCategory = settings.seperateOrderPerProductCategory;
+      this.orderCode = settings.orderCode;
+      this.pickupOrder = settings.pickupOrder;
+      this.whileStocksLast = settings.whileStocksLast;
+    });
+
   }
 
   ngOnDestroy(): void {

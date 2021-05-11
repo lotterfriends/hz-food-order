@@ -36,7 +36,10 @@ export class OrdersComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.settings = this.settingsService.getSettings();
+
+    this.settingsService.getSettings().pipe(first()).subscribe(settings => {
+      this.settings = settings;
+    })
 
     this.adminOrderService.getOrders().pipe(first()).subscribe(result => {
       this.orders = result;

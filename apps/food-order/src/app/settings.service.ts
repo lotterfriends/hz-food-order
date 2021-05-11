@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../environments/environment';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 export interface Settings {
   seperateOrderPerProductCategory: boolean;
@@ -14,24 +15,20 @@ export interface Settings {
 @Injectable({ providedIn: 'root' })
 export class SettingsService {
   
+  private settings$ = new BehaviorSubject<Settings>(null);
+
   constructor(
     private http: HttpClient
   ) {}
 
   setSettings() {
-    if (!sessionStorage.getItem('settings')) {
-      this.http.get<Settings>(`${environment.apiPath}/settings/client`).toPromise().then(settings => {
-        sessionStorage.setItem('settings', JSON.stringify(settings, null, 2));
-      });
-    }
+    this.http.get<Settings>(`${environment.apiPath}/settings/client`).toPromise().then(settings => {
+      this.settings$.next(settings);
+    });
   }
 
-  getSettings(): Settings | null {
-    const storageSettings = sessionStorage.getItem('settings');
-    if (storageSettings) {
-      return JSON.parse(storageSettings) as Settings;
-    }
-    return null;
+  getSettings(): Observable<Settings | null> {
+    return this.settings$.asObservable();
   }
 
 
