@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { ConfirmDialogComponent, ConfirmDialogModel } from 'libs/ui/src/lib/confirm-dialog/confirm-dialog.component';
-import { first } from 'rxjs/operators';
+import { filter, first } from 'rxjs/operators';
 import { OrderWSService } from '../order-ws.service';
 import { SettingsService } from '../settings.service';
 import { Order, OrderProduct, OrderService, OrderStatus, ProducCategory, Product, ServerOrder, Table } from './order.service';
@@ -96,7 +96,7 @@ export class OrderComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.settingsService.getSettings().pipe(first()).subscribe(settings => {
+    this.settingsService.getSettings().pipe(filter(e => e !== null), first()).subscribe(settings => {
       this.seperateOrderPerProductCategory = settings.seperateOrderPerProductCategory;
       this.orderCode = settings.orderCode;
       this.pickupOrder = settings.pickupOrder;

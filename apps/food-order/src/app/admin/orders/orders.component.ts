@@ -6,7 +6,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { OrderMessageDialogComponent } from './order-message-dialog/order-message-dialog';
 import { OrderWSService } from '../../order-ws.service';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { first } from 'rxjs/operators';
+import { filter, first } from 'rxjs/operators';
 import { SettingsService, Settings } from '../../settings.service';
 import { AdminTablesService, Table } from '../services/admin-tables.service';
 
@@ -37,7 +37,7 @@ export class OrdersComponent implements OnInit {
 
   ngOnInit(): void {
 
-    this.settingsService.getSettings().pipe(first()).subscribe(settings => {
+    this.settingsService.getSettings().pipe(filter(e => e !== null), first()).subscribe(settings => {
       this.settings = settings;
     })
 

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { first } from 'rxjs/operators';
+import { filter, first } from 'rxjs/operators';
 import { OrderWSService } from '../order-ws.service';
 import { SettingsService, Settings } from '../settings.service';
 
@@ -20,7 +20,7 @@ export class AdminComponent implements OnInit {
     private  settingsService: SettingsService
   ) {
 
-    this.settingsService.getSettings().pipe(first()).subscribe(settings => {
+    this.settingsService.getSettings().pipe(filter(e => e !== null), first()).subscribe(settings => {
       this.settings = settings;
     });
 
