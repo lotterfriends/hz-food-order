@@ -10,7 +10,7 @@ const cwd = process.cwd();
 const { join } = require('path');
 const pkg = require(join(cwd, 'package.json'));
 const fs = require('fs');
-const archiver = require('archiver');
+
 const { version } = require('typescript');
 const buildTimestamp = Date.now();
 
@@ -37,6 +37,7 @@ shell.cp('-r', 'dist/apps/food-order', 'work')
 shell.exec('npx ncc build dist/apps/food-order-api/main.js -o work');
 
 if (zip) {
+  const archiver = require('archiver');
   shell.ShellString(JSON.stringify({
     version: pkg.version,
     buildTimestamp: buildTimestamp
