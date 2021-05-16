@@ -1,4 +1,4 @@
-import { Controller, Get, Post, UseGuards, Request, Body } from '@nestjs/common';
+import { Controller, Get, Post, UseGuards, Request, Body, Param, Res } from '@nestjs/common';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { LocalAuthGuard } from './auth/local-auth.guard';
 import { AuthService } from './auth/auth.service';
@@ -30,4 +30,10 @@ export class AppController {
   logout(@Body() body) {
     return this.authService.logout(body);
   }
+
+  @Get('file/:imgpath')
+  seeUploadedFile(@Param('imgpath') image, @Res() res) {
+    return res.sendFile(image, { root: './uploads' });
+  }
+
 }

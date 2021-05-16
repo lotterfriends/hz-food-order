@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 import { ConfirmDialogComponent, ConfirmDialogModel } from 'libs/ui/src/lib/confirm-dialog/confirm-dialog.component';
 import { filter, first } from 'rxjs/operators';
 import { OrderWSService } from '../order-ws.service';
-import { SettingsService } from '../settings.service';
+import { Settings, SettingsService } from '../settings.service';
 import { Order, OrderProduct, OrderService, OrderStatus, ProducCategory, Product, ServerOrder, Table } from './order.service';
 
 interface CardCategory {
@@ -30,7 +30,7 @@ export class OrderComponent implements OnInit, OnDestroy {
     private orderWSService: OrderWSService,
     private currencyPipe: CurrencyPipe,
     private renderer: Renderer2,
-    private  settingsService: SettingsService
+    public  settingsService: SettingsService
   ) { }
 
   static readonly MIN_PRODUCT = 0;
@@ -39,10 +39,7 @@ export class OrderComponent implements OnInit, OnDestroy {
   orderStatus = OrderStatus;
   orders: ServerOrder[] = [];
   order: Order | false = false;
-  seperateOrderPerProductCategory: boolean;
-  orderCode: boolean;
-  pickupOrder: boolean;
-  whileStocksLast: boolean;
+  settings: Settings;
   comment = '';
   secret: string | null = '';
   table: Table | undefined;
@@ -97,10 +94,7 @@ export class OrderComponent implements OnInit, OnDestroy {
     });
 
     this.settingsService.getSettings().pipe(filter(e => e !== null), first()).subscribe(settings => {
-      this.seperateOrderPerProductCategory = settings.seperateOrderPerProductCategory;
-      this.orderCode = settings.orderCode;
-      this.pickupOrder = settings.pickupOrder;
-      this.whileStocksLast = settings.whileStocksLast;
+      this.settings = settings;
     });
 
   }
@@ -174,8 +168,8 @@ export class OrderComponent implements OnInit, OnDestroy {
   }
 
   plus(product: OrderProduct): void {
-    console.log(product, this.whileStocksLast);
-    if (product.count < OrderComponent.MAX_PRODUCT && (!this.whileStocksLast || product.count < product.stock)) {
+    console.log(product, this.settings.whileStocksLast);
+    if (product.count < OrderComponent.MAX_PRODUCT && (!this.settings.whileStocksLast || product.count < product.stock)) {
       product.count++;
       this.sum += parseFloat(product.price);
     }
@@ -222,11 +216,11 @@ export class OrderComponent implements OnInit, OnDestroy {
           }
         }
       }
-      if (this.seperateOrderPerProductCategory) {
+      if (this.settings.seperateOrderPerProductCategory) {
         order.comment = cItem.comment;
       }
     }
-    if (!this.seperateOrderPerProductCategory) {
+    if (!this.settings.seperateOrderPerProductCategory) {
       order.comment = this.comment;
     }
     return order;

@@ -68,3 +68,41 @@
     </div>
   </mat-card-content>
 </mat-card>
+
+<h2 class="mat-headline">Personalisieren</h2>
+<mat-card>
+  <mat-card-content>
+
+    <h4>Logo</h4>
+    
+    <div fxLayout="row">
+
+      <div>{{logo ? logo.name : 'keine Datei ausgewählt'}}</div>
+      <div>
+        <button type="button" mat-raised-button (click)="fileInput.click()">Datei auswählen</button>
+        <input hidden (change)="onFileSelected()" #fileInput type="file" id="file">
+      </div>
+      <div>
+        <button [disabled]="!this.logo" mat-button mat-icon-button aria-label="refresh" (click)="uploadLogo()">
+          <mat-icon>file_upload</mat-icon>
+        </button>
+      </div>
+  
+    </div>
+
+    <!-- <div *ngIf="logoPreview && logoPreview.length">
+      <img class="preview" [src]="logoPreview" />
+    </div> -->
+
+    <div class="progress">
+      <mat-progress-bar *ngIf="logoUploadStarted" mode="determinate" [value]="logoUploadProgress"></mat-progress-bar>
+    </div>
+
+    <div *ngIf="settingsLogo && settingsLogo.length">
+      
+      <img class="preview" [src]="settingsService.getFilepath(settingsLogo)" />
+
+    </div>
+  
+  </mat-card-content>
+</mat-card>

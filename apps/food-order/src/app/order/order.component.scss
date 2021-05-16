@@ -6,6 +6,15 @@
   padding: 1em;
 }
 
+.logo {
+  text-align: center;
+  margin: 0 auto;
+  margin-bottom: 10px;
+  img {
+    max-width: 250px;
+  }
+}
+
 @media (min-width: 605px) {
   :host {
     padding: 0;

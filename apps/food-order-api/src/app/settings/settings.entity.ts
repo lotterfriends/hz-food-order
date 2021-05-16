@@ -15,6 +15,9 @@ export class Settings {
   @Column()
   secret?: string;
 
+  @Column()
+  logo?: string;
+
   @Column({ default: false })
   seperateOrderPerProductCategory: boolean;
   

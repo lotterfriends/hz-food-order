@@ -33,7 +33,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatChipsModule} from '@angular/material/chips';
-
+import {MatProgressBarModule} from '@angular/material/progress-bar';
 
 @NgModule({
   declarations: [
@@ -73,7 +73,8 @@ import {MatChipsModule} from '@angular/material/chips';
     MatSidenavModule,
     MatListModule,
     MatCheckboxModule,
-    MatChipsModule
+    MatChipsModule,
+    MatProgressBarModule
   ],
   bootstrap: [AdminComponent]
 })

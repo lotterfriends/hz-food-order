@@ -1,5 +1,8 @@
+<div *ngIf="settings?.logo" class="logo">
+  <img [src]="settingsService.getFilepath(settings.logo)" alt="logo" />
+</div>
 
-<ng-container *ngIf="selectedCode && orderCode">
+<ng-container *ngIf="selectedCode && settings?.orderCode">
   <div class="code" (click)="closeCode()">
     <span class="order-code">{{ selectedCode }}</span>
   </div>
@@ -13,13 +16,13 @@
   
   <ng-container *ngIf="orders.filter(filterFinished).length; else noOrder">
 
-    <div class="order-help" *ngIf="orderCode && pickupOrder">
+    <div class="order-help" *ngIf="settings?.orderCode && settings?.pickupOrder">
       <div>Klicke auf die Bestellung und zeige den Code, wenn du die Bestellung abholst.</div>
       <div>Du kannst die Bestellung abholen, wenn sie den Status "fertig" (blau) erreicht.</div>
     </div>
 
-    <mat-card class="order" (click)="orderCode && openCode(order.code)" *ngFor="let order of orders | callbackFilter: filterFinished" class="{{order.status}}">
-      <mat-card-title *ngIf="orderCode" class="order-code">{{order.code}}</mat-card-title>
+    <mat-card class="order" (click)="settings?.orderCode && openCode(order.code)" *ngFor="let order of orders | callbackFilter: filterFinished" class="{{order.status}}">
+      <mat-card-title *ngIf="settings?.orderCode" class="order-code">{{order.code}}</mat-card-title>
       <ul>
         <li *ngFor="let item of order.items">{{item.count}}x - {{item.product.name}}</li>
       </ul>
@@ -59,13 +62,13 @@
             <span fxLayoutAlign="end center">
               <button (click)="minus(product)" mat-mini-fab aria-label="">-</button>
               <span class="item-count">{{product.count}}</span>
-              <button [disabled]="whileStocksLast && (product.stock <= 0  || product.stock - product.count <= 0)" (click)="plus(product)" mat-mini-fab aria-label="">+</button>
+              <button [disabled]="settings?.whileStocksLast && (product.stock <= 0  || product.stock - product.count <= 0)" (click)="plus(product)" mat-mini-fab aria-label="">+</button>
             </span>
           </span>
         </mat-card>
       </div>
 
-      <div class="mat-card order-list" *ngIf="seperateOrderPerProductCategory && filterProducsWithCount(productByCategory.producs).length">
+      <div class="mat-card order-list" *ngIf="settings?.seperateOrderPerProductCategory && filterProducsWithCount(productByCategory.producs).length">
 
         <h3>Bestellung</h3>
         
@@ -96,7 +99,7 @@
     </div>
   </div>
   
-  <div class="mat-card order-list" *ngIf="somethingOrderedForCard() && !seperateOrderPerProductCategory">
+  <div class="mat-card order-list" *ngIf="somethingOrderedForCard() && !settings?.seperateOrderPerProductCategory">
   
     <h3>Bestellung</h3>
   

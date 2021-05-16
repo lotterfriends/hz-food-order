@@ -10,25 +10,33 @@ export interface Settings {
   whileStocksLast: boolean;
   pickupOrder: boolean;
   orderSound: boolean;
+  logo?: string;
 }
 
 @Injectable({ providedIn: 'root' })
 export class SettingsService {
-  
+
   private settings$ = new BehaviorSubject<Settings>(null);
 
   constructor(
     private http: HttpClient
-  ) {}
+  ) { }
 
-  setSettings() {
-    this.http.get<Settings>(`${environment.apiPath}/settings/client`).toPromise().then(settings => {
-      this.settings$.next(settings);
+  setSettings(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.http.get<Settings>(`${environment.apiPath}/settings/client`).toPromise().then(settings => {
+        this.settings$.next(settings);
+        resolve();
+      }, reject);
     });
   }
 
   getSettings(): Observable<Settings | null> {
     return this.settings$.asObservable();
+  }
+
+  getFilepath(filename: string): string {
+    return `${environment.apiPath}/file/${filename}`;
   }
 
 

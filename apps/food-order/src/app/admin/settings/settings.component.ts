@@ -1,7 +1,9 @@
+import { HttpEventType, HttpResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent, ConfirmDialogModel } from 'libs/ui/src/lib/confirm-dialog/confirm-dialog.component';
 import { first } from 'rxjs/operators';
+import { SettingsService } from '../../settings.service';
 import { AdminOrderService } from '../services/admin-order.service';
 import { AdminSettingsService, Settings } from '../services/admin-settings.service';
 
@@ -14,16 +16,22 @@ export class SettingsComponent implements OnInit {
 
   serverSecret = '';
   secret = '';
+  logo: File = null;
+  logoPreview: string = '';
+  logoUploadStarted = false;
+  logoUploadProgress = 0;
   seperateOrderPerProductCategory = false;
   disableProductOnOutOfStock = false;
   orderCode = false;
   pickupOrder = false;
   whileStocksLast = false;
   orderSound = false;
+  settingsLogo = '';
 
   constructor(
     private adminOrderService: AdminOrderService,
     private adminSettingsService: AdminSettingsService,
+    public settingsService: SettingsService,
     private dialog: MatDialog
   ) { }
 
@@ -37,6 +45,7 @@ export class SettingsComponent implements OnInit {
       this.pickupOrder = settings.pickupOrder;
       this.whileStocksLast = settings.whileStocksLast;
       this.orderSound = settings.orderSound;
+      this.settingsLogo = settings.logo;
     });
   }
 
@@ -93,6 +102,55 @@ export class SettingsComponent implements OnInit {
       this.orderSound = settings.orderSound;
       this.whileStocksLast = settings.whileStocksLast;
     });
+  }
+
+  onFileSelected() {
+    const inputNode: any = document.querySelector('#file');
+    if (inputNode.files.length) {
+
+      const [file] = inputNode.files;
+      this.logo = file;
+      console.log(this.logo);
+      // if (typeof (FileReader) !== 'undefined') {
+      //   const dataURLReader = new FileReader();
+  
+      //   dataURLReader.onload = (e: any) => {
+      //     this.logoPreview = e.target.result;
+      //   };
+        
+      //   dataURLReader.readAsDataURL(file);
+      // }
+
+    }
+  }
+
+  uploadLogo() {
+    console.log(this.logo);
+    this.adminSettingsService.uploadLogo(this.logo).subscribe(
+      event => {
+        if (event.type == HttpEventType.UploadProgress) {
+          if (!this.logoUploadStarted) {
+            this.logoUploadStarted = true;
+          }
+          const percentDone = Math.round(100 * event.loaded / event.total);
+          this.logoUploadProgress = percentDone;
+          console.log(`File is ${percentDone}% loaded.`);
+        } else if (event instanceof HttpResponse) {
+          this.settingsLogo = event.body.filename;
+          this.logo = null;
+          this.logoPreview = '';
+          this.logoUploadStarted = false;
+          console.log('File is completely loaded!');
+        }
+        console.log(event);
+      },
+      (err) => {
+        console.log("Upload Error:", err);
+      }, () => {
+        console.log("Upload done");
+        this.logoUploadProgress = 100;
+      }
+    )
   }
 
 }

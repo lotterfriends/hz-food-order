@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
@@ -11,6 +11,7 @@ export interface Settings {
   whileStocksLast?: boolean;
   pickupOrder?: boolean;
   orderSound?: boolean;
+  logo?: string;
   updated?: Date;
 }
 
@@ -34,6 +35,23 @@ export class AdminSettingsService {
 
   getNewSecret(): Observable<{secret: string}> {
     return this.http.get<{secret: string}>(`${environment.apiPath}/settings/random`);
+  }
+  
+  uploadLogo(file: File): Observable<any> {
+    let formData = new FormData();
+    formData.append('file', file);
+
+    let params = new HttpParams();
+
+    const options = {
+      params: params,
+      reportProgress: true,
+    };
+
+
+    const req = new HttpRequest('POST', `${environment.apiPath}/settings/upload-logo`, formData, options);
+    return this.http.request(req);
+
   }
 
 }
