@@ -1,5 +1,5 @@
 import { HttpEventType, HttpResponse } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent, ConfirmDialogModel } from 'libs/ui/src/lib/confirm-dialog/confirm-dialog.component';
 import { first } from 'rxjs/operators';
@@ -20,6 +20,7 @@ export class SettingsComponent implements OnInit {
   logoPreview: string = '';
   logoUploadStarted = false;
   logoUploadProgress = 0;
+  logoUploadError = false;
   seperateOrderPerProductCategory = false;
   disableProductOnOutOfStock = false;
   orderCode = false;
@@ -109,15 +110,15 @@ export class SettingsComponent implements OnInit {
     if (inputNode.files.length) {
 
       const [file] = inputNode.files;
+      inputNode.value = '';
       this.logo = file;
+      this.logoUploadError = false;
       console.log(this.logo);
       // if (typeof (FileReader) !== 'undefined') {
       //   const dataURLReader = new FileReader();
-  
       //   dataURLReader.onload = (e: any) => {
       //     this.logoPreview = e.target.result;
       //   };
-        
       //   dataURLReader.readAsDataURL(file);
       // }
 
@@ -126,6 +127,7 @@ export class SettingsComponent implements OnInit {
 
   uploadLogo() {
     console.log(this.logo);
+    this.logoUploadError = false;
     this.adminSettingsService.uploadLogo(this.logo).subscribe(
       event => {
         if (event.type == HttpEventType.UploadProgress) {
@@ -134,23 +136,31 @@ export class SettingsComponent implements OnInit {
           }
           const percentDone = Math.round(100 * event.loaded / event.total);
           this.logoUploadProgress = percentDone;
-          console.log(`File is ${percentDone}% loaded.`);
+          // console.log(`File is ${percentDone}% loaded.`);
         } else if (event instanceof HttpResponse) {
           this.settingsLogo = event.body.filename;
           this.logo = null;
           this.logoPreview = '';
-          this.logoUploadStarted = false;
-          console.log('File is completely loaded!');
+          // console.log('File is completely loaded!');
         }
-        console.log(event);
+        // console.log(event);
       },
       (err) => {
-        console.log("Upload Error:", err);
+        this.logoUploadError = true;
+        this.logoUploadStarted = false;
+        // console.log("Upload Error:", err);
       }, () => {
-        console.log("Upload done");
+        // console.log("Upload done");
         this.logoUploadProgress = 100;
+        this.logoUploadStarted = false;
       }
     )
+  }
+
+  deleteLogo() {
+    this.adminSettingsService.updateSettings({logo: ''}).pipe(first()).subscribe((settings: Settings) => {
+      this.settingsLogo  = '';
+    });
   }
 
 }

@@ -75,7 +75,7 @@
 
     <h4>Logo</h4>
     
-    <div fxLayout="row">
+    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
 
       <div>{{logo ? logo.name : 'keine Datei ausgewählt'}}</div>
       <div>
@@ -102,6 +102,14 @@
       
       <img class="preview" [src]="settingsService.getFilepath(settingsLogo)" />
 
+      <button mat-button mat-icon-button (click)="deleteLogo()">
+        <mat-icon>clear</mat-icon>
+      </button>
+
+    </div>
+
+    <div *ngIf="logoUploadError" class="mat-error">
+      Keine gültiges Bild
     </div>
   
   </mat-card-content>

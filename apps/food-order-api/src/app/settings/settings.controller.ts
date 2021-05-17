@@ -1,11 +1,10 @@
-import { Body, Controller, Get, Param, Post, Put, UploadedFile, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, Post, Put, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { editFileName, imageFileFilter } from '../helper/upload.helper';
 import { Settings } from './settings.entity';
 import { SettingsService } from './settings.service';
-import { Express } from 'express';
-import { diskStorage, Multer } from 'multer';
-import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
-import { editFileName, imageFileFilter } from '../helper/upload.helper';
 
 @Controller('settings')
 export class SettingsController {
@@ -66,7 +65,6 @@ export class SettingsController {
     return { secret: this.settingsService.getRandomString() };
   }
 
-  // TODO: https://stackoverflow.com/questions/49096068/npupload-file-using-nestjs-and-multer
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
@@ -81,13 +79,11 @@ export class SettingsController {
   async uploadLogo(
     @UploadedFile() file,
   ) {
-    console.log(file);
-    await this.settingsService.update({logo: file.filename});
-    return {
-      filename: file.filename,
-    };
-    // return {
-    //   file: file.buffer.toString(),
-    // };
+    if (file) {
+      await this.settingsService.update({logo: file.filename});
+      return {
+        filename: file.filename,
+      };
+    }
   }
 }
