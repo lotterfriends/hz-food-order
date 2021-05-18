@@ -30,8 +30,7 @@
     "db:create": "docker run --name hz-mysql -p=3306:3306 -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=hzoo -d mysql",
     "db:start": "docker container start hz-mysql",
     "db:remove": "docker stop hz-mysql && docker rm hz-mysql",
-    "db:dump": "docker exec hz-mysql /usr/bin/mysqldump --skip-set-charset -u root --password=root hzoo > ./dumps/hzoo_$(date +\"%Y%m%d_%H%M%S\").backup.sql",
-    "postdb:dump": "sed -i 's/utf8mb4_0900_ai_ci/utf8mb4_unicode_ci/g' $(ls -t dumps/*.backup.sql | head -1)",
+    "db:dump": "npx ts-node tools/dump.ts",
     "db:restor": "docker exec hz-mysql /usr/bin/mysql -u root --password=root hzoo < $(ls -t dumps/*.backup.sql | head -1)"
   },
   "private": true,
