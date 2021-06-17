@@ -54,7 +54,8 @@ export class SettingsController {
         'whileStocksLast',
         'pickupOrder',
         'orderSound',
-        'logo'
+        'logo',
+        'tableCode'
       ]
     });
   }

@@ -42,6 +42,11 @@ export class SettingsService implements OnModuleInit {
     return settings.secret;
   }
 
+  async isTableCodeEnabled(): Promise<boolean> {
+    const settings = await this.getSettings();
+    return settings.tableCode;
+  }
+
   async update(settingsParam: Partial<Settings>) {
     const settings = await this.getSettings();
     return this.settingsRepository.update(settings.id, settingsParam);

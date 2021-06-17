@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgxQrcodeElementTypes, NgxQrcodeErrorCorrectionLevels } from '@techiediaries/ngx-qrcode';
-import { first } from 'rxjs/operators';
+import { filter, first } from 'rxjs/operators';
+import { PublicTableService } from '../../public-table.service';
+import { Settings, SettingsService } from '../../settings.service';
 import { AdminTablesService, Table } from '../services/admin-tables.service';
 
 interface ViewTable extends Table {
@@ -19,16 +21,25 @@ export class TablesComponent implements OnInit {
   editTables: ViewTable[] = [];
   tableName = '';
   tableCode = '';
-
+  settings: Settings;
+  codeMin = 100000;
+  codeMax = 999999;
   elementType = NgxQrcodeElementTypes.URL;
   correctionLevel = NgxQrcodeErrorCorrectionLevels.HIGH;
-  value = `${location.origin}/order/` ;
+  value = PublicTableService.URL_PREFIX;
 
 
   constructor(
     private adminTablesService: AdminTablesService,
+    private  settingsService: SettingsService,
     private router: Router,
   ) { }
+
+  private genCode() {
+    return Math.floor(
+      Math.random() * (this.codeMax - this.codeMin + 1) + this.codeMin
+    );
+  }
 
   getTables(): void {
     this.adminTablesService.getTables().pipe(first()).subscribe(result => {
@@ -38,12 +49,15 @@ export class TablesComponent implements OnInit {
           ...e
         };
       });
+      this.tableName = `Tisch ${this.tables.length + 1}`;
+      this.tableCode = `${this.genCode()}`;
     });
   }
 
   addTable(): void {
     this.adminTablesService.createTable(this.tableName).pipe(first()).subscribe((table: Table) => {
       this.tableName = '';
+      this.tableCode = '';
       this.tables.push({edit: false, ...table});
     });
   }
@@ -54,7 +68,7 @@ export class TablesComponent implements OnInit {
   }
 
   saveEdit(table: ViewTable): void {
-    this.adminTablesService.renameTable(table.id, table.name).pipe(first()).subscribe(result => {
+    this.adminTablesService.updateTable(table.id, {name: table.name, code: table.code} as Table).pipe(first()).subscribe(result => {
       const tableIndex = this.tables.findIndex(e => e.id === result.id);
       this.tables[tableIndex] = { edit: false, ...result};
     });
@@ -74,12 +88,16 @@ export class TablesComponent implements OnInit {
     this.router.navigateByUrl('/print-table', {
       state: {
         url,
-        name: table.name
+        name: table.name,
+        code: table.secret.substring(table.secret.length - 6).toUpperCase()
       }
     });
   }
 
   ngOnInit(): void {
+    this.settingsService.getSettings().pipe(filter(e => e !== null), first()).subscribe(settings => {
+      this.settings = settings;
+    });
     this.getTables();
   }
 

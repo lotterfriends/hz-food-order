@@ -33,8 +33,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatChipsModule} from '@angular/material/chips';
-import {MatProgressBarModule} from '@angular/material/progress-bar';
-
+import {MatProgressBarModule} from '@angular/material/progress-bar'
 @NgModule({
   declarations: [
     OrdersComponent,
@@ -48,8 +47,8 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
   ],
   imports: [
     ReactiveFormsModule,
-    AdminRoutingModule,
     FormsModule,
+    AdminRoutingModule,
     HttpClientModule,
     BrowserModule,
     BrowserAnimationsModule,

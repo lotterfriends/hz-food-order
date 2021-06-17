@@ -8,6 +8,7 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 interface PrintState {
   name: string;
   url: string;
+  code: string;
 }
 
 @Component({
@@ -20,6 +21,7 @@ export class PrintTableComponent implements OnInit {
   private state$: Observable<PrintState>;
   public name = '';
   public url = '';
+  public code = '';
   public elementType = NgxQrcodeElementTypes.URL;
   public correctionLevel = NgxQrcodeErrorCorrectionLevels.HIGH;
 
@@ -31,6 +33,7 @@ export class PrintTableComponent implements OnInit {
     this.state$.pipe(untilDestroyed(this)).subscribe((printState: PrintState) => {
       this.name = printState.name;
       this.url = printState.url;
+      this.code = printState.code;
     });
   }
 

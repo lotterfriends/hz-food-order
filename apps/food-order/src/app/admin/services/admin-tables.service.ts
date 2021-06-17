@@ -29,4 +29,8 @@ export class AdminTablesService {
     return this.http.post<Table>(`${environment.apiPath}/tables/${tableId}/rename`, { name });
   }
 
+  updateTable(tableId: number, table: Table) {
+    return this.http.put<Table>(`${environment.apiPath}/tables/${tableId}`, table);
+  }
+
 }

@@ -9,6 +9,7 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { filter, first } from 'rxjs/operators';
 import { SettingsService, Settings } from '../../settings.service';
 import { AdminTablesService, Table } from '../services/admin-tables.service';
+import { ConfirmDialogComponent, ConfirmDialogModel } from 'libs/ui/src/lib/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'hz-orders',
@@ -55,14 +56,33 @@ export class OrdersComponent implements OnInit {
 
   }
 
-
-  changeStatus(order: ServerOrder, status: OrderStatus): void {
+  private _changeStatus(order: ServerOrder, status: OrderStatus): void {
     this.adminOrderService.changeStatus(order.id, status).pipe(first()).subscribe(result => {
       const eOrder = this.orders.find(e => e.id === result.id);
       if (eOrder) {
         eOrder.status = result.status;
       }
     });
+  }
+
+
+  changeStatus(order: ServerOrder, status: OrderStatus): void {
+    if (status === OrderStatus.Canceled) {
+    
+      const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+        maxWidth: '400px',
+        data: new ConfirmDialogModel('Achtung', 'Wollen Sie die Bestellung wirklich abbrechen? Die Bestellung verschwindet beim Kunden.')
+      });
+  
+      dialogRef.afterClosed().pipe(first()).subscribe(dialogResult => {
+        if (dialogResult) {
+          this._changeStatus(order, status);
+        }
+      });
+
+    } else {
+      this._changeStatus(order, status);
+    }
   }
 
   openMessageDialog(order: ServerOrder): void {

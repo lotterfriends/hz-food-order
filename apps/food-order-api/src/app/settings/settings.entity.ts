@@ -36,6 +36,9 @@ export class Settings {
   @Column({ default: false })
   whileStocksLast: boolean;
   
+  @Column({ default: false })
+  tableCode: boolean;
+  
   @Column('simple-array')
   oldSecrets: string[];
 

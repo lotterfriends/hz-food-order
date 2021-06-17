@@ -8,6 +8,7 @@ export interface Settings {
   seperateOrderPerProductCategory?: boolean;
   disableProductOnOutOfStock?: boolean;
   orderCode?: boolean;
+  tableCode?: boolean;
   whileStocksLast?: boolean;
   pickupOrder?: boolean;
   orderSound?: boolean;

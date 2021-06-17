@@ -1,2 +1,4 @@
-<p>Bitte einen QR-Code scannen</p>
-  
+<div class="content">
+  <p>Bitte einen QR-Code scannen <span *ngIf="settings.tableCode">oder Tisch-Code eingeben</span></p>
+  <p *ngIf="settings.tableCode"><button (click)="openCodeDialog()" mat-raised-button color="accent">Code eingeben</button></p>
+</div>

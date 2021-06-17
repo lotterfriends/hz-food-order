@@ -24,6 +24,7 @@ export class SettingsComponent implements OnInit {
   seperateOrderPerProductCategory = false;
   disableProductOnOutOfStock = false;
   orderCode = false;
+  tableCode = false;
   pickupOrder = false;
   whileStocksLast = false;
   orderSound = false;
@@ -47,6 +48,7 @@ export class SettingsComponent implements OnInit {
       this.whileStocksLast = settings.whileStocksLast;
       this.orderSound = settings.orderSound;
       this.settingsLogo = settings.logo;
+      this.tableCode = settings.tableCode;
     });
   }
 
@@ -92,6 +94,7 @@ export class SettingsComponent implements OnInit {
       seperateOrderPerProductCategory: this.seperateOrderPerProductCategory,
       disableProductOnOutOfStock: this.disableProductOnOutOfStock,
       orderCode: this.orderCode,
+      tableCode: this.tableCode,
       pickupOrder: this.pickupOrder,
       orderSound: this.orderSound,
       whileStocksLast: this.whileStocksLast
@@ -99,6 +102,7 @@ export class SettingsComponent implements OnInit {
       this.seperateOrderPerProductCategory = settings.seperateOrderPerProductCategory;
       this.disableProductOnOutOfStock = settings.disableProductOnOutOfStock;
       this.orderCode = settings.orderCode;
+      this.tableCode = settings.tableCode;
       this.pickupOrder = settings.pickupOrder;
       this.orderSound = settings.orderSound;
       this.whileStocksLast = settings.whileStocksLast;

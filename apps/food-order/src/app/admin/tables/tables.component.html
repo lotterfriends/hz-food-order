@@ -7,7 +7,6 @@
       <mat-label>Name</mat-label>
       <input #tableNameRef="ngModel" (keyup.enter)="addTable()" required minlength="2" autocomplete="off" [(ngModel)]="tableName" type="text" matInput>
     </mat-form-field>
-    
     <span>
       <button [disabled]="tableNameRef.invalid" mat-raised-button color="primary" (click)="addTable()">erstellen</button>
     </span>
@@ -37,7 +36,11 @@
             <a class="table-button" mat-stroked-button (click)="startEdit(table)">Bearbeiten</a>
             <a class="table-button" mat-stroked-button target="_blank" href="{{value + table.secret}}">Als Besucher öffnen</a>
             <a class="table-button" mat-stroked-button (click)="openPrintDocument(table)">Drucken</a>
+            <div class="table-code" *ngIf="tableCode">
+              Code: {{table.secret | slice:-6 | uppercase }}
+            </div>
           </div>
+
         </div>
       </ng-container>
       <ng-template #tableEdit>
@@ -45,6 +48,7 @@
           <mat-label>Name</mat-label>
           <input (keydown.enter)="saveEdit(table)" required minlength="2" autocomplete="off" [(ngModel)]="table.name" type="text" matInput>
         </mat-form-field>
+
         <mat-card-actions>
           <button mat-raised-button color="primary" (click)="saveEdit(table)">speichern</button>
           <button mat-raised-button color="secondary" type="cancel" (click)="cancelEdit(table)">abbrechen</button>

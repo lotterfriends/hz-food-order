@@ -10,6 +10,7 @@ export interface Settings {
   whileStocksLast: boolean;
   pickupOrder: boolean;
   orderSound: boolean;
+  tableCode: boolean;
   logo?: string;
 }
 

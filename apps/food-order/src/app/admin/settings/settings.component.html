@@ -62,6 +62,9 @@
     <div>
       <mat-checkbox [(ngModel)]="orderSound">Bei neuen Bestellungen einen Sound abspielen.</mat-checkbox>
     </div>
+    <div>
+      <mat-checkbox [(ngModel)]="tableCode">Jedem Tisch einen Code zuweisen über dessen eigabe man zur Bestell-Seite gelangt (Achtung: Unsicher!)</mat-checkbox>
+    </div>
     <br>
     <div>
       <button (click)="saveSettings()" mat-raised-button color="primary">Speichern</button>

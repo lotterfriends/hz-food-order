@@ -29,6 +29,12 @@ export class TableService {
     return table;
   }
 
+  async updateTable(id: number, table: Table): Promise<Table> {
+    await this.tableRepository.update(id, table);
+    let changeTable = await this.tableRepository.findOne(id);
+    return this.addSecretToTable(changeTable);
+  }
+
   getAll() {
     return this.tableRepository.find();
   }
@@ -67,6 +73,23 @@ export class TableService {
       }
     }
     return foundTable;
+  }
+
+  async getTableForCode(code: string): Promise<{hash: string}> {
+    const serverSecret = process.env.SERVER_SECRET;
+    const appSecret = await this.settingsService.getSecret();
+    const tables = await this.getAll();
+    let foundHash = null;
+    for (const table of tables) {
+      const hash = createHash('sha256').update([table.key, appSecret, serverSecret].join('-')).digest('hex');
+      if (hash.toUpperCase().endsWith(code.toUpperCase())) {
+        foundHash = hash;
+      }
+    }
+    if (foundHash) {
+      return {hash: foundHash};
+    }
+    return foundHash;
   }
 
 }

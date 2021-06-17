@@ -2,6 +2,22 @@
 
 # Hz
 
+start db
+```bash
+npm run db:start
+```
+
+start develop watch task for api
+```bash
+npx nx serve food-order-api
+```
+
+start develop watch task for angular application
+```bash
+npx nx serve food-order
+```
+
+
 This project was generated using [Nx](https://nx.dev).
 
 <p align="center"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="450"></p>

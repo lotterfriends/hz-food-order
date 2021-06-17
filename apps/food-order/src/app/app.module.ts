@@ -1,6 +1,6 @@
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { APP_INITIALIZER, LOCALE_ID, NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { JwtModule } from '@auth0/angular-jwt';
@@ -31,6 +31,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { SettingsService } from './settings.service';
+import { EnterCodeDialogComponent } from './empty/enter-code-dialog.component';
 registerLocaleData(localeDe, 'de');
 
 export function tokenGetter(): string | null {
@@ -48,12 +49,14 @@ const socketConfig: SocketIoConfig = {
     AppComponent,
     OrderComponent,
     EmptyComponent,
+    EnterCodeDialogComponent,
     LoginComponent,
     PrintTableComponent,
     OrderRedirectComponent,
   ],
   imports: [
     FormsModule,
+    ReactiveFormsModule,
     HttpClientModule,
     BrowserModule,
     AppRoutingModule,
