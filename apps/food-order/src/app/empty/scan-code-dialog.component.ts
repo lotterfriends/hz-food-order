@@ -20,6 +20,7 @@ import { PublicTableService } from '../public-table.service';
 export class ScanCodeDialogComponent implements OnInit {
 
 
+
   constructor(
     public dialogRef: MatDialogRef<ScanCodeDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: {},
@@ -27,6 +28,7 @@ export class ScanCodeDialogComponent implements OnInit {
 
 
   ngOnInit(): void {
+    let stopScan = false;
     const video: HTMLVideoElement = document.createElement('video');
     const canvasElement: HTMLCanvasElement = document.getElementById('canvas') as HTMLCanvasElement;
     const canvas = canvasElement.getContext('2d');
@@ -71,17 +73,22 @@ export class ScanCodeDialogComponent implements OnInit {
           drawLine(code.location.topRightCorner, code.location.bottomRightCorner, '#FF3B58');
           drawLine(code.location.bottomRightCorner, code.location.bottomLeftCorner, '#FF3B58');
           drawLine(code.location.bottomLeftCorner, code.location.topLeftCorner, '#FF3B58');
-          outputMessage.hidden = true;
-          outputData.parentElement.hidden = false;
-          if (code.data.startsWith(PublicTableService.URL_PREFIX)) {
-            outputData.innerText = 'Code erkannt, du wirst weitergeleitet....';
-            location.href = code.data;
+        }
+        if (!stopScan) {
+          if (code) {
+            outputMessage.hidden = true;
+            outputData.parentElement.hidden = false;
+            if (code.data.startsWith(PublicTableService.URL_PREFIX)) {
+              stopScan = true;
+              outputData.innerText = 'Code erkannt, du wirst weitergeleitet....';
+              location.href = code.data;
+            } else {
+              outputData.innerText = 'Ungültiger Code';
+            }
           } else {
-            outputData.innerText = 'Ungültiger Code';
+            outputMessage.hidden = false;
+            outputData.parentElement.hidden = true;
           }
-        } else {
-          outputMessage.hidden = false;
-          outputData.parentElement.hidden = true;
         }
       }
       requestAnimationFrame(tick);
