@@ -3,6 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { first } from 'rxjs/operators';
 import { Settings, SettingsService } from '../settings.service';
 import { EnterCodeDialogComponent } from './enter-code-dialog.component';
+import { ScanCodeDialogComponent } from './scan-code-dialog.component';
 
 @Component({
   selector: 'hz-empty',
@@ -23,7 +24,14 @@ export class EmptyComponent {
   }
 
   openCodeDialog(): void {
-    const dialogRef = this.dialog.open(EnterCodeDialogComponent, {
+    this.dialog.open(EnterCodeDialogComponent, {
+      maxWidth: '400px',
+      data: {}
+    });
+  }
+ 
+  openScanDialog(): void {
+    const dialogRef = this.dialog.open(ScanCodeDialogComponent, {
       maxWidth: '400px',
       data: {}
     });

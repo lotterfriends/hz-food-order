@@ -1,4 +1,5 @@
 <div class="content">
   <p>Bitte einen QR-Code scannen <span *ngIf="settings.tableCode">oder Tisch-Code eingeben</span></p>
+  <p><button (click)="openScanDialog()" mat-raised-button color="accent">Code scannen</button></p>
   <p *ngIf="settings.tableCode"><button (click)="openCodeDialog()" mat-raised-button color="accent">Code eingeben</button></p>
 </div>

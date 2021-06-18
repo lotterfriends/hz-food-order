@@ -32,6 +32,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { SettingsService } from './settings.service';
 import { EnterCodeDialogComponent } from './empty/enter-code-dialog.component';
+import { ScanCodeDialogComponent } from './empty/scan-code-dialog.component';
 registerLocaleData(localeDe, 'de');
 
 export function tokenGetter(): string | null {
@@ -50,6 +51,7 @@ const socketConfig: SocketIoConfig = {
     OrderComponent,
     EmptyComponent,
     EnterCodeDialogComponent,
+    ScanCodeDialogComponent,
     LoginComponent,
     PrintTableComponent,
     OrderRedirectComponent,
