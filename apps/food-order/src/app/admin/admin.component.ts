@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { filter, first } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 import { OrderWSService } from '../order-ws.service';
 import { SettingsService, Settings } from '../settings.service';
 
@@ -26,7 +27,11 @@ export class AdminComponent implements OnInit {
 
     if (this.settings.orderSound) {
       this.audio = new Audio();
-      this.audio.src = "../../../assets/sounds/egg-timer.wav";
+      if (environment.production) {
+        this.audio.src = "./assets/sounds/egg-timer.wav";
+      } else {
+        this.audio.src = "../../../assets/sounds/egg-timer.wav";
+      }
       this.audio.load();
     }
   }
