@@ -24,7 +24,7 @@ export class PrintTableComponent implements OnInit {
   public code = '';
   public elementType = NgxQrcodeElementTypes.URL;
   public correctionLevel = NgxQrcodeErrorCorrectionLevels.HIGH;
-
+  public origin = location.host;
   constructor(private activatedRoute: ActivatedRoute) {
     this.state$ = this.activatedRoute.paramMap.pipe(untilDestroyed(this), map(() => window.history.state));
   }

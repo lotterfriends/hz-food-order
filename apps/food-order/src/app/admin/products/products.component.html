@@ -1,6 +1,9 @@
 <div>
 
-  <h2 class="mat-headline">Kategorien</h2>
+  <h2 class="mat-headline">
+    Kategorien
+    <button mat-button (click)="sortCategories = !sortCategories">sortieren</button>
+  </h2>
 
   <div class="categories">
     <div fxFlex fxLayout="column" fxLayout.gt-xs="row" fxLayoutAlign="space-between" fxLayoutGap="1em">
@@ -8,7 +11,7 @@
         <mat-card style="padding: .75em;" *ngIf="categories && categories.length; else emptyCategories">
           <mat-card-content>
             <mat-list class="categories" cdkDropList (cdkDropListDropped)="dropCategory($event)">
-              <mat-list-item (click)="editCategory(category)" class="category" cdkDrag *ngFor="let category of categories">
+              <mat-list-item (click)="editCategory(category)" class="category" cdkDrag [cdkDragDisabled]="sortCategories" *ngFor="let category of categories">
                 <span mat-line  fxLayout="row" fxLayoutAlign="start center"><mat-icon *ngIf="category.icon">{{category.icon}}</mat-icon> {{category.name}}</span>
                 <button mat-icon-button (click)="deleteCategory(category)">
                   <mat-icon>delete</mat-icon>
@@ -99,9 +102,8 @@
       </div>
     </mat-card-content>
   </mat-card>
-
+  <button mat-button (click)="sortProducts = !sortProducts">{{ sortProducts ? 'sortieren' : 'sortieren deaktivieren' }}</button>
   <!-- <button (click)="showTable = !showTable">toggle show table</button> -->
-
   <ng-container *ngIf="productsByCategory && productsByCategory.length && showTable">
     <ng-container *ngFor="let productByCategory of this.productsByCategory">
       
@@ -214,6 +216,7 @@
             class="product-table-element-row"
             [class.product-table-expanded-row]="expandedElement?.id === element.id"
             (click)="startEditProduct(element)"
+            [cdkDragDisabled]="sortProducts"
             cdkDrag [cdkDragData]="element">
         </tr>
         <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="product-table-detail-row"></tr>

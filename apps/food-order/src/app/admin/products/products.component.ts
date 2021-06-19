@@ -37,6 +37,8 @@ interface Icon {
 export class ProductsComponent implements OnInit, AfterViewInit {
 
   @ViewChildren(MatTable) table !: QueryList<MatTable<ViewProduct>>;
+  sortCategories = true;
+  sortProducts = true;
   categories: ProducCategory[] = [];
   categoryName = '';
   categoryId;
