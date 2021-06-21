@@ -24,19 +24,25 @@
     <mat-chip [ngClass]="{'active': displayedCategories.includes(status)}" class="chip-{{status}}" (click)="toggleStatusSelection(status)" [selected]="displayedCategories.includes(status)" *ngFor="let status of orderStatusArray">
       {{orderService.getTextForOrderStatus(status)}}
     </mat-chip>
-    <mat-chip (click)="displayedCategories = orderStatusArray" [selected]="orderStatusArray.length === displayedCategories.length">Alle</mat-chip>
-    <mat-chip (click)="displayedCategories = []" [selected]="!displayedCategories.length">Keine</mat-chip>
+
+    <ng-container *ngIf="settings.seperateOrderPerProductCategory && categories && categories.length">
+      <mat-chip (click)="toggleSelectedProductCategories(category)" [selected]="displayedProductCategories.includes(category)" *ngFor="let category of categories"><mat-icon>{{category.icon}}</mat-icon></mat-chip>
+    </ng-container>
+
+    <mat-chip (click)="selectAll()" [selected]="orderStatusArray.length === displayedCategories.length && (!settings.seperateOrderPerProductCategory || displayedProductCategories.length === categories.length)">Alle</mat-chip>
+    <mat-chip (click)="selectNone()" [selected]="!displayedCategories.length && (!settings.seperateOrderPerProductCategory || !displayedProductCategories.length)">Keine</mat-chip>
   </mat-chip-list>
 
   <br />
 
   <ng-container>
     <ng-container  *ngFor="let order of orders">
-      <div class="order" fxLayout="column" fxLayoutGap="10px" *ngIf="(!selectedTable || selectedTable.id === order.table.id) && displayedCategories.includes(order.status)">
+      <div class="order" fxLayout="column" fxLayoutGap="10px" *ngIf="(!selectedTable || selectedTable.id === order.table.id) && displayedCategories.includes(order.status) && displayOrderByCategory(order)">
         <div fxLayout="row" fxFlexFill fxLayoutGap="10px">
         
           <mat-card fxFlex="grow" class="{{order.status}}">
             <mat-card-title fxLayoutAlign="start center">
+              <span class="category-icon" *ngIf="settings.seperateOrderPerProductCategory"><mat-icon>{{order.items[0]?.product?.category?.icon}}</mat-icon></span>
               <span>{{order.table.name}} <ng-container *ngIf="settings?.orderCode">- <span class="order-code">{{order.code}}</span></ng-container></span>
               <button mat-icon-button (click)="openMessageDialog(order)"><mat-icon>message</mat-icon></button>
             </mat-card-title>
