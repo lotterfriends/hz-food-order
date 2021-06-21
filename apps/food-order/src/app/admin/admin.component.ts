@@ -27,11 +27,7 @@ export class AdminComponent implements OnInit {
 
     if (this.settings.orderSound) {
       this.audio = new Audio();
-      if (environment.production) {
-        this.audio.src = "./assets/sounds/egg-timer.wav";
-      } else {
-        this.audio.src = "../../../assets/sounds/egg-timer.wav";
-      }
+      this.audio.src = "./assets/sounds/egg-timer.wav";
       this.audio.load();
     }
   }
