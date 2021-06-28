@@ -15,7 +15,7 @@ export class Settings {
   @Column()
   secret?: string;
 
-  @Column()
+  @Column({ nullable: true})
   logo?: string;
 
   @Column({ default: false })
