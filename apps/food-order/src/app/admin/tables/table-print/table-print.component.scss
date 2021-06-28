@@ -1,0 +1,37 @@
+
+@media print {
+
+  * {
+    text-align: center;
+  }
+
+  .print-qr,
+  .print-qr > img {
+    width: 100%;
+  }
+
+  h1 {
+    font-size: 5em;
+  }
+
+  .table:not(:last-of-type) {
+    page-break-after: always;
+  }
+
+  .table-code {
+    margin-top: .5em;
+  }
+
+  strong {
+    font-weight: bold;
+  }
+
+  .hint {
+    margin: 1em 0;
+  }
+
+  .back {
+    display: none;
+  }
+
+}

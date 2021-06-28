@@ -17,7 +17,6 @@ import { UiModule } from '@hz/ui';
 import { OrderComponent } from './order/order.component';
 import { SecretInterceptor } from './secret.interceptor';
 import { TokenInterceptor } from './token.interceptor';
-import { PrintTableComponent } from './print-table/print-table.component';
 import { OrderRedirectComponent } from './order-redirect/order-redirect.component';
 import { registerLocaleData } from '@angular/common';
 import localeDe from '@angular/common/locales/de';
@@ -53,7 +52,6 @@ const socketConfig: SocketIoConfig = {
     EnterCodeDialogComponent,
     ScanCodeDialogComponent,
     LoginComponent,
-    PrintTableComponent,
     OrderRedirectComponent,
   ],
   imports: [

@@ -56,9 +56,16 @@ export class TableController {
     return this.tableService.addSecretToTables(tables);
   }
 
+  @Get(':id')
+  @UseGuards(JwtAuthGuard)
+  async getTable(@Param('id') id) {
+    const table = await this.tableService.getTable(id);
+    return this.tableService.addSecretToTable(table);
+  }
+
   @Get(':secret')
   @UseGuards(JwtAuthGuard)
-  async getTable(@Param('secret') secret: string) {
+  async getTableForSecret(@Param('secret') secret: string) {
     return this.tableService.getTableForSecret(secret);
   }
 

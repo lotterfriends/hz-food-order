@@ -1,57 +1,68 @@
-<h2 class="mat-headline">Tische</h2>
+<ng-container *ngIf="showMainContent; else subpage">
 
-<mat-card>
-  <mat-card-content>
-    
-    <mat-form-field fxFlexFill>
-      <mat-label>Name</mat-label>
-      <input #tableNameRef="ngModel" (keyup.enter)="addTable()" required minlength="2" autocomplete="off" [(ngModel)]="tableName" type="text" matInput>
-    </mat-form-field>
-    <span>
-      <button [disabled]="tableNameRef.invalid" mat-raised-button color="primary" (click)="addTable()">erstellen</button>
-    </span>
-  </mat-card-content>
-</mat-card>
-
-<mat-accordion>
-  <mat-expansion-panel hideToggle *ngFor="let table of tables">
-    <mat-expansion-panel-header>
-      <mat-panel-title>
-        {{table.name}}
-      </mat-panel-title>
-      <mat-panel-description></mat-panel-description>
-    </mat-expansion-panel-header>
-      <ng-container *ngIf="!table.edit; else tableEdit">
-
-        <div fxLayout="row">
-          <div>
-            <ngx-qrcode
-              [elementType]="elementType"
-              [errorCorrectionLevel]="correctionLevel"
-              [value]="value + table.secret"
-              cssClass="admin-qr"></ngx-qrcode>
-          </div>
-          <div fxLayout="column">
-            <a class="table-button" mat-stroked-button (click)="startEdit(table)">Bearbeiten</a>
-            <a class="table-button" mat-stroked-button target="_blank" href="{{value + table.secret}}">Als Besucher öffnen</a>
-            <a class="table-button" mat-stroked-button (click)="openPrintDocument(table)">Drucken</a>
-            <div class="table-code" *ngIf="settings.tableCode">
-              Code: {{table.secret | slice:-6 | uppercase }}
+  <h2 class="mat-headline" fxLayout="row" fxLayoutAlign="space-between center">
+    <span>Tische</span>
+    <button routerLink="./print" mat-raised-button color="primary">Alle drucken</button>  
+  </h2>
+  
+  <mat-card>
+    <mat-card-content>
+      
+      <mat-form-field fxFlexFill>
+        <mat-label>Name</mat-label>
+        <input #tableNameRef="ngModel" (keyup.enter)="addTable()" required minlength="2" autocomplete="off" [(ngModel)]="tableName" type="text" matInput>
+      </mat-form-field>
+      <span>
+        <button [disabled]="tableNameRef.invalid" mat-raised-button color="primary" (click)="addTable()">erstellen</button>
+      </span>
+    </mat-card-content>
+  </mat-card>
+  
+  <mat-accordion>
+    <mat-expansion-panel hideToggle *ngFor="let table of tables">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          {{table.name}}
+        </mat-panel-title>
+        <mat-panel-description></mat-panel-description>
+      </mat-expansion-panel-header>
+        <ng-container *ngIf="!table.edit; else tableEdit">
+  
+          <div fxLayout="row">
+            <div>
+              <ngx-qrcode
+                [elementType]="elementType"
+                [errorCorrectionLevel]="correctionLevel"
+                [value]="value + table.secret"
+                cssClass="admin-qr"></ngx-qrcode>
             </div>
+            <div fxLayout="column">
+              <a class="table-button" mat-stroked-button (click)="startEdit(table)">Bearbeiten</a>
+              <a class="table-button" mat-stroked-button target="_blank" href="{{value + table.secret}}">Als Besucher öffnen</a>
+              <a class="table-button" mat-stroked-button (click)="openPrintDocument(table)">Drucken</a>
+              <div class="table-code" *ngIf="settings.tableCode">
+                Code: {{table.secret | slice:-6 | uppercase }}
+              </div>
+            </div>
+  
           </div>
+        </ng-container>
+        <ng-template #tableEdit>
+          <mat-form-field fxFlexFill class="">
+            <mat-label>Name</mat-label>
+            <input (keydown.enter)="saveEdit(table)" required minlength="2" autocomplete="off" [(ngModel)]="table.name" type="text" matInput>
+          </mat-form-field>
+  
+          <mat-card-actions>
+            <button mat-raised-button color="primary" (click)="saveEdit(table)">speichern</button>
+            <button mat-raised-button color="secondary" type="cancel" (click)="cancelEdit(table)">abbrechen</button>
+          </mat-card-actions>
+        </ng-template>
+    </mat-expansion-panel>
+  </mat-accordion>
 
-        </div>
-      </ng-container>
-      <ng-template #tableEdit>
-        <mat-form-field fxFlexFill class="">
-          <mat-label>Name</mat-label>
-          <input (keydown.enter)="saveEdit(table)" required minlength="2" autocomplete="off" [(ngModel)]="table.name" type="text" matInput>
-        </mat-form-field>
+</ng-container>  
 
-        <mat-card-actions>
-          <button mat-raised-button color="primary" (click)="saveEdit(table)">speichern</button>
-          <button mat-raised-button color="secondary" type="cancel" (click)="cancelEdit(table)">abbrechen</button>
-        </mat-card-actions>
-      </ng-template>
-  </mat-expansion-panel>
-</mat-accordion>
+<ng-template #subpage>
+  <router-outlet></router-outlet>
+</ng-template>

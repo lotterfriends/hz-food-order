@@ -20,6 +20,10 @@ export class AdminTablesService {
   getTables(): Observable<Table[]> {
     return this.http.get<Table[]>(`${environment.apiPath}/tables`);
   }
+  
+  getTable(tableId: number): Observable<Table> {
+    return this.http.get<Table>(`${environment.apiPath}/table/${tableId}`);
+  }
 
   createTable(name: string): Observable<Table> {
     return this.http.post<Table>(`${environment.apiPath}/tables`, { name });

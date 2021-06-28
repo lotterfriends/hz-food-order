@@ -1,0 +1,22 @@
+<button routerLink="../" mat-raised-button color="primary" class="back">zurück</button>  
+
+<div class="print-page">
+  <ng-container *ngFor="let table of tables">
+
+    <div class="table">
+      <h1>{{table.name}}</h1>
+      <div class="hint">Euer Essen & Trinken könnt ihr auf  <strong>{{origin}}</strong> bestellen.</div>
+      <ngx-qrcode
+        [elementType]="elementType"
+        [errorCorrectionLevel]="correctionLevel"
+        [value]="value + table.secret"
+        [width]="500"
+        cssClass="print-qr"></ngx-qrcode>
+        <div class="table-code" *ngIf="settings.tableCode">
+          Code: {{table.secret | slice:-6 | uppercase }}
+        </div>
+        
+    </div>
+
+  </ng-container>
+</div>

@@ -6,7 +6,6 @@ import { EmptyComponent } from './empty/empty.component';
 import { LoginComponent } from './login/login.component';
 import { OrderComponent } from './order/order.component';
 import { adminRoutes} from './admin/admin-routing.module';
-import { PrintTableComponent } from './print-table/print-table.component';
 import { OrderGuard } from './order.guard';
 import { OrderRedirectComponent } from './order-redirect/order-redirect.component';
 
@@ -28,11 +27,6 @@ const routes: Routes = [
     path: 'admin',
     component: AdminComponent,
     children: adminRoutes,
-    canActivate: [AuthGuardService] ,
-  },
-  {
-    path: 'print-table',
-    component: PrintTableComponent,
     canActivate: [AuthGuardService] ,
   },
   { path: '**', component: EmptyComponent }

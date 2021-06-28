@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { NgxQrcodeElementTypes, NgxQrcodeErrorCorrectionLevels } from '@techiediaries/ngx-qrcode';
 import { filter, first } from 'rxjs/operators';
 import { PublicTableService } from '../../public-table.service';
@@ -24,13 +24,21 @@ export class TablesComponent implements OnInit {
   elementType = NgxQrcodeElementTypes.URL;
   correctionLevel = NgxQrcodeErrorCorrectionLevels.HIGH;
   value = PublicTableService.URL_PREFIX;
-
+  showMainContent = true;
 
   constructor(
     private adminTablesService: AdminTablesService,
     private  settingsService: SettingsService,
     private router: Router,
-  ) { }
+  ) {
+    router.events.subscribe((val) => {
+      this.showMainContent = val instanceof NavigationEnd && this.isMainRoute();
+  });
+  }
+
+  isMainRoute(): boolean {
+    return this.router.url === '/admin/tables';
+  }
 
   getTables(): void {
     this.adminTablesService.getTables().pipe(first()).subscribe(result => {
@@ -40,6 +48,7 @@ export class TablesComponent implements OnInit {
           ...e
         };
       });
+      sessionStorage.setItem('tables', JSON.stringify(result));
       this.tableName = `Tisch ${this.tables.length + 1}`;
     });
   }
@@ -73,14 +82,7 @@ export class TablesComponent implements OnInit {
   }
 
   openPrintDocument(table: ViewTable): void {
-    const url = this.value + table.secret;
-    this.router.navigateByUrl('/print-table', {
-      state: {
-        url,
-        name: table.name,
-        code: table.secret.substring(table.secret.length - 6).toUpperCase()
-      }
-    });
+    this.router.navigateByUrl(`/admin/tables/print?tableId=${table.id}`);
   }
 
   ngOnInit(): void {
@@ -89,7 +91,5 @@ export class TablesComponent implements OnInit {
     });
     this.getTables();
   }
-
-
 
 }

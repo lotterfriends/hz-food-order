@@ -5,6 +5,7 @@ import { ProductsComponent } from './products/products.component';
 import { OrdersComponent } from './orders/orders.component';
 import { SettingsComponent } from './settings/settings.component';
 import { TablesComponent } from './tables/tables.component';
+import { TablePrintComponent } from './tables/table-print/table-print.component';
 
 export const adminRoutes: Routes = [
   {
@@ -23,7 +24,17 @@ export const adminRoutes: Routes = [
     data: {
       title: 'Tische',
       icon: 'place'
-    }
+    },
+    children: [
+      {
+        path: 'print',
+        component: TablePrintComponent,
+        data: {
+          title: 'Tische drucken',
+          icon: 'place'
+        }
+      }
+    ]
   },
   {
     path: 'offers',

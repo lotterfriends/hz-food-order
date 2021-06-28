@@ -34,11 +34,13 @@ import { MatListModule } from '@angular/material/list';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatChipsModule} from '@angular/material/chips';
 import {MatProgressBarModule} from '@angular/material/progress-bar'
+import { TablePrintComponent } from './tables/table-print/table-print.component';
 @NgModule({
   declarations: [
     OrdersComponent,
     TablesComponent,
     AdminComponent,
+    TablePrintComponent,
     ProductsComponent,
     AppHeaderComponent,
     AppNavigationComponent,
