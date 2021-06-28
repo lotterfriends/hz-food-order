@@ -34,7 +34,7 @@ export class OrderComponent implements OnInit, OnDestroy {
   ) { }
 
   static readonly MIN_PRODUCT = 0;
-  static readonly MAX_PRODUCT = 15;
+  static readonly MAX_PRODUCT = 40;
 
   orderStatus = OrderStatus;
   orders: ServerOrder[] = [];
