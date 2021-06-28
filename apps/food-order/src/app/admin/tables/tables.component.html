@@ -13,7 +13,6 @@
   </mat-card-content>
 </mat-card>
 
-
 <mat-accordion>
   <mat-expansion-panel hideToggle *ngFor="let table of tables">
     <mat-expansion-panel-header>
@@ -36,7 +35,7 @@
             <a class="table-button" mat-stroked-button (click)="startEdit(table)">Bearbeiten</a>
             <a class="table-button" mat-stroked-button target="_blank" href="{{value + table.secret}}">Als Besucher öffnen</a>
             <a class="table-button" mat-stroked-button (click)="openPrintDocument(table)">Drucken</a>
-            <div class="table-code" *ngIf="tableCode">
+            <div class="table-code" *ngIf="settings.tableCode">
               Code: {{table.secret | slice:-6 | uppercase }}
             </div>
           </div>

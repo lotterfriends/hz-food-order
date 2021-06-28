@@ -20,10 +20,7 @@ export class TablesComponent implements OnInit {
   tables: ViewTable[] = [];
   editTables: ViewTable[] = [];
   tableName = '';
-  tableCode = '';
   settings: Settings;
-  codeMin = 100000;
-  codeMax = 999999;
   elementType = NgxQrcodeElementTypes.URL;
   correctionLevel = NgxQrcodeErrorCorrectionLevels.HIGH;
   value = PublicTableService.URL_PREFIX;
@@ -35,12 +32,6 @@ export class TablesComponent implements OnInit {
     private router: Router,
   ) { }
 
-  private genCode() {
-    return Math.floor(
-      Math.random() * (this.codeMax - this.codeMin + 1) + this.codeMin
-    );
-  }
-
   getTables(): void {
     this.adminTablesService.getTables().pipe(first()).subscribe(result => {
       this.tables = result.map((e) => {
@@ -50,15 +41,13 @@ export class TablesComponent implements OnInit {
         };
       });
       this.tableName = `Tisch ${this.tables.length + 1}`;
-      this.tableCode = `${this.genCode()}`;
     });
   }
 
   addTable(): void {
     this.adminTablesService.createTable(this.tableName).pipe(first()).subscribe((table: Table) => {
-      this.tableName = '';
-      this.tableCode = '';
       this.tables.push({edit: false, ...table});
+      this.tableName = `Tisch ${this.tables.length + 1}`;
     });
   }
 
