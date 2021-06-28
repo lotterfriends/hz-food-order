@@ -13,4 +13,12 @@
   <body>
     <hz-root></hz-root>
   </body>
+  <script>
+    window.updateZoom = () => {
+      const zoom = window.sessionStorage.getItem('zoom');
+      if (zoom) {
+        document.body.style.zoom = parseFloat(zoom);
+      }
+    }
+  </script>
 </html>

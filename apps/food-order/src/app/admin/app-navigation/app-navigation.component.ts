@@ -16,6 +16,10 @@ interface NavRoute{
 })
 export class AppNavigationComponent {
 
+  constructor() {
+    this.updateZoom();
+  }
+
   mainRoutes = adminRoutes.filter(e => e.path?.length && e.path !== '**') as NavRoute[];
 
   onOpen(): void {
@@ -26,4 +30,21 @@ export class AppNavigationComponent {
     }, 200);
   }
 
+  plus() {
+    let zoom = window.sessionStorage.getItem('zoom') ? parseFloat(window.sessionStorage.getItem('zoom')) : 1;
+    zoom = zoom + 0.25;
+    window.sessionStorage.setItem('zoom', '' + zoom);
+    this.updateZoom();
+  }
+  
+  minus() {
+    let zoom = window.sessionStorage.getItem('zoom') ? parseFloat(window.sessionStorage.getItem('zoom')) : 1;
+    zoom = zoom - 0.25;
+    window.sessionStorage.setItem('zoom', '' + zoom);
+    this.updateZoom();
+  }
+
+  updateZoom() {
+    (window as any).updateZoom();
+  }
 }

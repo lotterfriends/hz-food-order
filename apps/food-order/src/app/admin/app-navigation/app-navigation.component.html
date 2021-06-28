@@ -24,6 +24,19 @@
 
     </mat-nav-list>
 
+    <br />
+    <br />
+
+    <div class="zoom" fxLayout="row" fxLayoutAlign="center center">
+      <div fxLayout="column" fxLayoutAlign="center center">
+        <strong class="zoom-headline">Zoom</strong>
+          <div fxLayout="row" fxLayoutAlign="center center">
+            <button mat-mini-fab value="plus" (click)="plus()"><mat-icon>add</mat-icon></button>
+            <button mat-mini-fab value="minus" (click)="minus()"><mat-icon>remove</mat-icon></button>
+          </div>
+      </div>
+    </div>
+
   </mat-sidenav>
 
   <mat-sidenav-content>
