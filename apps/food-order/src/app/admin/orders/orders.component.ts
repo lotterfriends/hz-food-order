@@ -25,10 +25,13 @@ export class OrdersComponent implements OnInit {
   orders: ServerOrder[] = [];
   tables: Table[] = [];
   settings: Settings;
-  selectedTable: Table | null = null;
-  displayedCategories = [OrderStatus.InPreparation, OrderStatus.Ready];
-  displayedProductCategories: ProducCategory[] = [];
+  isInitialFilterInit = false;
   categories:  ProducCategory[];
+  filter: {
+    selectedTable: Table | null,
+    displayedCategories: OrderStatus[],
+    displayedProductCategories: null | ProducCategory[]
+  };
 
   constructor(
     private adminOrderService: AdminOrderService,
@@ -38,7 +41,9 @@ export class OrdersComponent implements OnInit {
     private dialog: MatDialog,
     private wsService: OrderWSService,
     private  settingsService: SettingsService
-  ) { }
+  ) {
+    this.initFilter();
+  }
 
   ngOnInit(): void {
 
@@ -61,9 +66,31 @@ export class OrdersComponent implements OnInit {
     if (this.settings.seperateOrderPerProductCategory) {
       this.adminProductsService.getCategories().pipe(first()).subscribe(categories => {
         this.categories = categories;
-        this.displayedProductCategories = categories;
+        // inital display all
+        if (this.isInitialFilterInit) {
+          this.filter.displayedProductCategories = categories;
+          this.updateFilter();
+        }
+        console.log(this.filter);
       });
     }
+  }
+
+  private initFilter() {
+    if (sessionStorage.getItem('order_filter')) {
+      this.filter = JSON.parse(sessionStorage.getItem('order_filter'));
+    } else {
+      this.isInitialFilterInit = true;
+      this.filter = {
+        selectedTable: null,
+        displayedCategories: [OrderStatus.InPreparation, OrderStatus.Ready],
+        displayedProductCategories: []
+      }
+    }
+  }
+
+  private updateFilter() {
+    sessionStorage.setItem('order_filter', JSON.stringify(this.filter));
   }
 
   private _changeStatus(order: ServerOrder, status: OrderStatus): void {
@@ -114,33 +141,51 @@ export class OrdersComponent implements OnInit {
   }
 
   toggleStatusSelection(status: OrderStatus) {
-    if (this.displayedCategories.includes(status)) {
-      this.displayedCategories = this.displayedCategories.filter(e => e !== status);
+    if (this.filter.displayedCategories.includes(status)) {
+      this.filter.displayedCategories = this.filter.displayedCategories.filter(e => e !== status);
     } else {
-      this.displayedCategories.push(status);
+      this.filter.displayedCategories.push(status);
     }
+    this.updateFilter();
   }
 
   toggleSelectedProductCategories(category: ProducCategory) {
-    if (this.displayedProductCategories.includes(category)) {
-      this.displayedProductCategories = this.displayedProductCategories.filter(e => e.id !== category.id);
+    if (this.filter.displayedProductCategories.map(e => e.id).includes(category.id)) {
+      this.filter.displayedProductCategories = this.filter.displayedProductCategories.filter(e => e.id !== category.id);
     } else {
-      this.displayedProductCategories.push(category);
+      this.filter.displayedProductCategories.push(category);
     }
+    this.updateFilter();
   }
 
   selectAll() {
-    this.displayedCategories = this.orderStatusArray;
+    this.filter.displayedCategories = this.orderStatusArray;
     if (this.settings.seperateOrderPerProductCategory) {
-      this.displayedProductCategories = this.categories;
+      this.filter.displayedProductCategories = this.categories;
+      this.updateFilter();
     }
   }
 
   selectNone() {
-    this.displayedCategories = [];
+    this.filter.displayedCategories = [];
     if (this.settings.seperateOrderPerProductCategory) {
-      this.displayedProductCategories = [];
+      this.filter.displayedProductCategories = [];
     }
+    this.updateFilter();
+  }
+
+  selectTable(table: Table) {
+    this.filter.selectedTable = table;
+    this.updateFilter();
+  }
+  
+  selectAllTables() {
+    this.filter.selectedTable = null;
+    this.updateFilter();
+  }
+
+  productCategorySelected(category: ProducCategory): boolean {
+    return this.filter.displayedProductCategories.map(e => e.id).includes(category.id);
   }
 
   filterUnfinished(entry: ServerOrder): boolean {
@@ -158,7 +203,7 @@ export class OrdersComponent implements OnInit {
     if (!order.items.length) {
       return false;
     }
-    return this.displayedProductCategories.findIndex(e => {
+    return this.filter.displayedProductCategories.findIndex(e => {
       return order.items[0].product.category.id === e.id
     }) > -1
   }
