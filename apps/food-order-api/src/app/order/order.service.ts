@@ -70,7 +70,9 @@ export class OrderService {
   }
 
   findOneWithId(id: number) {
-    return this.orderRepository.findOne(id);
+    return this.orderRepository.findOne(id, {
+      relations: ['table', 'items', 'items.product']
+    });
   }
 
   async updateOrderStatus(orderId: number, status: OrderStatus) {

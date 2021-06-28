@@ -37,6 +37,8 @@ export class OrderController {
       }
     } as Order;
     this.orderGateway.sendOrderUpdateToTable(respnseOrder, order.table);
+    const adminOrder = await this.orderService.findOneWithId(order.id);
+    this.orderGateway.sendOrderUpdateToUser(adminOrder);
     return respnseOrder;
   }
   

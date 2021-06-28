@@ -11,6 +11,7 @@ import { SettingsService, Settings } from '../../settings.service';
 import { AdminTablesService, Table } from '../services/admin-tables.service';
 import { ConfirmDialogComponent, ConfirmDialogModel } from 'libs/ui/src/lib/confirm-dialog/confirm-dialog.component';
 import { AdminProductsService } from '../services/admin-products.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'hz-orders',
@@ -32,6 +33,7 @@ export class OrdersComponent implements OnInit {
     displayedCategories: OrderStatus[],
     displayedProductCategories: null | ProducCategory[]
   };
+  oldStatus: Map<string, OrderStatus> = new Map();
 
   constructor(
     private adminOrderService: AdminOrderService,
@@ -40,7 +42,8 @@ export class OrdersComponent implements OnInit {
     public orderService: OrderService,
     private dialog: MatDialog,
     private wsService: OrderWSService,
-    private  settingsService: SettingsService
+    private settingsService: SettingsService,
+    private snackBar: MatSnackBar
   ) {
     this.initFilter();
   }
@@ -56,7 +59,12 @@ export class OrdersComponent implements OnInit {
     });
 
     this.wsService.orderUpdate().pipe(untilDestroyed(this)).subscribe(order => {
-      this.orders = [ ...this.orders, order];
+      const index = this.orders.findIndex(e => e.id === order.id);
+      if (index > -1) {
+        this.orders[index] = order;
+      } else {
+        this.orders = [ ...this.orders, order];
+      }
     });
 
     this.adminTableService.getTables().pipe(first()).subscribe(tables => {
@@ -93,11 +101,22 @@ export class OrdersComponent implements OnInit {
     sessionStorage.setItem('order_filter', JSON.stringify(this.filter));
   }
 
-  private _changeStatus(order: ServerOrder, status: OrderStatus): void {
+  private _changeStatus(order: ServerOrder, status: OrderStatus, showMessage: boolean = true): void {
+    this.oldStatus.set(`order-${order.id}`, order.status);
     this.adminOrderService.changeStatus(order.id, status).pipe(first()).subscribe(result => {
       const eOrder = this.orders.find(e => e.id === result.id);
       if (eOrder) {
+        const oldStatus = eOrder.status;
         eOrder.status = result.status;
+        if (showMessage) {
+          const snackBarRef = this.snackBar.open(`Status auf "${this.orderService.getTextForOrderStatus(result.status)}" gesetzt`, 'rückgängig', {
+            duration: 4000,
+          });
+          snackBarRef.onAction().pipe(first()).subscribe(()=> {
+            const oldStatus = this.oldStatus.get(`order-${order.id}`);
+            this._changeStatus(order, oldStatus, false);
+          });
+        }
       }
     });
   }

@@ -234,6 +234,12 @@ export class OrderComponent implements OnInit, OnDestroy {
         this.resetProductCountForCategories(cardCategories);
         this.comment = '';
         this.sum = 0;
+        const snackBarRef = this.snackBar.open('Ihre Bestellung wurde aufgegeben', 'anzeigen', {
+          duration: 4000,
+        });
+        snackBarRef.onAction().subscribe(()=> {
+          window.scroll(0,0);
+        });
       });
     }
     if (this.updateCardAfterPlaceOrder) {

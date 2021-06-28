@@ -11,15 +11,16 @@
 
   ul {
     padding: 0 15px;
+    font-size: 1.5em;
+  }
+
+  .sum {
+    font-size: 2em;
   }
 }
 
 .order-status {
   margin: 0;
-}
-
-.status-button:not(:last-of-type) {
-  margin-right: .5em;
 }
 
 .in-preparation {
