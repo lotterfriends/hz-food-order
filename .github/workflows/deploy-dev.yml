@@ -23,7 +23,7 @@ jobs:
         npm run build:prod
 
     - name: create restart hint
-      run: touch ./work/restart.txt
+      run: mkdir -p ./work/tmp && touch ./work/tmp/restart.txt
 
     - name: 📂 Sync files
       uses: SamKirkland/FTP-Deploy-Action@4.0.0
