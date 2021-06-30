@@ -34,7 +34,6 @@ export class OrderComponent implements OnInit, OnDestroy {
   ) { }
 
   static readonly MIN_PRODUCT = 0;
-  static readonly MAX_PRODUCT = 40;
 
   orderStatus = OrderStatus;
   orders: ServerOrder[] = [];
@@ -170,7 +169,7 @@ export class OrderComponent implements OnInit, OnDestroy {
 
   plus(product: OrderProduct): void {
     console.log(product, this.settings.whileStocksLast);
-    if (product.count < OrderComponent.MAX_PRODUCT && (!this.settings.whileStocksLast || product.count < product.stock)) {
+    if (product.count < this.settings.maxSameProductsPerOrder && (!this.settings.whileStocksLast || product.count < product.stock)) {
       product.count++;
       this.sum += parseFloat(product.price);
     }

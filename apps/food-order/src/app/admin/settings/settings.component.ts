@@ -29,6 +29,7 @@ export class SettingsComponent implements OnInit {
   whileStocksLast = false;
   orderSound = false;
   settingsLogo = '';
+  maxSameProductsPerOrder;
 
   constructor(
     private adminOrderService: AdminOrderService,
@@ -49,6 +50,7 @@ export class SettingsComponent implements OnInit {
       this.orderSound = settings.orderSound;
       this.settingsLogo = settings.logo;
       this.tableCode = settings.tableCode;
+      this.maxSameProductsPerOrder = settings.maxSameProductsPerOrder;
     });
   }
 
@@ -97,7 +99,8 @@ export class SettingsComponent implements OnInit {
       tableCode: this.tableCode,
       pickupOrder: this.pickupOrder,
       orderSound: this.orderSound,
-      whileStocksLast: this.whileStocksLast
+      whileStocksLast: this.whileStocksLast,
+      maxSameProductsPerOrder: this.maxSameProductsPerOrder
     }).pipe(first()).subscribe((settings: Settings) => {
       this.seperateOrderPerProductCategory = settings.seperateOrderPerProductCategory;
       this.disableProductOnOutOfStock = settings.disableProductOnOutOfStock;
@@ -106,6 +109,7 @@ export class SettingsComponent implements OnInit {
       this.pickupOrder = settings.pickupOrder;
       this.orderSound = settings.orderSound;
       this.whileStocksLast = settings.whileStocksLast;
+      this.maxSameProductsPerOrder = settings.maxSameProductsPerOrder;
     });
   }
 

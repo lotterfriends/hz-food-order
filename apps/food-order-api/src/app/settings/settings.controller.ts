@@ -55,7 +55,8 @@ export class SettingsController {
         'pickupOrder',
         'orderSound',
         'logo',
-        'tableCode'
+        'tableCode',
+        'maxSameProductsPerOrder'
       ]
     });
   }

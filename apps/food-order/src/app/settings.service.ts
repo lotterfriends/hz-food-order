@@ -12,6 +12,7 @@ export interface Settings {
   orderSound: boolean;
   tableCode: boolean;
   logo?: string;
+  maxSameProductsPerOrder?: number;
 }
 
 @Injectable({ providedIn: 'root' })

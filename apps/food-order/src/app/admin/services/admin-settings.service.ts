@@ -14,6 +14,7 @@ export interface Settings {
   orderSound?: boolean;
   logo?: string;
   updated?: Date;
+  maxSameProductsPerOrder?: number;
 }
 
 @Injectable({

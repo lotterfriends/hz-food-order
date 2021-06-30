@@ -38,6 +38,9 @@ export class Settings {
   
   @Column({ default: false })
   tableCode: boolean;
+
+  @Column({ default: 10 })
+  maxSameProductsPerOrder: number;
   
   @Column('simple-array')
   oldSecrets: string[];

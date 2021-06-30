@@ -65,6 +65,13 @@
     <div>
       <mat-checkbox [(ngModel)]="tableCode">Jedem Tisch einen Code zuweisen über dessen eigabe man zur Bestell-Seite gelangt (Achtung: Unsicher!)</mat-checkbox>
     </div>
+    <br />
+    <div>
+      <mat-form-field fxFlexFill>
+        <mat-label>Wie oft darf das gleich Produkt pro Bestellung bestellt werden?</mat-label>
+        <input min="1" max="9999" [(ngModel)]="maxSameProductsPerOrder" type="number" matInput>
+      </mat-form-field>
+    </div>
     <br>
     <div>
       <button (click)="saveSettings()" mat-raised-button color="primary">Speichern</button>
