@@ -79,7 +79,6 @@ export class OrdersComponent implements OnInit {
           this.filter.displayedProductCategories = categories;
           this.updateFilter();
         }
-        console.log(this.filter);
       });
     }
   }
@@ -106,7 +105,6 @@ export class OrdersComponent implements OnInit {
     this.adminOrderService.changeStatus(order.id, status).pipe(first()).subscribe(result => {
       const eOrder = this.orders.find(e => e.id === result.id);
       if (eOrder) {
-        const oldStatus = eOrder.status;
         eOrder.status = result.status;
         if (showMessage) {
           const snackBarRef = this.snackBar.open(`Status auf "${this.orderService.getTextForOrderStatus(result.status)}" gesetzt`, 'rückgängig', {
@@ -119,6 +117,14 @@ export class OrdersComponent implements OnInit {
         }
       }
     });
+  }
+
+  orderTrackByFn(index, item) {
+    return item.id;
+  }
+ 
+  orderItemTrackByFn(index, item) {
+    return item.id;
   }
 
 

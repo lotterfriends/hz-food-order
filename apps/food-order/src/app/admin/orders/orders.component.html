@@ -36,10 +36,9 @@
   <br />
 
   <ng-container>
-    <ng-container  *ngFor="let order of orders">
-      <div class="order" fxLayout="column" fxLayoutGap="10px" *ngIf="(!filter.selectedTable || filter.selectedTable.id === order.table.id) && filter.displayedCategories.includes(order.status) && displayOrderByCategory(order)">
+    <ng-container *ngFor="let order of orders; trackBy: orderTrackByFn; index as i">
+      <div class="order" fxLayout="column" fxLayoutGap="10px" fxHide [fxShow]="(!filter.selectedTable || filter.selectedTable.id === order.table.id) && filter.displayedCategories.includes(order.status) && displayOrderByCategory(order) && i < more">
         <div fxLayout="row" fxFlexFill fxLayoutGap="10px">
-        
           <mat-card fxFlex="grow" class="{{order.status}}">
             <mat-card-title fxLayoutAlign="start center">
               <span class="category-icon" *ngIf="settings.seperateOrderPerProductCategory"><mat-icon>{{order.items[0]?.product?.category?.icon}}</mat-icon></span>
@@ -51,7 +50,7 @@
                 <div fxFlexFill>
                   <div>{{order.comment}}</div>
                   <ul>
-                    <li *ngFor="let item of order.items">{{item.count}}x - {{item.product.name}}</li>
+                    <li *ngFor="let item of order.items; trackBy: orderItemTrackByFn">{{item.count}}x - {{item.product.name}}</li>
                   </ul>
               
                   <em *ngIf="order.orderMessage && order.orderMessage.length">{{order.orderMessage}}</em>
