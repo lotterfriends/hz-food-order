@@ -66,7 +66,8 @@ export class OrdersComponent implements OnInit {
       if (index > -1) {
         this.orders[index] = order;
       } else {
-        this.orders = [ ...this.orders, order];
+        this.orders = [ ...this.orders, order].sort((a,b) => new Date(a.created).getTime() - new Date(b.created).getTime());
+        this.resultCount++;
       }
     });
 
@@ -120,9 +121,7 @@ export class OrdersComponent implements OnInit {
     this.adminOrderService.getOrders(this.skip, this.filter).pipe(first()).subscribe(([result, count]) => {
       this.resultCount = count;
       if (append) {
-        this.orders = [...this.orders, ...result].sort((a,b) => {
-          return new Date(a.created).getTime() - new Date(b.created).getTime()
-        });
+        this.orders = [...this.orders, ...result].sort((a,b) => new Date(a.created).getTime() - new Date(b.created).getTime());
       } else {
         this.orders = result;
       }
