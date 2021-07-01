@@ -51,9 +51,11 @@
       <div class="order" fxLayout="column" fxLayoutGap="10px" fxHide [fxShow]="(!filter.selectedTable || filter.selectedTable.id === order.table.id) && filter.displayedCategories.includes(order.status) && displayOrderByCategory(order)">
         <div fxLayout="row" fxFlexFill fxLayoutGap="10px">
           <mat-card fxFlex="grow" class="{{order.status}}">
-            <mat-card-title fxLayoutAlign="start center">
-              <span class="category-icon" *ngIf="settings.seperateOrderPerProductCategory"><mat-icon>{{order.items[0]?.product?.category?.icon}}</mat-icon></span>
-              <span>{{order.table.name}} <ng-container *ngIf="settings?.orderCode">- <span class="order-code">{{order.code}}</span></ng-container></span>
+            <mat-card-title fxLayout="row" fxLayoutAlign="space-between center">
+              <div fxLayout="row" fxLayoutAlign="center center">
+                <mat-icon class="category-icon" *ngIf="settings.seperateOrderPerProductCategory">{{order.items[0]?.product?.category?.icon}}</mat-icon>
+                <span>{{order.table.name}} <ng-container *ngIf="settings?.orderCode">- <span class="order-code">{{order.code}}</span></ng-container></span>
+              </div>
               <button mat-icon-button (click)="openMessageDialog(order)"><mat-icon>message</mat-icon></button>
             </mat-card-title>
             <mat-card-content>

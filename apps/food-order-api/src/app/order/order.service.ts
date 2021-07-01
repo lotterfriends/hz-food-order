@@ -70,7 +70,7 @@ export class OrderService {
     if (settings.seperateOrderPerProductCategory) {
       query.andWhere('c.id in (:productCategories)', {productCategories: filter.productCategories})
     }
-    query.orderBy('o.created', 'ASC')
+    query.orderBy('o.created', 'ASC');
 
     query.skip(skip || 0)
       .take(10);
