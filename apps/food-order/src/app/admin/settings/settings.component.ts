@@ -102,14 +102,18 @@ export class SettingsComponent implements OnInit {
       whileStocksLast: this.whileStocksLast,
       maxSameProductsPerOrder: this.maxSameProductsPerOrder
     }).pipe(first()).subscribe((settings: Settings) => {
-      this.seperateOrderPerProductCategory = settings.seperateOrderPerProductCategory;
-      this.disableProductOnOutOfStock = settings.disableProductOnOutOfStock;
-      this.orderCode = settings.orderCode;
-      this.tableCode = settings.tableCode;
-      this.pickupOrder = settings.pickupOrder;
-      this.orderSound = settings.orderSound;
-      this.whileStocksLast = settings.whileStocksLast;
-      this.maxSameProductsPerOrder = settings.maxSameProductsPerOrder;
+      window.sessionStorage.removeItem('order_filter');
+      //TODO: send reload event to all clients
+
+      // this.seperateOrderPerProductCategory = settings.seperateOrderPerProductCategory;
+      // this.disableProductOnOutOfStock = settings.disableProductOnOutOfStock;
+      // this.orderCode = settings.orderCode;
+      // this.tableCode = settings.tableCode;
+      // this.pickupOrder = settings.pickupOrder;
+      // this.orderSound = settings.orderSound;
+      // this.whileStocksLast = settings.whileStocksLast;
+      // this.maxSameProductsPerOrder = settings.maxSameProductsPerOrder;
+      location.reload();
     });
   }
 

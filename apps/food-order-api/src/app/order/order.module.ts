@@ -10,6 +10,7 @@ import { OrderController } from './order.controller';
 import { AppService } from '../app.service';
 import { AuthModule } from '../auth/auth.module';
 import { GatewayModule } from '../gateway/gateways.module';
+import { SettingsModule } from '../settings/settings.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { GatewayModule } from '../gateway/gateways.module';
     TablesModule,
     ProductsModule,
     AuthModule,
+    SettingsModule,
     GatewayModule
   ],
   controllers: [TableOrderController, OrderController],

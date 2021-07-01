@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { ScrollStateService } from '../../scroll-state.service';
 import { adminRoutes } from '../admin-routing.module';
 
 interface NavRoute{
@@ -16,7 +17,9 @@ interface NavRoute{
 })
 export class AppNavigationComponent {
 
-  constructor() {
+  constructor(
+    private scrollStateService: ScrollStateService
+  ) {
     this.updateZoom();
   }
 
@@ -46,5 +49,9 @@ export class AppNavigationComponent {
 
   updateZoom() {
     (window as any).updateZoom();
+  }
+
+  onScroll(event) {
+    this.scrollStateService.scrolling(event);
   }
 }

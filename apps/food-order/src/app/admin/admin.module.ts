@@ -35,7 +35,7 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatChipsModule} from '@angular/material/chips';
 import {MatProgressBarModule} from '@angular/material/progress-bar'
 import { TablePrintComponent } from './tables/table-print/table-print.component';
-
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 @NgModule({
   declarations: [
     OrdersComponent,
@@ -76,7 +76,8 @@ import { TablePrintComponent } from './tables/table-print/table-print.component'
     MatListModule,
     MatCheckboxModule,
     MatChipsModule,
-    MatProgressBarModule
+    MatProgressBarModule,
+    MatProgressSpinnerModule
   ],
   bootstrap: [AdminComponent]
 })

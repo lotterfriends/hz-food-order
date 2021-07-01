@@ -27,6 +27,9 @@ export class Order {
   })
   status?: OrderStatus;
 
+  @Column({nullable: true, default: null})
+  archived: Date;
+
   // @ManyToOne(() => Table, table => table.orders, { eager: false })
   @ManyToOne('Table', 'orders', { eager: false })
   @JoinColumn()

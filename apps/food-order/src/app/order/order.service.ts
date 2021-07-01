@@ -51,6 +51,7 @@ export interface Order {
 }
 
 export interface ServerOrder {
+  created: string;
   comment: string;
   id: number;
   code: string;
@@ -65,6 +66,7 @@ export interface ServerOrder {
     id: number;
     name: string;
   };
+
 }
 
 @Injectable({

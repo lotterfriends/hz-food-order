@@ -39,7 +39,7 @@
 
   </mat-sidenav>
 
-  <mat-sidenav-content>
+  <mat-sidenav-content (scroll)="onScroll($event)">
     <hz-header  (toggleSidenav)="navigationSidenav.toggle()"></hz-header>
     <div class="admin-main">
       <router-outlet></router-outlet>

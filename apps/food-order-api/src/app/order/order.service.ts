@@ -8,13 +8,15 @@ import { OrderItem } from './order-item.entity';
 import { Order } from './order.entity';
 import { OrderDto } from './types/oder-dto';
 import { OrderStatus } from './types/order-status';
+import { SettingsService } from '../settings/settings.service';
 @Injectable()
 export class OrderService {
 
   constructor(
     @InjectRepository(Order) private orderRepository: Repository<Order>,
     private readonly productsService: ProductsService,
-    private readonly appService: AppService
+    private readonly appService: AppService,
+    private readonly settingsService: SettingsService
   ) {}
 
   async saveOrderForTable(table: Table, createOrderDto: OrderDto): Promise<Order> {
@@ -49,23 +51,46 @@ export class OrderService {
     });
   }
 
-  getAll() {
-    return this.orderRepository.find({
-      relations: ['table', 'items', 'items.product'],
-      where: {
-        status: Not(OrderStatus.Archived)
-      },
-      order: {
-        created: 'ASC'
-      }
-    });
+  async getAll(skip: number, filter?: {orderStatus?: OrderStatus[], productCategories?: number[], table?: number}) {
+    const settings = await this.settingsService.getSettings();
+    const query = this.orderRepository.createQueryBuilder('o')
+      .innerJoinAndSelect('o.table', 't')
+      .innerJoinAndSelect('o.items', 'i')
+      .innerJoinAndSelect('i.product', 'p')
+      .innerJoinAndSelect('p.category', 'c')
+
+    query.where('archived is null')
+    query.andWhere('o.status in (:orderStatus)', {orderStatus: filter.orderStatus})
+    if (filter.table) {
+      query.andWhere('t.id = :table', {table: filter.table})
+    }
+    if (settings.seperateOrderPerProductCategory) {
+      query.andWhere('c.id in (:productCategories)', {productCategories: filter.productCategories})
+    }
+    query.orderBy('o.created', 'ASC')
+
+    query.skip(skip || 0)
+      .take(10);
+
+    return query.getManyAndCount();
+
+    // return this.orderRepository.find({
+    //   relations: ['table', 'items', 'items.product'],
+    //   where: {
+    //     status: Not(OrderStatus.Archived),
+    //   },
+    //   order: {
+    //     created: 'ASC'
+    //   }
+    // });
   }
 
   async archiveAllActiveOrders() {
+    const archived = new Date();
     return this.orderRepository.createQueryBuilder()
       .update()
-      .set({ status: OrderStatus.Archived})
-      .where(`status != :achivedStatus`, { achivedStatus: OrderStatus.Archived})
+      .set({ archived: archived})
+      .where(`archived is null`)
       .execute();
   }
 

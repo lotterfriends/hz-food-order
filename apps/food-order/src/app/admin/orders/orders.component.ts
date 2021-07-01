@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { OrderService, ProducCategory, ServerOrder } from '../../order/order.service';
-import { AdminOrderService } from '../services/admin-order.service';
+import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
+import { OrderService, ServerOrder } from '../../order/order.service';
+import { AdminOrderService, OrderFilter } from '../services/admin-order.service';
 import { OrderStatus } from '../../order/order.service';
 import { MatDialog } from '@angular/material/dialog';
 import { OrderMessageDialogComponent } from './order-message-dialog/order-message-dialog';
@@ -10,8 +10,9 @@ import { filter, first } from 'rxjs/operators';
 import { SettingsService, Settings } from '../../settings.service';
 import { AdminTablesService, Table } from '../services/admin-tables.service';
 import { ConfirmDialogComponent, ConfirmDialogModel } from 'libs/ui/src/lib/confirm-dialog/confirm-dialog.component';
-import { AdminProductsService } from '../services/admin-products.service';
+import { AdminProductsService, ProducCategory } from '../services/admin-products.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { ScrollStateService } from '../../scroll-state.service';
 
 @Component({
   selector: 'hz-orders',
@@ -28,12 +29,13 @@ export class OrdersComponent implements OnInit {
   settings: Settings;
   isInitialFilterInit = false;
   categories:  ProducCategory[];
-  filter: {
-    selectedTable: Table | null,
-    displayedCategories: OrderStatus[],
-    displayedProductCategories: null | ProducCategory[]
-  };
+  filter: OrderFilter;
   oldStatus: Map<string, OrderStatus> = new Map();
+  loading = true;
+  resultCount = 0;
+  skip = 0;
+  loadingMore = false;
+  @ViewChild('moreSection', { read: ElementRef }) moreSection:ElementRef;
 
   constructor(
     private adminOrderService: AdminOrderService,
@@ -43,7 +45,8 @@ export class OrdersComponent implements OnInit {
     private dialog: MatDialog,
     private wsService: OrderWSService,
     private settingsService: SettingsService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private scrollStateService: ScrollStateService
   ) {
     this.initFilter();
   }
@@ -54,9 +57,7 @@ export class OrdersComponent implements OnInit {
       this.settings = settings;
     })
 
-    this.adminOrderService.getOrders().pipe(first()).subscribe(result => {
-      this.orders = result;
-    });
+    this.getOrders();
 
     this.wsService.orderUpdate().pipe(untilDestroyed(this)).subscribe(order => {
       const index = this.orders.findIndex(e => e.id === order.id);
@@ -80,7 +81,11 @@ export class OrdersComponent implements OnInit {
           this.updateFilter();
         }
       });
+    } else {
+      this.updateFilter();
     }
+
+    this.scrollStateService.onScroll.pipe(untilDestroyed(this)).subscribe(this.onScroll.bind(this));
   }
 
   private initFilter() {
@@ -91,13 +96,46 @@ export class OrdersComponent implements OnInit {
       this.filter = {
         selectedTable: null,
         displayedCategories: [OrderStatus.InPreparation, OrderStatus.Ready],
-        displayedProductCategories: []
       }
     }
   }
 
+  onScroll(event) {
+    // endless loader
+    if (this.moreSection) {
+      const x = window.innerHeight - this.moreSection.nativeElement.getBoundingClientRect().bottom;
+      if (!this.loading && x > -100) {
+        this.more();
+      }
+    }
+  }
+
+  private getOrders(append = false) {
+    this.loading = true;
+    this.adminOrderService.getOrders(this.skip, this.filter).pipe(first()).subscribe(([result, count]) => {
+      this.resultCount = count;
+      if (append) {
+        this.orders = [...this.orders, ...result].sort((a,b) => {
+          return new Date(a.created).getTime() - new Date(b.created).getTime()
+        });
+      } else {
+        this.orders = result;
+      }
+      this.loading = false;
+    }, () => {
+      this.loading = false;
+    });
+  }
+
+  public more() {
+    this.skip += 10;
+    this.getOrders(true);
+  }
+
   private updateFilter() {
     sessionStorage.setItem('order_filter', JSON.stringify(this.filter));
+    this.skip = 0;
+    this.getOrders();
   }
 
   private _changeStatus(order: ServerOrder, status: OrderStatus, showMessage: boolean = true): void {
@@ -187,8 +225,8 @@ export class OrdersComponent implements OnInit {
     this.filter.displayedCategories = this.orderStatusArray;
     if (this.settings.seperateOrderPerProductCategory) {
       this.filter.displayedProductCategories = this.categories;
-      this.updateFilter();
     }
+    this.updateFilter();
   }
 
   selectNone() {

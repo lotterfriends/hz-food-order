@@ -17,6 +17,13 @@
   .sum {
     font-size: 2em;
   }
+
+  .order-msg {
+    font-size: 1.5em;
+    &:last-of-type {
+      padding-bottom: 1em;
+    }
+  }
 }
 
 .order-status {

@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Param, Post, Query, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { OrderGateway } from '../gateway/order-gateway';
 import { Order } from './order.entity';
@@ -16,8 +16,25 @@ export class OrderController {
 
 
   @Get()
-  async getAll() {
-    return this.orderService.getAll();
+  async getAll(
+    @Query('skip') skip: number,
+    @Query('status') status: string,
+    @Query('product-categories') productCategories: string,
+    @Query('table') table: string
+  ) {
+    const filter:{orderStatus?: OrderStatus[] | null, productCategories?: number[], table?: number} = {};
+    if (status || productCategories || table) {
+      if (status) {
+        filter.orderStatus = status.split(',') as OrderStatus[]
+      }
+      if (productCategories) {
+        filter.productCategories = productCategories.split(',').map(e => parseInt(e, 10));
+      }
+      if (table) {
+        filter.table = parseInt(table, 10);
+      }
+    }
+    return this.orderService.getAll(skip, filter);
   }
 
   @Post('change-status/:id')
