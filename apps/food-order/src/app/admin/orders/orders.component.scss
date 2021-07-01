@@ -26,6 +26,15 @@
   }
 }
 
+.no-order {
+  padding-top: 5em;
+  img {
+    opacity: .5;
+    width: 300px;
+    max-width: 60%;
+  }
+}
+
 .order-status {
   margin: 0;
 }
