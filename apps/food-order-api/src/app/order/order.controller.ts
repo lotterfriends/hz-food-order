@@ -20,9 +20,10 @@ export class OrderController {
     @Query('skip') skip: number,
     @Query('status') status: string,
     @Query('product-categories') productCategories: string,
-    @Query('table') table: string
+    @Query('table') table: string,
+    @Query('code') code: string
   ) {
-    const filter:{orderStatus?: OrderStatus[] | null, productCategories?: number[], table?: number} = {};
+    const filter:{orderStatus?: OrderStatus[] | null, productCategories?: number[], table?: number, code?: string} = {};
     if (status || productCategories || table) {
       if (status) {
         filter.orderStatus = status.split(',') as OrderStatus[]
@@ -32,6 +33,9 @@ export class OrderController {
       }
       if (table) {
         filter.table = parseInt(table, 10);
+      }
+      if (code && code.length) {
+        filter.code = code;
       }
     }
     return this.orderService.getAll(skip, filter);

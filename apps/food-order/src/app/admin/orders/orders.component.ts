@@ -35,6 +35,8 @@ export class OrdersComponent implements OnInit {
   resultCount = 0;
   skip = 0;
   loadingMore = false;
+  searchTid;
+  code: string;
   @ViewChild('moreSection', { read: ElementRef }) moreSection:ElementRef;
 
   constructor(
@@ -91,6 +93,9 @@ export class OrdersComponent implements OnInit {
   private initFilter() {
     if (sessionStorage.getItem('order_filter')) {
       this.filter = JSON.parse(sessionStorage.getItem('order_filter'));
+      if (this.filter.code && this.filter.code.length) {
+        this.code = this.filter.code;
+      }
     } else {
       this.isInitialFilterInit = true;
       this.filter = {
@@ -160,7 +165,7 @@ export class OrdersComponent implements OnInit {
   orderTrackByFn(index, item) {
     return item.id;
   }
- 
+
   orderItemTrackByFn(index, item) {
     return item.id;
   }
@@ -269,6 +274,16 @@ export class OrdersComponent implements OnInit {
     return this.filter.displayedProductCategories.findIndex(e => {
       return order.items[0].product.category.id === e.id
     }) > -1
+  }
+
+  searchByCode() {
+    clearTimeout(this.searchTid);
+    this.searchTid = setTimeout(() => {
+      if (this.code !== this.filter.code) {
+        this.filter.code = this.code;
+        this.updateFilter();
+      }
+    }, 500)
   }
   
 }

@@ -51,7 +51,7 @@ export class OrderService {
     });
   }
 
-  async getAll(skip: number, filter?: {orderStatus?: OrderStatus[], productCategories?: number[], table?: number}) {
+  async getAll(skip: number, filter?: {orderStatus?: OrderStatus[], productCategories?: number[], table?: number, code?: string}) {
     const settings = await this.settingsService.getSettings();
     const query = this.orderRepository.createQueryBuilder('o')
       .innerJoinAndSelect('o.table', 't')
@@ -63,6 +63,9 @@ export class OrderService {
     query.andWhere('o.status in (:orderStatus)', {orderStatus: filter.orderStatus})
     if (filter.table) {
       query.andWhere('t.id = :table', {table: filter.table})
+    }
+    if (filter.code) {
+      query.andWhere('o.code like :code', {code: `%${filter.code.toUpperCase()}%`});
     }
     if (settings.seperateOrderPerProductCategory) {
       query.andWhere('c.id in (:productCategories)', {productCategories: filter.productCategories})

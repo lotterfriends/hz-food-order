@@ -32,65 +32,76 @@
     <mat-chip (click)="selectNone()" [selected]="!filter.displayedCategories.length && (!settings.seperateOrderPerProductCategory || !filter.displayedProductCategories.length)">Keine</mat-chip>
   </mat-chip-list>
 
-  <mat-spinner *ngIf="loading" [diameter]="20"></mat-spinner>
+  <div class="order-code-search">
+    <input (keyup)="searchByCode()" placeholder="Nach Bestellcode filtern" [(ngModel)]="code" type="text">
+  </div>
 </div>
 
 <br />
 
-<ng-container *ngIf="orders && orders.length; else noOrder">
+<div fxLayout="row" fxLayoutAlign="center center" *ngIf="loading; else noLoading">
+  <mat-spinner></mat-spinner>
+</div>
 
-  <ng-container *ngFor="let order of orders; trackBy: orderTrackByFn; index as i">
-    <div class="order" fxLayout="column" fxLayoutGap="10px" fxHide [fxShow]="(!filter.selectedTable || filter.selectedTable.id === order.table.id) && filter.displayedCategories.includes(order.status) && displayOrderByCategory(order)">
-      <div fxLayout="row" fxFlexFill fxLayoutGap="10px">
-        <mat-card fxFlex="grow" class="{{order.status}}">
-          <mat-card-title fxLayoutAlign="start center">
-            <span class="category-icon" *ngIf="settings.seperateOrderPerProductCategory"><mat-icon>{{order.items[0]?.product?.category?.icon}}</mat-icon></span>
-            <span>{{order.table.name}} <ng-container *ngIf="settings?.orderCode">- <span class="order-code">{{order.code}}</span></ng-container></span>
-            <button mat-icon-button (click)="openMessageDialog(order)"><mat-icon>message</mat-icon></button>
-          </mat-card-title>
-          <mat-card-content>
-            <div fxFlexFill>
+<ng-template #noLoading>
+
+  <ng-container *ngIf="orders && orders.length; else noOrder">
+  
+    <ng-container *ngFor="let order of orders; trackBy: orderTrackByFn; index as i">
+      <div class="order" fxLayout="column" fxLayoutGap="10px" fxHide [fxShow]="(!filter.selectedTable || filter.selectedTable.id === order.table.id) && filter.displayedCategories.includes(order.status) && displayOrderByCategory(order)">
+        <div fxLayout="row" fxFlexFill fxLayoutGap="10px">
+          <mat-card fxFlex="grow" class="{{order.status}}">
+            <mat-card-title fxLayoutAlign="start center">
+              <span class="category-icon" *ngIf="settings.seperateOrderPerProductCategory"><mat-icon>{{order.items[0]?.product?.category?.icon}}</mat-icon></span>
+              <span>{{order.table.name}} <ng-container *ngIf="settings?.orderCode">- <span class="order-code">{{order.code}}</span></ng-container></span>
+              <button mat-icon-button (click)="openMessageDialog(order)"><mat-icon>message</mat-icon></button>
+            </mat-card-title>
+            <mat-card-content>
               <div fxFlexFill>
-                <ul>
-                  <li *ngFor="let item of order.items; trackBy: orderItemTrackByFn">{{item.count}}x - {{item.product.name}}</li>
-                </ul>
+                <div fxFlexFill>
+                  <ul>
+                    <li *ngFor="let item of order.items; trackBy: orderItemTrackByFn">{{item.count}}x - {{item.product.name}}</li>
+                  </ul>
+              
+                  <div class="order-msg" *ngIf="order.comment && order.comment.length">Kundennachricht: <strong>{{order.comment}}</strong></div>
+                  <div class="order-msg" *ngIf="order.orderMessage && order.orderMessage.length">Servicenachricht: <strong>{{order.orderMessage}}</strong></div>
+  
+                </div>
             
-                <div class="order-msg" *ngIf="order.comment && order.comment.length">Kundennachricht: <strong>{{order.comment}}</strong></div>
-                <div class="order-msg" *ngIf="order.orderMessage && order.orderMessage.length">Servicenachricht: <strong>{{order.orderMessage}}</strong></div>
-
+                <div fxLayoutAlign="space-between center" class="order-status">
+                  <span class="sum">{{orderService.getSum(order) | currency:'EUR'}}</span>
+                  <span>{{orderService.getTextForOrderStatus(order.status)}}</span>
+                </div>
               </div>
-          
-              <div fxLayoutAlign="space-between center" class="order-status">
-                <span class="sum">{{orderService.getSum(order) | currency:'EUR'}}</span>
-                <span>{{orderService.getTextForOrderStatus(order.status)}}</span>
-              </div>
-            </div>
+      
+            </mat-card-content>
+          </mat-card>
     
-          </mat-card-content>
-        </mat-card>
-  
-        <div fxLayout="column" fxLayoutGap="1em">
-          <button fxFlex="100" class="status-button" [disabled]="status === order.status" (click)="changeStatus(order, status)" mat-stroked-button *ngFor="let status of orderStatusArray">
-            {{orderService.getTextForOrderStatus(status)}}
-          </button>
+          <div fxLayout="column" fxLayoutGap="1em">
+            <button fxFlex="100" class="status-button" [disabled]="status === order.status" (click)="changeStatus(order, status)" mat-stroked-button *ngFor="let status of orderStatusArray">
+              {{orderService.getTextForOrderStatus(status)}}
+            </button>
+          </div>
+    
         </div>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="resultCount && resultCount > 10 &&  skip + 10 < resultCount; else noMore">
+      <div class="d-flex justify-content-center my-4" #moreSection>
+        <button mat-button *ngIf="!loading" (click)="more()">mehr</button>
+        <div *ngIf="loading">
+          <mat-spinner [diameter]="20"></mat-spinner>
+        </div>
+      </div>
+    </ng-container>
+    <ng-template #noMore><br></ng-template>
   
-      </div>
-    </div>
+  
   </ng-container>
-  <ng-container *ngIf="resultCount && resultCount > 10 &&  skip + 10 < resultCount; else noMore">
-    <div class="d-flex justify-content-center my-4" #moreSection>
-      <button mat-button *ngIf="!loading" (click)="more()">mehr</button>
-      <div *ngIf="loading">
-        <mat-spinner [diameter]="20"></mat-spinner>
-      </div>
-    </div>
-  </ng-container>
-  <ng-template #noMore><br></ng-template>
+  
+  <ng-template #noOrder>
+    Keine offene Bestellung
+  </ng-template>
 
-
-</ng-container>
-
-<ng-template #noOrder>
-  Keine offene Bestellung
 </ng-template>
+

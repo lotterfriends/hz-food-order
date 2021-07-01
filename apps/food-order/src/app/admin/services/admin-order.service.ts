@@ -9,7 +9,8 @@ import { Table } from './admin-tables.service';
 export interface OrderFilter {
   selectedTable: Table | null,
   displayedCategories: OrderStatus[],
-  displayedProductCategories?: null | ProducCategory[]
+  displayedProductCategories?: null | ProducCategory[],
+  code?: string
 }
 
 @Injectable({
@@ -31,6 +32,9 @@ export class AdminOrderService {
       }
       if (filter.displayedProductCategories) {
         query.append('product-categories', filter.displayedProductCategories.map(e => e.id).join(','));
+      }
+      if (filter.code && filter.code.length) {
+        query.append('code', filter.code);
       }
     }
     return this.http.get<[ServerOrder[], number]>(`${environment.apiPath}/orders?${query.toString()}`);
