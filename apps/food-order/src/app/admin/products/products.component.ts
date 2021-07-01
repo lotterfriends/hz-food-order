@@ -6,6 +6,9 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { combineLatest } from 'rxjs';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmDialogComponent, ConfirmDialogModel } from 'libs/ui/src/lib/confirm-dialog/confirm-dialog.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 interface ViewProduct extends Product {
   edit: boolean;
@@ -79,7 +82,9 @@ export class ProductsComponent implements OnInit, AfterViewInit {
 
   constructor(
     private adminProductsService: AdminProductsService,
-    private ref: ChangeDetectorRef
+    private ref: ChangeDetectorRef,
+    private dialog: MatDialog,
+    private snackBar: MatSnackBar
   ) { }
   
   ngAfterViewInit(): void {
@@ -129,13 +134,25 @@ export class ProductsComponent implements OnInit, AfterViewInit {
       this.categoryName = '';
       this.categoryIcon = '';
       this.productCategory = this.categories[0];
+      this.snackBar.open(`Das Kategorie wurde angelegt`, 'OK', {
+        duration: 4000,
+      });
       this.ref.detectChanges();
     });
   }
 
   deleteCategory(category: ProducCategory): void {
-    this.adminProductsService.deleteCategory(category).pipe(first()).subscribe(result => {
-      this.init();
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      maxWidth: '400px',
+      data: new ConfirmDialogModel(null, `Wollen sie die Kategorie "${category.name}" wirklich löschen?`)
+    });
+
+    dialogRef.afterClosed().pipe(first()).subscribe(dialogResult => {
+      if (dialogResult) {
+        this.adminProductsService.deleteCategory(category).pipe(first()).subscribe(result => {
+          this.init();
+        });
+      }
     });
   }
 
@@ -195,9 +212,13 @@ export class ProductsComponent implements OnInit, AfterViewInit {
     this.adminProductsService.createProduct(
       this.newProductForm?.getRawValue() as Product
     ).pipe(first()).subscribe((product: Product) => {
+      this.newProductForm = this.createProductForm(null);
       this.addProductToCategory(product);
       this.ref.detectChanges();
       this.reRenderProductTables();
+      this.snackBar.open(`Das Produkt wurde angelegt`, 'OK', {
+        duration: 4000,
+      });
     });
   }
 
@@ -288,16 +309,28 @@ export class ProductsComponent implements OnInit, AfterViewInit {
     return a && b && a.id === b.id;
   }
 
-  deleteProduct(product: ViewProduct): void {
-    this.adminProductsService.deleteProduct(product.id).pipe(first()).subscribe(_ => {
-      this.productsByCategory.forEach(pc => {
-        const prpductIndex = pc.producs.findIndex(p => p.id === product.id);
-        if (prpductIndex > -1) {
-          pc.producs.splice(prpductIndex, 1);
-        }
-      });
-      this.reRenderProductTables();
+  deleteProduct(event, product: ViewProduct): void {
+    event.stopPropagation();
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      maxWidth: '400px',
+      data: new ConfirmDialogModel(null, `Wollen sie die Produkt "${product.name}" wirklich löschen?`)
     });
+
+    dialogRef.afterClosed().pipe(first()).subscribe(dialogResult => {
+      if (dialogResult) {
+        this.adminProductsService.deleteProduct(product.id).pipe(first()).subscribe(_ => {
+          this.productsByCategory.forEach(pc => {
+            const prpductIndex = pc.producs.findIndex(p => p.id === product.id);
+            if (prpductIndex > -1) {
+              pc.producs.splice(prpductIndex, 1);
+            }
+          });
+          this.reRenderProductTables();
+        });
+      }
+    });
+
+    
   }
 
   toggleDisableProduct($event, product: ViewProduct): void {
