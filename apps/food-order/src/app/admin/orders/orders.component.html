@@ -39,7 +39,7 @@
 
 <br />
 
-<div fxLayout="row" fxLayoutAlign="center center" *ngIf="loading; else noLoading">
+<div fxLayout="row" fxLayoutAlign="center center" *ngIf="loading && skip === 0; else noLoading">
   <mat-spinner></mat-spinner>
 </div>
 
