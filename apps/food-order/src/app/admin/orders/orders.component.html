@@ -62,7 +62,12 @@
               <div fxFlexFill>
                 <div fxFlexFill>
                   <ul>
-                    <li *ngFor="let item of order.items; trackBy: orderItemTrackByFn">{{item.count}}x - {{item.product.name}}</li>
+                    <li *ngFor="let item of order.items; trackBy: orderItemTrackByFn">
+                      <div fxLayout="row" fxLayoutAlign="start center">
+                        <span>{{item.count}}x - {{item.product.name}}</span>
+                        <span class="order-item-price">{{item.product.price * item.count | currency:'EUR' }}</span>
+                      </div>
+                    </li>
                   </ul>
               
                   <div class="order-msg" *ngIf="order.comment && order.comment.length">Kundennachricht: <strong>{{order.comment}}</strong></div>
