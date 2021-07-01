@@ -85,7 +85,7 @@
           </mat-card>
     
           <div fxLayout="column" fxLayoutGap="1em">
-            <button fxFlex="100" class="status-button" [disabled]="status === order.status" (click)="changeStatus(order, status)" mat-stroked-button *ngFor="let status of orderStatusArray">
+            <button class="status-button" [disabled]="status === order.status" (click)="changeStatus(order, status)" mat-stroked-button *ngFor="let status of orderStatusArray">
               {{orderService.getTextForOrderStatus(status)}}
             </button>
           </div>
