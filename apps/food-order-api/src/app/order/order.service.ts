@@ -3,9 +3,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { AppService } from '../app.service';
 import { ProductsService } from '../products/products.service';
 import { Table } from '../tables/table.entity';
-import { Not, Repository} from 'typeorm';
+import { Brackets, Not, Repository} from 'typeorm';
 import { OrderItem } from './order-item.entity';
-import { Order } from './order.entity';
+import { Order, OrderFilter } from './order.entity';
 import { OrderDto } from './types/oder-dto';
 import { OrderStatus } from './types/order-status';
 import { SettingsService } from '../settings/settings.service';
@@ -20,19 +20,32 @@ export class OrderService {
   ) {}
 
   async saveOrderForTable(table: Table, createOrderDto: OrderDto): Promise<Order> {
+    const settings = await this.settingsService.getSettings();
     const order = new Order();
     order.comment = createOrderDto.comment;
     order.status = OrderStatus.InPreparation;
     order.table = table;
     order.items = [];
+    let useFunnels = false;
     order.code = `${this.appService.randomString(3, true, true)}-${this.appService.randomString(3, true, true)}`.toUpperCase();
     for(const item of createOrderDto.items) {
       const orderItem = new OrderItem();
       const currentItem = await this.productsService.findOneWithId(item.id);
       await this.productsService.decreaseStock(currentItem.id, item.count);
       orderItem.product = currentItem;
+      if (!useFunnels && settings.seperateOrderPerProductCategory && currentItem.category.funnels && currentItem.category.funnels > 1) {
+        useFunnels = true;
+      }
       orderItem.count = item.count;
       order.items.push(orderItem);
+    }
+    if (useFunnels) {
+      const funnels = await this.getFunnel();
+      if (funnels.length) {
+        order.funnel = funnels[0].funnel;
+      } else {
+        order.funnel = 1;
+      }
     }
     return this.orderRepository.save(order);
   }
@@ -51,7 +64,18 @@ export class OrderService {
     });
   }
 
-  async getAll(skip: number, filter?: {orderStatus?: OrderStatus[], productCategories?: number[], table?: number, code?: string}) {
+  getFunnel():Promise<{funnel: number, count: string }[]> {
+    return this.orderRepository.createQueryBuilder('o')
+      .select(['o.funnel as funnel', 'count(o.funnel) as count'])
+      .where('o.status = :orderStatus', {orderStatus: OrderStatus.InPreparation})
+      .andWhere('o.funnel is not null')
+      .groupBy('o.funnel')
+      .orderBy('count', 'ASC')
+      .limit(1)
+      .execute();
+  }
+
+  async getAll(skip: number, filter?: OrderFilter) {
     const settings = await this.settingsService.getSettings();
     const query = this.orderRepository.createQueryBuilder('o')
       .innerJoinAndSelect('o.table', 't')
@@ -69,7 +93,14 @@ export class OrderService {
     }
     if (settings.seperateOrderPerProductCategory) {
       query.andWhere('c.id in (:productCategories)', {productCategories: filter.productCategories})
+      if (filter.funnels && filter.funnels.length) {
+        query.andWhere(new Brackets((q) => {
+          q.where('o.funnel in (:funnels)', {funnels: filter.funnels.map(e => e.funnel)})
+            .orWhere('o.funnel is null');
+        }));
+      }
     }
+    
     query.orderBy('o.created', 'ASC');
 
     query.skip(skip || 0)

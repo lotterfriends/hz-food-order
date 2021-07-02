@@ -25,10 +25,15 @@
     </mat-chip>
 
     <ng-container *ngIf="settings.seperateOrderPerProductCategory && categories && categories.length">
-      <mat-chip (click)="toggleSelectedProductCategories(category)" [selected]="productCategorySelected(category)" *ngFor="let category of categories"><mat-icon>{{category.icon}}</mat-icon></mat-chip>
+      <ng-container  *ngFor="let category of categories">
+        <mat-chip (click)="toggleSelectedProductCategories(category)" [selected]="productCategorySelected(category)"><mat-icon>{{category.icon}}</mat-icon></mat-chip>
+        <div class="funnels"  *ngIf="productCategorySelected(category) && category.funnels && category.funnels > 1">
+          <mat-chip (click)="toggleSelectedProductCategoryFunnel(i+1, category)" [selected]="isFunnelSelected(i+1, category)" *ngFor="let funnel of [].constructor(category.funnels); let i = index" [selected]="">{{i+1}}</mat-chip>
+        </div>
+      </ng-container>
     </ng-container>
 
-    <mat-chip (click)="selectAll()" [selected]="orderStatusArray.length === filter.displayedCategories.length && (!settings.seperateOrderPerProductCategory || filter.displayedProductCategories.length === categories.length)">Alle</mat-chip>
+    <mat-chip (click)="selectAll()" [selected]="isAllSelected()">Alle</mat-chip>
     <mat-chip (click)="selectNone()" [selected]="!filter.displayedCategories.length && (!settings.seperateOrderPerProductCategory || !filter.displayedProductCategories.length)">Keine</mat-chip>
   </mat-chip-list>
 

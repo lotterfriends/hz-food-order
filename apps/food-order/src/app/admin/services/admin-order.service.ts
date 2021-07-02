@@ -7,10 +7,11 @@ import { ProducCategory } from './admin-products.service';
 import { Table } from './admin-tables.service';
 
 export interface OrderFilter {
-  selectedTable: Table | null,
-  displayedCategories: OrderStatus[],
-  displayedProductCategories?: null | ProducCategory[],
-  code?: string
+  selectedTable: Table | null;
+  displayedCategories: OrderStatus[];
+  displayedProductCategories?: null | ProducCategory[];
+  code?: string;
+  funnels?: string[];
 }
 
 @Injectable({
@@ -35,6 +36,9 @@ export class AdminOrderService {
       }
       if (filter.code && filter.code.length) {
         query.append('code', filter.code);
+      }
+      if (filter.funnels && filter.funnels.length) {
+        query.append('funnels', filter.funnels.join(','));
       }
     }
     return this.http.get<[ServerOrder[], number]>(`${environment.apiPath}/orders?${query.toString()}`);

@@ -1,7 +1,7 @@
 import { BadRequestException, Body, Controller, Get, Param, Post, Query, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { OrderGateway } from '../gateway/order-gateway';
-import { Order } from './order.entity';
+import { Order, OrderFilter } from './order.entity';
 import { OrderService } from './order.service';
 import { OrderStatus } from './types/order-status';
 
@@ -21,10 +21,11 @@ export class OrderController {
     @Query('status') status: string,
     @Query('product-categories') productCategories: string,
     @Query('table') table: string,
-    @Query('code') code: string
+    @Query('code') code: string,
+    @Query('funnels') funnels: string
   ) {
-    const filter:{orderStatus?: OrderStatus[] | null, productCategories?: number[], table?: number, code?: string} = {};
-    if (status || productCategories || table) {
+    const filter:OrderFilter = {};
+    if (status || productCategories || table || code || funnels) {
       if (status) {
         filter.orderStatus = status.split(',') as OrderStatus[]
       }
@@ -36,6 +37,15 @@ export class OrderController {
       }
       if (code && code.length) {
         filter.code = code;
+      }
+      if (funnels && funnels.length) {
+        filter.funnels = funnels.split(',').map((e) => {
+          const [categoryId, funnel] = e.split('-');
+          return  {
+            categoryId: parseInt(categoryId, 10),
+            funnel: parseInt(funnel, 10)
+          }
+        });
       }
     }
     return this.orderService.getAll(skip, filter);

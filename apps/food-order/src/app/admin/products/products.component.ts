@@ -1,5 +1,5 @@
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, QueryList, ViewChildren } from '@angular/core';
-import { first, map } from 'rxjs/operators';
+import { filter, first } from 'rxjs/operators';
 import { AdminProductsService, ProducCategory, Product } from '../services/admin-products.service';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { animate, state, style, transition, trigger } from '@angular/animations';
@@ -9,6 +9,8 @@ import { combineLatest } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent, ConfirmDialogModel } from 'libs/ui/src/lib/confirm-dialog/confirm-dialog.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Settings } from '../services/admin-settings.service';
+import { SettingsService } from '../../settings.service';
 
 interface ViewProduct extends Product {
   edit: boolean;
@@ -46,6 +48,8 @@ export class ProductsComponent implements OnInit, AfterViewInit {
   categoryName = '';
   categoryId;
   categoryIcon;
+  categoryFunnels;
+  settings: Settings;
   products: ViewProduct[] = [];
   productName = '';
   productPrice = 0;
@@ -84,7 +88,8 @@ export class ProductsComponent implements OnInit, AfterViewInit {
     private adminProductsService: AdminProductsService,
     private ref: ChangeDetectorRef,
     private dialog: MatDialog,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private settingsService: SettingsService
   ) { }
   
   ngAfterViewInit(): void {
@@ -96,6 +101,10 @@ export class ProductsComponent implements OnInit, AfterViewInit {
   }
 
   init(): void {
+
+    this.settingsService.getSettings().pipe(filter(e => e !== null), first()).subscribe(settings => {
+      this.settings = settings;
+    });
 
     const products$ = this.adminProductsService.getProducts();
     const categories$ = this.adminProductsService.getCategories();
@@ -128,11 +137,13 @@ export class ProductsComponent implements OnInit, AfterViewInit {
   addCategory(): void {
     this.adminProductsService.createCategory({
       name: this.categoryName,
-      icon: this.categoryIcon
+      icon: this.categoryIcon,
+      funnels: this.categoryFunnels
     } as ProducCategory).pipe(first()).subscribe((product: ProducCategory) => {
       this.categories.push(product);
       this.categoryName = '';
       this.categoryIcon = '';
+      this.categoryFunnels = '';
       this.productCategory = this.categories[0];
       this.snackBar.open(`Das Kategorie wurde angelegt`, 'OK', {
         duration: 4000,
@@ -160,13 +171,15 @@ export class ProductsComponent implements OnInit, AfterViewInit {
     this.categoryIcon = category.icon;
     this.categoryName = category.name;
     this.categoryId = category.id;
+    this.categoryFunnels = category.funnels;
   }
 
   saveEditCategory(): void {
     this.adminProductsService.updateCategory({
       id: this.categoryId,
       name: this.categoryName,
-      icon: this.categoryIcon
+      icon: this.categoryIcon,
+      funnels: this.categoryFunnels
     } as ProducCategory).pipe(first()).subscribe(result => {
       const catIndex = this.categories.findIndex(e => e.id === this.categoryId);
       this.categories[catIndex] = result;
@@ -175,6 +188,7 @@ export class ProductsComponent implements OnInit, AfterViewInit {
       this.categoryId = '';
       this.categoryIcon = '';
       this.categoryName = '';
+      this.categoryFunnels = '';
       this.init();
       this.ref.detectChanges();
     });
@@ -184,6 +198,7 @@ export class ProductsComponent implements OnInit, AfterViewInit {
     this.categoryId = '';
     this.categoryIcon = '';
     this.categoryName = '';
+    this.categoryFunnels = '';
   }
 
   createProductForm(p: ViewProduct | null): FormGroup {

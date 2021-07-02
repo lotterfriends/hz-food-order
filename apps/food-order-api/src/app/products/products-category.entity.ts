@@ -15,6 +15,9 @@ export class ProductCategory {
   @Column()
   icon?: string;
   
+  @Column({default: 0})
+  funnels?: number;
+  
   @Column({nullable: true})
   description?: string;
 

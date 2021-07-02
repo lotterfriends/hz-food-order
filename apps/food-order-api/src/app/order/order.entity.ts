@@ -29,6 +29,9 @@ export class Order {
 
   @Column({nullable: true, default: null})
   archived: Date;
+  
+  @Column({nullable: true})
+  funnel: number;
 
   // @ManyToOne(() => Table, table => table.orders, { eager: false })
   @ManyToOne('Table', 'orders', { eager: false })
@@ -41,4 +44,15 @@ export class Order {
   @JoinColumn()
   items: OrderItem[]
 
+}
+
+export interface OrderFilter {
+  orderStatus?: OrderStatus[] | null;
+  productCategories?: number[];
+  table?: number;
+  code?: string;
+  funnels?:{
+    categoryId: number;
+    funnel: number
+  }[]
 }

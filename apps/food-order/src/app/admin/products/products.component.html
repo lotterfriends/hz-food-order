@@ -32,7 +32,7 @@
         <mat-card>
           <mat-card-content>
             
-            <mat-form-field fxFlexFill class="">
+            <mat-form-field fxFlexFill>
               <mat-label>Icon</mat-label>
               <mat-select [(ngModel)]="categoryIcon">
                 <mat-select-trigger>
@@ -46,10 +46,23 @@
               </mat-select>
             </mat-form-field>
 
-            <mat-form-field fxFlexFill class="">
+            <mat-form-field fxFlexFill>
               <mat-label>Name</mat-label>
               <input #categoryNameRef="ngModel" (keyup.enter)="addCategory()" required minlength="2" autocomplete="off" [(ngModel)]="categoryName" type="text" matInput>
             </mat-form-field>
+
+            <ng-container *ngIf="settings.seperateOrderPerProductCategory">
+              <mat-form-field fxFlexFill>
+                <mat-label>Funnels</mat-label>
+                <input autocomplete="off" [(ngModel)]="categoryFunnels" type="number" matInput>
+                <mat-hint>
+                  Ein Funnel ist ein "Abarbeitungskanal". Bestellungen werden je nach Auslastung auf die verschiedenen Funnels aufgeteilt
+                </mat-hint>
+              </mat-form-field>
+              <br />
+              <br />
+              <br />
+            </ng-container>
 
             <span>
               <button *ngIf="!categoryId" [disabled]="categoryNameRef.invalid" mat-raised-button color="primary" (click)="addCategory()">erstellen</button>
@@ -74,19 +87,19 @@
   <mat-card>
     <mat-card-content>
       <div *ngIf="newProductForm" [formGroup]="newProductForm">
-        <mat-form-field fxFlexFill class="">
+        <mat-form-field fxFlexFill>
           <mat-label>Name</mat-label>
           <input formControlName="name" (keyup.enter)="addProduct()" required minlength="2" autocomplete="off" type="text" matInput>
         </mat-form-field>
-        <mat-form-field fxFlexFill class="">
+        <mat-form-field fxFlexFill>
           <mat-label>Beschreibung</mat-label>
           <textarea formControlName="description" autocomplete="off" placeholder="z.B. Inhalsstoffe" matInput></textarea>
         </mat-form-field>
-        <mat-form-field fxFlexFill class="">
+        <mat-form-field fxFlexFill>
           <mat-label>Bestand</mat-label>
           <input formControlName="stock" (keyup.enter)="addProduct()" type="number" required autocomplete="off" matInput>
         </mat-form-field>
-        <mat-form-field fxFlexFill class="">
+        <mat-form-field fxFlexFill>
           <mat-label>Preis</mat-label>
           <input formControlName="price" class="price-field" (keyup.enter)="addProduct()" currencyMask  [options]="{ prefix: '', suffix: '€', allowNegative: false, thousands: '.', decimal: ',' }" required autocomplete="off" matInput>
         </mat-form-field>
@@ -173,22 +186,22 @@
 
               <ng-container *ngIf="element.id == expandedElement?.id">
                 <div fxFlex fxLayout="column" class="form" *ngIf="editProductForm" [formGroup]="editProductForm">
-                  <mat-form-field class="">
+                  <mat-form-field>
                     <mat-label>Name</mat-label>
                     <input formControlName="name" (keydown.enter)="saveEditProduct()" required minlength="2" autocomplete="off" type="text" matInput>
                   </mat-form-field>
             
-                  <mat-form-field class="">
+                  <mat-form-field>
                     <mat-label>Beschreibung</mat-label>
                     <textarea formControlName="description" autocomplete="off" type="search" placeholder="z.B. Inhalsstoffe" matInput></textarea>
                   </mat-form-field>
             
-                  <mat-form-field class="">
+                  <mat-form-field>
                     <mat-label>Bestand</mat-label>
                     <input formControlName="stock" (keydown.enter)="saveEditProduct()" type="number" required autocomplete="off" matInput>
                   </mat-form-field>
                   
-                  <mat-form-field class="">
+                  <mat-form-field>
                     <mat-label>Preis</mat-label>
                     <input formControlName="price" class="price-field" currencyMask  [options]="{ prefix: '', suffix: '€', allowNegative: false, thousands: '.', decimal: ',' }" (keydown.enter)="saveEditProduct()" required autocomplete="off" matInput>
                   </mat-form-field>

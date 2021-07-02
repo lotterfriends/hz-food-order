@@ -57,7 +57,7 @@ export class OrdersComponent implements OnInit {
 
     this.settingsService.getSettings().pipe(filter(e => e !== null), first()).subscribe(settings => {
       this.settings = settings;
-    })
+    });
 
     this.getOrders();
 
@@ -225,10 +225,40 @@ export class OrdersComponent implements OnInit {
     this.updateFilter();
   }
 
+  isFunnelSelected(funnel: number, category: ProducCategory) {
+    return this.filter?.funnels?.length &&  this.filter.funnels.indexOf(`${category.id}-${funnel}`) > -1 ? true : false;
+  }
+
+  toggleSelectedProductCategoryFunnel(funnel: number, category: ProducCategory) {
+    let entry = `${category.id}-${funnel}`;
+    if (this.filter.funnels && this.filter.funnels.length) {
+      const index = this.filter.funnels.findIndex(e => e === entry);
+      if (index > -1) {
+        this.filter.funnels = this.filter.funnels.filter(e => e !== entry);
+      } else {
+        this.filter.funnels.push(entry)
+      }
+    } else {
+      this.filter.funnels = [entry];
+    }
+    this.updateFilter();
+  }
+
   selectAll() {
     this.filter.displayedCategories = this.orderStatusArray;
     if (this.settings.seperateOrderPerProductCategory) {
       this.filter.displayedProductCategories = this.categories;
+      if (this.categories.length) {
+        for (const category of this.categories) {
+          console.log(category);
+          if (category.funnels && category.funnels > 1) {
+            this.filter.funnels = [];
+            for (let index = 1; index <= category.funnels ; index++) {
+              this.filter.funnels.push(`${category.id}-${index}`)
+            }
+          }
+        }
+      }
     }
     this.updateFilter();
   }
@@ -237,6 +267,7 @@ export class OrdersComponent implements OnInit {
     this.filter.displayedCategories = [];
     if (this.settings.seperateOrderPerProductCategory) {
       this.filter.displayedProductCategories = [];
+      delete this.filter.funnels;
     }
     this.updateFilter();
   }
@@ -249,6 +280,13 @@ export class OrdersComponent implements OnInit {
   selectAllTables() {
     this.filter.selectedTable = null;
     this.updateFilter();
+  }
+
+  isAllSelected() {
+    this.categories && 
+    (this.orderStatusArray && this.filter.displayedCategories &&
+    this.orderStatusArray.length === this.filter.displayedCategories.length) &&
+      (!this.settings.seperateOrderPerProductCategory || this.filter.displayedProductCategories.length === this.categories.length)
   }
 
   productCategorySelected(category: ProducCategory): boolean {

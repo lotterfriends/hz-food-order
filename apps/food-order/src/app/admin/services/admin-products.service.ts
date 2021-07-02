@@ -19,6 +19,7 @@ export interface ProducCategory {
   name: string;
   icon: string;
   description?: string;
+  funnels?: number;
   order: number;
 }
 
