@@ -11,6 +11,7 @@ import { ConfirmDialogComponent, ConfirmDialogModel } from 'libs/ui/src/lib/conf
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Settings } from '../services/admin-settings.service';
 import { SettingsService } from '../../settings.service';
+import { Role } from '../../auth.service';
 
 interface ViewProduct extends Product {
   edit: boolean;
@@ -42,6 +43,7 @@ interface Icon {
 export class ProductsComponent implements OnInit, AfterViewInit {
 
   @ViewChildren(MatTable) table !: QueryList<MatTable<ViewProduct>>;
+  allRoles = Role;
   sortCategories = true;
   sortProducts = true;
   categories: ProducCategory[] = [];

@@ -1,5 +1,8 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { Roles } from '../auth/roles.decorator';
+import { RolesGuard } from '../auth/roles.guard';
+import { Role } from '../users/roles.enum';
 import { ProductCategory } from './products-category.entity';
 import { ProductsService } from './products.service';
 
@@ -10,7 +13,7 @@ export interface CategoryDto {
 }
 
 @Controller('product-categories')
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class ProductCategoriesController {
   constructor(private readonly productService: ProductsService) {}
 
@@ -25,6 +28,7 @@ export class ProductCategoriesController {
   }
 
   @Delete(':id')
+  @Roles(Role.Admin)
   delete(@Param('id') id: number) {
     return this.productService.deleteCategory(id);
   }

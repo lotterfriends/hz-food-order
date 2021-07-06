@@ -5,6 +5,9 @@ import { ProductCategory } from './products-category.entity';
 import { Product } from './products.entity';
 import { ProductsService } from './products.service';
 import { OrderGateway } from '../gateway/order-gateway';
+import { RolesGuard } from '../auth/roles.guard';
+import { Role } from '../users/roles.enum';
+import { Roles } from '../auth/roles.decorator';
 
 export interface ProductDto {
   name: string;
@@ -16,7 +19,7 @@ export interface ProductDto {
 }
 
 @Controller('products')
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class ProductsController {
   constructor(
     private readonly productService: ProductsService,
@@ -40,6 +43,7 @@ export class ProductsController {
   }
 
   @Delete(':id')
+  @Roles(Role.Admin)
   delete(@Param('id') id: number) {
     return this.productService.delete(id);
   }

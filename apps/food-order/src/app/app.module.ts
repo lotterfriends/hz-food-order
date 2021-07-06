@@ -32,6 +32,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { SettingsService } from './settings.service';
 import { EnterCodeDialogComponent } from './empty/enter-code-dialog.component';
 import { ScanCodeDialogComponent } from './empty/scan-code-dialog.component';
+import { NgxPermissionsModule, NgxPermissionsService } from 'ngx-permissions';
 registerLocaleData(localeDe, 'de');
 
 export function tokenGetter(): string | null {
@@ -62,6 +63,7 @@ const socketConfig: SocketIoConfig = {
     AppRoutingModule,
     BrowserAnimationsModule,
     UiModule,
+    NgxPermissionsModule.forRoot(),
     NgxQRCodeModule,
     AdminModule,
     MatCardModule,
@@ -83,6 +85,17 @@ const socketConfig: SocketIoConfig = {
   ],
   providers: [
     { provide: APP_INITIALIZER, useFactory: appInitializer, multi: true, deps: [AuthService, SettingsService] },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: (ps: NgxPermissionsService) => function() {
+        const rolesString = localStorage.getItem('roles');
+        if (rolesString) {
+          return ps.loadPermissions(JSON.parse(rolesString));
+        }
+      },
+      deps: [NgxPermissionsService],
+      multi: true
+    },
     { provide: HTTP_INTERCEPTORS, useClass: SecretInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },
     { provide: LOCALE_ID, useValue: 'de' },

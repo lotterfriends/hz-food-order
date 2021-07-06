@@ -6,6 +6,8 @@ import { OrdersComponent } from './orders/orders.component';
 import { SettingsComponent } from './settings/settings.component';
 import { TablesComponent } from './tables/tables.component';
 import { TablePrintComponent } from './tables/table-print/table-print.component';
+import { Role } from '../auth.service';
+import { NgxPermissionsGuard } from 'ngx-permissions';
 
 export const adminRoutes: Routes = [
   {
@@ -48,10 +50,13 @@ export const adminRoutes: Routes = [
   {
     path: 'settings',
     component: SettingsComponent,
-    canActivate: [AuthGuardService],
+    canActivate: [AuthGuardService, NgxPermissionsGuard],
     data: {
       title: 'Einstellungen',
-      icon: 'settings'
+      icon: 'settings',
+      permissions: {
+        only: Role.Admin
+      }
     }
   },
   { path: '**', redirectTo: 'orders' }

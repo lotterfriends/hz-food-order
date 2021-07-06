@@ -5,11 +5,17 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { first } from 'rxjs/operators';
 import { environment } from '../environments/environment';
+import { NgxPermissionsService } from 'ngx-permissions';
 
+export enum Role {
+  Runner = 'runner',
+  Admin = 'admin'
+}
 interface User {
   id: number;
   username: string;
   password: string;
+  roles: Role[];
 }
 
 export interface AuthenticationPayload {
@@ -30,7 +36,8 @@ export class AuthService {
   constructor(
     private http: HttpClient,
     private router: Router,
-    private jwtHelper: JwtHelperService
+    private jwtHelper: JwtHelperService,
+    private permissionsService: NgxPermissionsService
   ) {}
 
   // store the URL so we can redirect after logging in
@@ -43,7 +50,9 @@ export class AuthService {
     }).toPromise().then((result) => {
       if (result.payload.token) {
         this.userSubject.next(result.user);
+        this.permissionsService.loadPermissions(result.user.roles);
         this.startRefreshTokenTimer();
+        localStorage.setItem('roles', JSON.stringify(result.user.roles));
         localStorage.setItem('token', result.payload.token);
         if (result.payload.refresh_token) {
           localStorage.setItem('refresh_token', result.payload.refresh_token);

@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { ScrollStateService } from '../../scroll-state.service';
 import { adminRoutes } from '../admin-routing.module';
+import { NgxPermissionsService } from 'ngx-permissions';
+import { Role } from '../../auth.service';
 
 interface NavRoute{
   path: string;
@@ -17,13 +19,22 @@ interface NavRoute{
 })
 export class AppNavigationComponent {
 
+  mainRoutes = [];
   constructor(
-    private scrollStateService: ScrollStateService
+    private scrollStateService: ScrollStateService,
+    private ngxPermissionsService: NgxPermissionsService
   ) {
+    this.ngxPermissionsService.hasPermission(Role.Admin).then((isAdmin) => {
+      this.mainRoutes = adminRoutes.filter((e) => {
+        if (e.path === 'settings' && !isAdmin) {
+          return false;
+        }
+        return e.path?.length && e.path !== '**';
+      }) as NavRoute[];
+    });
     this.updateZoom();
   }
 
-  mainRoutes = adminRoutes.filter(e => e.path?.length && e.path !== '**') as NavRoute[];
 
   onOpen(): void {
     setTimeout(() => {

@@ -40,9 +40,9 @@ export class AuthService {
   }
 
   async login(user: User) {
-    const token = await this.tokenService.generateAccessToken(user)
-    const refresh = await this.tokenService.generateRefreshToken(user, 60 * 60 * 24 * 30)
-    return this.buildResponsePayload(user, token, refresh)
+    const token = await this.tokenService.generateAccessToken(user);
+    const refresh = await this.tokenService.generateRefreshToken(user, 60 * 60 * 24 * 30);
+    return this.buildResponsePayload(user, token, refresh);
   }
 
   private buildResponsePayload (user: User, accessToken: string, refreshToken?: string): AuthenticationPayload {
@@ -63,5 +63,14 @@ export class AuthService {
 
   logout(body: {refresh_token: string}) {
     return this.tokenService.revokeToken(body.refresh_token);
+  }
+
+  async validateUserObjec(userId: string) {
+    const idAsNumber = parseInt(userId, 10);
+    const user = await this.usersService.findOneById(idAsNumber);
+    if (user.active) {
+      return user;
+    }
+    return null;
   }
 }

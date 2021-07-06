@@ -12,13 +12,15 @@
 
       <ng-container>
 
-        <a *ngFor="let item of mainRoutes"
-          mat-list-item
-          (click)="navigationSidenav.close()"
-          [routerLink]="[item.path]"
-          routerLinkActive="list-item-active">
-          <mat-icon *ngIf="item.data.icon" matListIcon class="nav-list-icon">{{item.data.icon}}</mat-icon> {{item.data.title}}
-        </a>
+        <ng-container *ngFor="let item of mainRoutes">
+          <a 
+            mat-list-item
+            (click)="navigationSidenav.close()"
+            [routerLink]="[item.path]"
+            routerLinkActive="list-item-active">
+            <mat-icon *ngIf="item.data.icon" matListIcon class="nav-list-icon">{{item.data.icon}}</mat-icon> {{item.data.title}}
+          </a>
+        </ng-container>
 
       </ng-container>
 

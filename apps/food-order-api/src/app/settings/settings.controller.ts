@@ -2,7 +2,10 @@ import { Body, Controller, Get, Post, Put, UploadedFile, UseGuards, UseIntercept
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { Roles } from '../auth/roles.decorator';
+import { RolesGuard } from '../auth/roles.guard';
 import { editFileName, imageFileFilter } from '../helper/upload.helper';
+import { Role } from '../users/roles.enum';
 import { Settings } from './settings.entity';
 import { SettingsService } from './settings.service';
 
@@ -11,14 +14,16 @@ export class SettingsController {
   constructor(private readonly settingsService: SettingsService) {}
 
   @Put()
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.Admin)
   async update(@Body() settings: Settings) {
     await this.settingsService.update(settings);
     return await this.settingsService.getSettings();
   }
   
   @Put('update-secret')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.Admin)
   async updateSecret(@Body() settingsSecret: {secret: string}) {
     if (settingsSecret && settingsSecret.secret.length && settingsSecret.secret.length> 5)  {
       const currentSettings = await this.settingsService.getSettings();
@@ -76,7 +81,8 @@ export class SettingsController {
       fileFilter: imageFileFilter,
     })
   )
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.Admin)
   @Post('upload-logo')
   async uploadLogo(
     @UploadedFile() file,

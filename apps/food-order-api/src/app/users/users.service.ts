@@ -15,7 +15,7 @@ export class UsersService {
 
   async findOneByUsernameWithPassword(username: string): Promise<User | undefined> {
     const users = await this.userRepository.find({
-      select: ['username', 'password', 'id']
+      select: ['username', 'password', 'id', 'roles']
     });
     return users.find(user => user.username.toLowerCase() === username.toLowerCase());
   }

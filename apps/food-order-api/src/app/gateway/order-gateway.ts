@@ -42,6 +42,9 @@ export class OrderGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('user-register')
   async handleRegisterUser(client: Socket, token: string) {
+    if (!token) {
+      return null;
+    }
     const user = await this.authService.validateToken(token);
     if (user) {
       client.join('orders');

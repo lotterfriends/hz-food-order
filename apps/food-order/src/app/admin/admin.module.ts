@@ -36,6 +36,7 @@ import {MatChipsModule} from '@angular/material/chips';
 import {MatProgressBarModule} from '@angular/material/progress-bar'
 import { TablePrintComponent } from './tables/table-print/table-print.component';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { NgxPermissionsModule } from 'ngx-permissions';
 @NgModule({
   declarations: [
     OrdersComponent,
@@ -49,6 +50,7 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
     SettingsComponent
   ],
   imports: [
+    NgxPermissionsModule.forChild(),
     ReactiveFormsModule,
     FormsModule,
     AdminRoutingModule,
