@@ -1,10 +1,14 @@
-import { BadRequestException, Body, Controller, Get, HttpException, HttpStatus, Param, Post, Put, Res, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put, Res, UseGuards } from '@nestjs/common';
 import { Table } from './table.entity';
 import { TableService } from './table.service';
 import { randomStringGenerator  } from '@nestjs/common/utils/random-string-generator.util';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { IsNotEmpty } from 'class-validator';
 import { SettingsService } from '../settings/settings.service';
+import { RolesGuard } from '../auth/roles.guard';
+import { Roles } from '../auth/roles.decorator';
+import { Role } from '../users/roles.enum';
+import { DeleteResult } from 'typeorm';
 
 export class TableDto {
   @IsNotEmpty()
@@ -26,7 +30,8 @@ export class TableController {
 
 
   @Post()
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.Admin)
   async create(@Body() createTableDto: TableDto) {
     if (!createTableDto.name || !createTableDto.name.length) {
       throw new HttpException('name empty', HttpStatus.BAD_REQUEST);
@@ -37,15 +42,24 @@ export class TableController {
   }
 
   @Post(':id/rename')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.Admin)
   async rename(@Param('id') id: number, @Body() body: { name: string}) {
     return this.tableService.renameTable(id, body.name);
   }
 
   @Put(':id')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.Admin)
   update(@Param('id') id: number, @Body() table: Table): Promise<Table> {
     return this.tableService.updateTable(id, table);
+  }
+
+  @Delete(':id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.Admin)
+  delete(@Param('id') id: number): Promise<DeleteResult> {
+    return this.tableService.deleteTable(id);
   }
 
 

@@ -1,5 +1,5 @@
 import { Order } from "../order/order.entity";
-import { Column, CreateDateColumn, Entity, JoinColumn, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Table {
@@ -8,6 +8,9 @@ export class Table {
 
   @CreateDateColumn()
   created: Date;
+
+  @DeleteDateColumn()
+  deleted: boolean;
 
   @Column()
   name: string;

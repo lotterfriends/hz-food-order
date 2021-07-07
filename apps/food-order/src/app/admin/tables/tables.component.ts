@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { NavigationEnd, Router } from '@angular/router';
 import { NgxQrcodeElementTypes, NgxQrcodeErrorCorrectionLevels } from '@techiediaries/ngx-qrcode';
+import { ConfirmDialogComponent, ConfirmDialogModel } from 'libs/ui/src/lib/confirm-dialog/confirm-dialog.component';
 import { filter, first } from 'rxjs/operators';
+import { Role } from '../../auth.service';
 import { PublicTableService } from '../../public-table.service';
 import { Settings, SettingsService } from '../../settings.service';
 import { AdminTablesService, Table } from '../services/admin-tables.service';
@@ -17,6 +20,7 @@ interface ViewTable extends Table {
 })
 export class TablesComponent implements OnInit {
 
+  allRoles = Role;
   tables: ViewTable[] = [];
   editTables: ViewTable[] = [];
   tableName = '';
@@ -30,6 +34,7 @@ export class TablesComponent implements OnInit {
     private adminTablesService: AdminTablesService,
     private  settingsService: SettingsService,
     private router: Router,
+    private dialog: MatDialog,
   ) {
     router.events.subscribe((val) => {
       this.showMainContent = val instanceof NavigationEnd && this.isMainRoute();
@@ -63,6 +68,22 @@ export class TablesComponent implements OnInit {
   startEdit(item: ViewTable): void {
     this.editTables.push({ ...item});
     item.edit = true;
+  }
+
+  deleteTable(item: ViewTable): void {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      maxWidth: '400px',
+      data: new ConfirmDialogModel(null, `Wollen sie den Tiscch "${item.name}" wirklich löschen?`)
+    });
+
+    dialogRef.afterClosed().pipe(first()).subscribe(dialogResult => {
+      if (dialogResult) {
+        this.adminTablesService.deleteTable(item.id).pipe(first()).subscribe(_ => {
+          this.tables = this.tables.filter(e => e.id !== item.id);
+        });
+      }
+    });
+
   }
 
   saveEdit(table: ViewTable): void {

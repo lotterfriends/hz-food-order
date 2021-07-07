@@ -22,6 +22,10 @@ export class TableService {
     return this.tableRepository.findOne(id);
   }
 
+  deleteTable(id: number) {
+    return this.tableRepository.softDelete(id);
+  }
+
   async renameTable(id: number, name: string) {
     const table = await this.tableRepository.findOne(id);
     table.name = name;

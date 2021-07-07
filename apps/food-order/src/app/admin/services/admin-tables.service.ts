@@ -32,6 +32,10 @@ export class AdminTablesService {
   renameTable(tableId: number, name: string): Observable<Table> {
     return this.http.post<Table>(`${environment.apiPath}/tables/${tableId}/rename`, { name });
   }
+  
+  deleteTable(tableId: number): Observable<void> {
+    return this.http.delete<void>(`${environment.apiPath}/tables/${tableId}`);
+  }
 
   updateTable(tableId: number, table: Table) {
     return this.http.put<Table>(`${environment.apiPath}/tables/${tableId}`, table);

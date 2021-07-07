@@ -5,7 +5,7 @@
     <button routerLink="./print" mat-raised-button color="primary">Alle drucken</button>  
   </h2>
   
-  <mat-card>
+  <mat-card *ngxPermissionsOnly="[allRoles.Admin]">
     <mat-card-content>
       
       <mat-form-field fxFlexFill>
@@ -37,7 +37,8 @@
                 cssClass="admin-qr"></ngx-qrcode>
             </div>
             <div fxLayout="column">
-              <a class="table-button" mat-stroked-button (click)="startEdit(table)">Bearbeiten</a>
+              <a class="table-button" *ngxPermissionsOnly="[allRoles.Admin]" mat-stroked-button (click)="deleteTable(table)">Löschen</a>
+              <a class="table-button" *ngxPermissionsOnly="[allRoles.Admin]" mat-stroked-button (click)="startEdit(table)">Bearbeiten</a>
               <a class="table-button" mat-stroked-button target="_blank" href="{{value + table.secret}}">Als Besucher öffnen</a>
               <a class="table-button" mat-stroked-button (click)="openPrintDocument(table)">Drucken</a>
               <div class="table-code" *ngIf="settings.tableCode">
