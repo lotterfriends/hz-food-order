@@ -59,7 +59,7 @@ export class OrderService {
       },
       where: {
         table: table,
-        status: Not(OrderStatus.Archived)
+        archived: null
       }
     });
   }
