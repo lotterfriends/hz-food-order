@@ -96,6 +96,10 @@
           <textarea formControlName="description" autocomplete="off" placeholder="z.B. Inhalsstoffe" matInput></textarea>
         </mat-form-field>
         <mat-form-field fxFlexFill>
+          <mat-label>Allergene</mat-label>
+          <textarea formControlName="allergens" autocomplete="off" placeholder="" matInput></textarea>
+        </mat-form-field>
+        <mat-form-field fxFlexFill>
           <mat-label>Bestand</mat-label>
           <input formControlName="stock" (keyup.enter)="addProduct()" type="number" required autocomplete="off" matInput>
         </mat-form-field>
@@ -194,6 +198,11 @@
                   <mat-form-field>
                     <mat-label>Beschreibung</mat-label>
                     <textarea formControlName="description" autocomplete="off" type="search" placeholder="z.B. Inhalsstoffe" matInput></textarea>
+                  </mat-form-field>
+
+                  <mat-form-field>
+                    <mat-label>Allergene</mat-label>
+                    <textarea formControlName="allergens" autocomplete="off" type="search" placeholder="" matInput></textarea>
                   </mat-form-field>
             
                   <mat-form-field>

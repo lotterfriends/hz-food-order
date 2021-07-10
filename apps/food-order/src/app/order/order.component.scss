@@ -102,10 +102,16 @@
   }
 }
 
-.description {
+.description,
+.allergens {
   font-size: .75em;
   color: rgb(114, 114, 114);
   margin-left: 1em;
+}
+
+.allergens {
+  margin: 0;
+  padding: .5em 0;
 }
 
 .code {

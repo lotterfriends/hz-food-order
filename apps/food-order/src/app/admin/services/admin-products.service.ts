@@ -9,6 +9,7 @@ export interface Product {
   stock: number;
   price: number;
   description?: string;
+  allergens?: string;
   disabled: boolean;
   category: ProducCategory;
   order: number;

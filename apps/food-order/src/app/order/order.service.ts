@@ -11,6 +11,7 @@ export interface Table {
 export interface Product {
   id: number;
   name: string;
+  allergens: string;
   stock: number;
   price: string;
   disabled: boolean;
@@ -36,6 +37,7 @@ export interface ProducCategory {
 export interface OrderProduct {
   id: number;
   name: string;
+  allergens: string;
   count: number;
   price: string;
   category: ProducCategory;

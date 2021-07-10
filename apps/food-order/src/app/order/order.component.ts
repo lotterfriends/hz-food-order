@@ -154,6 +154,7 @@ export class OrderComponent implements OnInit, OnDestroy {
       price: product.price,
       category: product.category,
       description: product.description,
+      allergens: product.allergens,
       stock: product.stock,
       order: product.order
     } as OrderProduct;

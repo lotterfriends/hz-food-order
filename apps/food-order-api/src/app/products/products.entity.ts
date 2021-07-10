@@ -14,6 +14,9 @@ export class Product {
 
   @Column()
   name?: string;
+ 
+  @Column()
+  allergens?: string;
 
   @Column({nullable: true})
   description?: string;

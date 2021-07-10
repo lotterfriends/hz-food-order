@@ -210,6 +210,7 @@ export class ProductsComponent implements OnInit, AfterViewInit {
         Validators.minLength(4)
       ]),
       description: new FormControl(p?.description),
+      allergens: new FormControl(p?.allergens),
       stock: new FormControl(p?.stock || 0, Validators.required),
       price: new FormControl(p?.price || 0, [Validators.required]),
       category: new FormControl(p?.category || this.productCategory, Validators.required),
