@@ -1,6 +1,6 @@
 import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { OrderService, ServerOrder } from '../../order/order.service';
-import { AdminOrderService, OrderFilter } from '../services/admin-order.service';
+import { AdminOrderService, OrderFilter, TableType } from '../services/admin-order.service';
 import { OrderStatus } from '../../order/order.service';
 import { MatDialog } from '@angular/material/dialog';
 import { OrderMessageDialogComponent } from './order-message-dialog/order-message-dialog';
@@ -23,6 +23,7 @@ import { ScrollStateService } from '../../scroll-state.service';
 export class OrdersComponent implements OnInit {
 
   orderStatus = OrderStatus;
+  tableTypes = TableType;
   orderStatusArray = Object.values(OrderStatus);
   orders: ServerOrder[] = [];
   tables: Table[] = [];
@@ -37,6 +38,7 @@ export class OrdersComponent implements OnInit {
   loadingMore = false;
   searchTid;
   code: string;
+  selectedTableLabel = 'Alle Tische';
   @ViewChild('moreSection', { read: ElementRef }) moreSection:ElementRef;
 
   constructor(
@@ -97,6 +99,7 @@ export class OrdersComponent implements OnInit {
       if (this.filter.code && this.filter.code.length) {
         this.code = this.filter.code;
       }
+      this.setSelectedTableLabel();
     } else {
       this.isInitialFilterInit = true;
       this.filter = {
@@ -140,6 +143,7 @@ export class OrdersComponent implements OnInit {
     sessionStorage.setItem('order_filter', JSON.stringify(this.filter));
     this.skip = 0;
     this.getOrders();
+    this.setSelectedTableLabel();
   }
 
   private _changeStatus(order: ServerOrder, status: OrderStatus, showMessage: boolean = true): void {
@@ -250,7 +254,6 @@ export class OrdersComponent implements OnInit {
       this.filter.displayedProductCategories = this.categories;
       if (this.categories.length) {
         for (const category of this.categories) {
-          console.log(category);
           if (category.funnels && category.funnels > 1) {
             this.filter.funnels = [];
             for (let index = 1; index <= category.funnels ; index++) {
@@ -272,11 +275,23 @@ export class OrdersComponent implements OnInit {
     this.updateFilter();
   }
 
-  selectTable(table: Table) {
+  selectTable(table: Table | TableType) {
     this.filter.selectedTable = table;
     this.updateFilter();
   }
-  
+
+  setSelectedTableLabel() {
+    if (this.filter.selectedTable && typeof this.filter.selectedTable === 'string' && this.filter.selectedTable === TableType.Even) {
+      this.selectedTableLabel ='gerade';
+    } else if (this.filter.selectedTable && typeof this.filter.selectedTable === 'string' && this.filter.selectedTable === TableType.Odd) {
+      this.selectedTableLabel ='ungerade';
+    } else if (this.filter.selectedTable && typeof this.filter.selectedTable === 'object') {
+      this.selectedTableLabel = this.filter.selectedTable.name;
+    } else {
+      this.selectedTableLabel ='Alle Tische';
+    }
+  }
+
   selectAllTables() {
     this.filter.selectedTable = null;
     this.updateFilter();

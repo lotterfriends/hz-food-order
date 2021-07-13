@@ -7,6 +7,7 @@ import { filter, first } from 'rxjs/operators';
 import { Role } from '../../auth.service';
 import { PublicTableService } from '../../public-table.service';
 import { Settings, SettingsService } from '../../settings.service';
+import { TableType } from '../services/admin-order.service';
 import { AdminTablesService, Table } from '../services/admin-tables.service';
 
 interface ViewTable extends Table {
@@ -59,10 +60,12 @@ export class TablesComponent implements OnInit {
   }
 
   addTable(): void {
-    this.adminTablesService.createTable(this.tableName).pipe(first()).subscribe((table: Table) => {
-      this.tables.push({edit: false, ...table});
-      this.tableName = `Tisch ${this.tables.length + 1}`;
-    });
+    if (this.tableName !== TableType.Odd && this.tableName !== TableType.Even) {
+      this.adminTablesService.createTable(this.tableName).pipe(first()).subscribe((table: Table) => {
+        this.tables.push({edit: false, ...table});
+        this.tableName = `Tisch ${this.tables.length + 1}`;
+      });
+    }
   }
 
   startEdit(item: ViewTable): void {
@@ -87,10 +90,12 @@ export class TablesComponent implements OnInit {
   }
 
   saveEdit(table: ViewTable): void {
-    this.adminTablesService.updateTable(table.id, {name: table.name, code: table.code} as Table).pipe(first()).subscribe(result => {
-      const tableIndex = this.tables.findIndex(e => e.id === result.id);
-      this.tables[tableIndex] = { edit: false, ...result};
-    });
+    if (table.name !== TableType.Odd && table.name !== TableType.Even) {
+      this.adminTablesService.updateTable(table.id, {name: table.name, code: table.code} as Table).pipe(first()).subscribe(result => {
+        const tableIndex = this.tables.findIndex(e => e.id === result.id);
+        this.tables[tableIndex] = { edit: false, ...result};
+      });
+    }
   }
 
   cancelEdit(item: ViewTable): void {

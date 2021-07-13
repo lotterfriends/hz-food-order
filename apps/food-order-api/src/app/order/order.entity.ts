@@ -2,6 +2,7 @@ import { Table } from "../tables/table.entity";
 import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { OrderItem } from "./order-item.entity";
 import { OrderStatus } from "./types/order-status";
+import { TableType } from "../tables/table-type.enum";
 
 @Entity()
 export class Order {
@@ -49,7 +50,7 @@ export class Order {
 export interface OrderFilter {
   orderStatus?: OrderStatus[] | null;
   productCategories?: number[];
-  table?: number;
+  table?: number | TableType;
   code?: string;
   funnels?:{
     categoryId: number;

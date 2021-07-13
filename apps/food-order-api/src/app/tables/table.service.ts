@@ -1,10 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { SettingsService } from '../settings/settings.service';
 import { Repository } from 'typeorm';
 import { TableDto, TableWithSecret } from './table.controller';
 import { Table } from './table.entity';
 import { createHash } from 'crypto';
+import { TableType } from './table-type.enum';
 
 @Injectable()
 export class TableService {
@@ -15,7 +16,11 @@ export class TableService {
   ) {}
 
   save(table: TableDto): Promise<Table> {
-    return this.tableRepository.save(table);
+    if (table.name !== TableType.Odd && table.name !== TableType.Even) {
+      return this.tableRepository.save(table);
+    } else {
+      throw new BadRequestException('invalid table name');
+    }
   }
 
   getTable(id: number) {
@@ -27,6 +32,9 @@ export class TableService {
   }
 
   async renameTable(id: number, name: string) {
+    if (name === TableType.Odd || name !== TableType.Even) {
+      throw new BadRequestException('invalid table name');
+    }
     const table = await this.tableRepository.findOne(id);
     table.name = name;
     this.tableRepository.update(table.id, {name});
@@ -34,6 +42,9 @@ export class TableService {
   }
 
   async updateTable(id: number, table: Table): Promise<Table> {
+    if (table.name === TableType.Odd || table.name !== TableType.Even) {
+      throw new BadRequestException('invalid table name');
+    }
     await this.tableRepository.update(id, table);
     let changeTable = await this.tableRepository.findOne(id);
     return this.addSecretToTable(changeTable);

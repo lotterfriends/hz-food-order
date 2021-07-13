@@ -9,6 +9,7 @@ import { Order, OrderFilter } from './order.entity';
 import { OrderDto } from './types/oder-dto';
 import { OrderStatus } from './types/order-status';
 import { SettingsService } from '../settings/settings.service';
+import { TableType } from '../tables/table-type.enum';
 @Injectable()
 export class OrderService {
 
@@ -86,7 +87,13 @@ export class OrderService {
     query.where('archived is null')
     query.andWhere('o.status in (:orderStatus)', {orderStatus: filter.orderStatus})
     if (filter.table) {
-      query.andWhere('t.id = :table', {table: filter.table})
+      if (filter.table === TableType.Odd) {
+        query.andWhere('t.id % 2 = 1');
+      } else if (filter.table === TableType.Even) {
+        query.andWhere('t.id % 2 = 0');
+      } else {
+        query.andWhere('t.id = :table', {table: filter.table})
+      }
     }
     if (filter.code) {
       query.andWhere('o.code like :code', {code: `%${filter.code.toUpperCase()}%`});
@@ -107,16 +114,6 @@ export class OrderService {
       .take(10);
 
     return query.getManyAndCount();
-
-    // return this.orderRepository.find({
-    //   relations: ['table', 'items', 'items.product'],
-    //   where: {
-    //     status: Not(OrderStatus.Archived),
-    //   },
-    //   order: {
-    //     created: 'ASC'
-    //   }
-    // });
   }
 
   async archiveAllActiveOrders() {

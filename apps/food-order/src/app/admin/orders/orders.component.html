@@ -9,10 +9,12 @@
     <mat-icon *ngIf="filter.selectedTable; else isTableNotSelected">filter_alt</mat-icon>
     <ng-template #isTableNotSelected><mat-icon fontSet="material-icons-outlined">filter_alt</mat-icon></ng-template>
     
-    {{ filter.selectedTable ? filter.selectedTable.name : 'Alle Tische' }}
+    {{ selectedTableLabel }}
   </button>
   <mat-menu #menu="matMenu">
     <button (click)="selectAllTables()"  mat-menu-item>Alle Tische</button>
+    <button (click)="selectTable(tableTypes.Even)"  mat-menu-item>gerade</button>
+    <button (click)="selectTable(tableTypes.Odd)"  mat-menu-item>ungerade</button>
     <button (click)="selectTable(table)" *ngFor="let table of tables" mat-menu-item>{{table.name}}</button>
   </mat-menu>
   
@@ -53,7 +55,8 @@
   <ng-container *ngIf="orders && orders.length; else noOrder">
   
     <ng-container *ngFor="let order of orders; trackBy: orderTrackByFn; index as i">
-      <div class="order" fxLayout="column" fxLayoutGap="10px" fxHide [fxShow]="(!filter.selectedTable || filter.selectedTable.id === order.table.id) && filter.displayedCategories.includes(order.status) && displayOrderByCategory(order)">
+      <!-- fxHide [fxShow]="(!filter.selectedTable || filter.selectedTable.id === order.table.id) && filter.displayedCategories.includes(order.status) && displayOrderByCategory(order)" -->
+      <div class="order" fxLayout="column" fxLayoutGap="10px">
         <div fxLayout="row" fxFlexFill fxLayoutGap="10px">
           <mat-card fxFlex="grow" class="{{order.status}}">
             <mat-card-title fxLayout="row" fxLayoutAlign="space-between center">

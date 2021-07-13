@@ -6,8 +6,12 @@ import { OrderStatus, ServerOrder } from '../../order/order.service';
 import { ProducCategory } from './admin-products.service';
 import { Table } from './admin-tables.service';
 
+export enum TableType {
+  Even = '_even',
+  Odd = '_odd'
+}
 export interface OrderFilter {
-  selectedTable: Table | null;
+  selectedTable: Table | TableType | null;
   displayedCategories: OrderStatus[];
   displayedProductCategories?: null | ProducCategory[];
   code?: string;
@@ -25,8 +29,11 @@ export class AdminOrderService {
     const query = new URLSearchParams();
     query.append('skip', '' + skip);
     if (filter) {
-      if (filter.selectedTable) {
+      if (filter.selectedTable && typeof filter.selectedTable === 'object') {
         query.append('table', '' + filter.selectedTable.id);
+      }
+      if (filter.selectedTable && typeof filter.selectedTable === 'string') {
+        query.append('table', '' + filter.selectedTable);
       }
       if (filter.displayedCategories) {
         query.append('status', filter.displayedCategories.join(','));

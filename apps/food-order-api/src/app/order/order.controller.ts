@@ -1,6 +1,7 @@
 import { BadRequestException, Body, Controller, Get, Param, Post, Query, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { OrderGateway } from '../gateway/order-gateway';
+import { TableType } from '../tables/table-type.enum';
 import { Order, OrderFilter } from './order.entity';
 import { OrderService } from './order.service';
 import { OrderStatus } from './types/order-status';
@@ -33,7 +34,11 @@ export class OrderController {
         filter.productCategories = productCategories.split(',').map(e => parseInt(e, 10));
       }
       if (table) {
-        filter.table = parseInt(table, 10);
+        if (table === TableType.Odd || table === TableType.Even) {
+          filter.table = table;
+        } else {
+          filter.table = parseInt(table, 10);
+        }
       }
       if (code && code.length) {
         filter.code = code;
