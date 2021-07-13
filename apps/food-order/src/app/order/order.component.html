@@ -57,7 +57,7 @@
                 <span>{{product.name}}</span>
                 <span class="description" fxLayout="row" fxLayoutAlign="center center"><span>{{product.description}}</span></span>
               </span>
-              <span *ngIf="product.allergens" class="allergens" fxLayout="row" fxLayoutAlign="start center"><span>Allergene: {{product.allergens}}</span></span>
+              <span *ngIf="product.allergens && product.allergens.length" class="allergens" fxLayout="row" fxLayoutAlign="start center"><span>Allergene: {{product.allergens}}</span></span>
               <strong>{{product.price | currency:'EUR' }}</strong>
             </span> 
             <span fxLayoutAlign="end center">
