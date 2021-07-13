@@ -10,6 +10,7 @@ import { Settings, SettingsService } from '../settings.service';
 import { Order, OrderProduct, OrderService, OrderStatus, ProducCategory, Product, ServerOrder, Table } from './order.service';
 
 interface CardCategory {
+  loading: boolean;
   category: ProducCategory,
   producs: OrderProduct[];
   comment: string;
@@ -47,6 +48,7 @@ export class OrderComponent implements OnInit, OnDestroy {
   selectedCode: string | false = false;
   products: Product[] = [];
   updateCardAfterPlaceOrder = false;
+  sendOrderLoading = false;
 
   ngOnInit(): void {
 
@@ -138,7 +140,8 @@ export class OrderComponent implements OnInit, OnDestroy {
         this.card.push({
           category: item.category,
           producs: [this.productToOrderProduct(item)],
-          comment: ''
+          comment: '',
+          loading: false
         } as CardCategory);
       }
     }
@@ -218,6 +221,7 @@ export class OrderComponent implements OnInit, OnDestroy {
         }
       }
       if (this.settings.seperateOrderPerProductCategory) {
+        cItem.loading = true;
         order.comment = cItem.comment;
       }
     }
@@ -234,6 +238,10 @@ export class OrderComponent implements OnInit, OnDestroy {
         this.resetProductCountForCategories(cardCategories);
         this.comment = '';
         this.sum = 0;
+        if (this.settings.seperateOrderPerProductCategory) {
+          cardCategories[0].loading = false;
+        }
+        this.sendOrderLoading = false;
         const snackBarRef = this.snackBar.open('Ihre Bestellung wurde aufgegeben', 'anzeigen', {
           duration: 4000,
         });
@@ -263,6 +271,7 @@ export class OrderComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().pipe(first()).subscribe(dialogResult => {
       if (dialogResult) {
+        this.sendOrderLoading = true;
         const order = this.createOrder(this.card);
         this.placeOrder(order, this.card);
       }
