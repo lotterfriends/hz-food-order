@@ -101,6 +101,17 @@ export class ProductsService {
     }
     return this.productsRepository.update(productId, {stock: product.stock, disabled: product.disabled});
   }
+  
+  async increaseStock(productId: number, count: number) {
+    const settings = await this.settingsService.getSettings();
+    const product = await this.findOneWithId(productId);
+    product.stock = product.stock + count;
+    if (settings.disableProductOnOutOfStock && product.stock > 0 && !product.disabled) {
+      product.disabled = false;
+      this.orderGateway.sendProductUpdateToTable(product);
+    }
+    return this.productsRepository.update(productId, {stock: product.stock, disabled: product.disabled});
+  }
 
   delete(id: number) {
     this.productsRepository.softDelete(id);

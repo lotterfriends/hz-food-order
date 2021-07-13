@@ -136,8 +136,17 @@ export class OrderService {
 
   async updateOrderStatus(orderId: number, status: OrderStatus) {
     const order = await this.orderRepository.findOne(orderId, {
-      relations: ['table']
+      relations: ['table', 'items', 'items.product']
     });
+    if (order.status !== OrderStatus.Canceled && status === OrderStatus.Canceled) {
+      for(const item of order.items) {
+        await this.productsService.increaseStock(item.product.id, item.count);
+      }
+    } else if (order.status === OrderStatus.Canceled && status !== OrderStatus.Canceled) {
+      for(const item of order.items) {
+        await this.productsService.decreaseStock(item.product.id, item.count);
+      }
+    }
     order.status = status;
     return this.orderRepository.save(order);
   }
