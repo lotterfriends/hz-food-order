@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { filter, first } from 'rxjs/operators';
-import { environment } from '../../environments/environment';
 import { OrderWSService } from '../order-ws.service';
-import { SettingsService, Settings } from '../settings.service';
+import { Settings, SettingsService } from '../settings.service';
 
 @Component({
   selector: 'hz-admin',

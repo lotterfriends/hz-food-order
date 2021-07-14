@@ -1,6 +1,7 @@
 <div fxLayout="row">
   <div fxFlex="grow">
     <h2 class="mat-headline">
+      <button mat-mini-fab (click)="reload()"><mat-icon>refresh</mat-icon></button>
       Bestellungen ({{resultCount}})
     </h2>
   </div>
@@ -55,15 +56,15 @@
   <ng-container *ngIf="orders && orders.length; else noOrder">
   
     <ng-container *ngFor="let order of orders; trackBy: orderTrackByFn; index as i">
-      <!-- fxHide [fxShow]="(!filter.selectedTable || filter.selectedTable.id === order.table.id) && filter.displayedCategories.includes(order.status) && displayOrderByCategory(order)" -->
-      <div class="order" fxLayout="column" fxLayoutGap="10px">
+      <div class="order" fxLayout="column" fxLayoutGap="10px" fxHide [fxShow]="filter.displayedCategories.includes(order.status) && displayOrderByCategory(order)">
         <div fxLayout="row" fxFlexFill fxLayoutGap="10px">
           <mat-card fxFlex="grow" class="{{order.status}}">
             <mat-card-title fxLayout="row" fxLayoutAlign="space-between center">
               <div fxLayout="row" fxLayoutAlign="center center">
-                <mat-icon class="category-icon" *ngIf="settings.seperateOrderPerProductCategory">{{order.items[0]?.product?.category?.icon}}</mat-icon>
-                <span>{{order.table.name}} <ng-container *ngIf="settings?.orderCode">- <span class="order-code">{{order.code}}</span></ng-container></span>
+                <span><mat-icon class="category-icon" *ngIf="settings.seperateOrderPerProductCategory">{{order.items[0]?.product?.category?.icon}}</mat-icon></span>
+                <span>{{order.table.name}}</span>
               </div>
+              <div *ngIf="settings?.orderCode"><span class="order-code">{{order.code}}</span></div>
               <button mat-icon-button (click)="openMessageDialog(order)"><mat-icon>message</mat-icon></button>
             </mat-card-title>
             <mat-card-content>
@@ -83,9 +84,12 @@
   
                 </div>
             
-                <div fxLayoutAlign="space-between center" class="order-status">
+                <div fxLayoutAlign="space-between end" class="order-status">
+                  <div fxLayout="column" class="order-detail">
+                    <span>{{orderService.getTextForOrderStatus(order.status)}}</span>
+                    <span class="order-time">Bestellt {{ order.created | timeago:live }}</span>
+                  </div>
                   <span class="sum">{{orderService.getSum(order) | currency:'EUR'}}</span>
-                  <span>{{orderService.getTextForOrderStatus(order.status)}}</span>
                 </div>
               </div>
       

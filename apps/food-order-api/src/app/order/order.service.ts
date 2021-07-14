@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { AppService } from '../app.service';
 import { ProductsService } from '../products/products.service';
 import { Table } from '../tables/table.entity';
-import { Brackets, Not, Repository} from 'typeorm';
+import { Brackets, MoreThan, Not, Repository} from 'typeorm';
 import { OrderItem } from './order-item.entity';
 import { Order, OrderFilter } from './order.entity';
 import { OrderDto } from './types/oder-dto';
@@ -28,7 +28,13 @@ export class OrderService {
     order.table = table;
     order.items = [];
     let useFunnels = false;
-    order.code = `${this.appService.randomString(3, true, true)}-${this.appService.randomString(3, true, true)}`.toUpperCase();
+    const counter = await this.getOrderCounterForLastDay();
+    if (settings.seperateOrderPerProductCategory && createOrderDto.items.length) {
+      const product = await this.productsService.findOneWithId(createOrderDto.items[0].id)
+      order.code = `${this.toCodeNumber(table.id)}-${this.toCodeNumber(product.category.id)}-${this.toCodeNumber(counter)}`;
+    } else {
+      order.code = `${this.toCodeNumber(table.id)}-${this.toCodeNumber(counter)}`;
+    }
     for(const item of createOrderDto.items) {
       const orderItem = new OrderItem();
       const currentItem = await this.productsService.findOneWithId(item.id);
@@ -63,6 +69,18 @@ export class OrderService {
         archived: null
       }
     });
+  }
+
+  getOrderCounterForLastDay(): Promise<number> {
+    return this.orderRepository.count({
+      where: {
+        created: MoreThan(new Date(new Date().getTime() - (24 * 60 * 60 * 1000)))
+      }
+    });
+  }
+
+  private toCodeNumber(x: number) {
+    return ('000' + x).slice(-3);
   }
 
   getFunnel():Promise<{funnel: number, count: string }[]> {

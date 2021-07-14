@@ -37,6 +37,7 @@ import {MatProgressBarModule} from '@angular/material/progress-bar'
 import { TablePrintComponent } from './tables/table-print/table-print.component';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { NgxPermissionsModule } from 'ngx-permissions';
+import { TimeagoModule } from 'ngx-timeago';
 @NgModule({
   declarations: [
     OrdersComponent,
@@ -79,7 +80,8 @@ import { NgxPermissionsModule } from 'ngx-permissions';
     MatCheckboxModule,
     MatChipsModule,
     MatProgressBarModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    TimeagoModule
   ],
   bootstrap: [AdminComponent]
 })

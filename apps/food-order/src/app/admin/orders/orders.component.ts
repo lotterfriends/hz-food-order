@@ -109,6 +109,10 @@ export class OrdersComponent implements OnInit {
     }
   }
 
+  reload() {
+    this.updateFilter();
+  }
+
   onScroll(event) {
     // endless loader
     if (this.moreSection) {
@@ -152,6 +156,7 @@ export class OrdersComponent implements OnInit {
       const eOrder = this.orders.find(e => e.id === result.id);
       if (eOrder) {
         eOrder.status = result.status;
+        this.more();
         if (showMessage) {
           const snackBarRef = this.snackBar.open(`Status auf "${this.orderService.getTextForOrderStatus(result.status)}" gesetzt`, 'rückgängig', {
             duration: 4000,
