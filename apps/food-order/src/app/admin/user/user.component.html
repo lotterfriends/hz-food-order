@@ -1,51 +1,57 @@
 
+<h2 class="mat-headline">
+  Benutzer
+</h2>
 
-<div fxLayout="row">
-  <mat-selection-list fxFlex="20" #users [multiple]="false" (selectionChange)="onSelection(users.selectedOptions.selected[0]?.value)" >
-    <ng-container *ngFor="let user of users$ | async">
-      <mat-list-option [value]="user" class="user-line">
-        <div matLine fxLayout="row" fxLayoutAlign="space-between center">
-          {{user.username}}
-          <button mat-icon-button (click)="delete($event, user)" class="action-delete hidden-no-touch">
-            <mat-icon>delete</mat-icon>
-          </button>
-        </div>
-      </mat-list-option>
-    </ng-container>
-  </mat-selection-list>
-  <div fxFlex="80" class="cotent">
+<mat-card>
 
-    <div fxFlex fxLayout="column" class="form" *ngIf="fg" [formGroup]="fg">
-
-      <input formControlName="id" type="hidden" />
-
-      <mat-form-field >
-        <mat-label>Benutzername</mat-label>
-        <input formControlName="username" required minlength="2" autocomplete="off" type="text" matInput>
-      </mat-form-field>
-      
-      <mat-form-field>
-        <mat-label>Rollen</mat-label>
-        <mat-select formControlName="roles" multiple>
-          <mat-option *ngFor="let role of roleList" [value]="role">{{getEnumKeyByEnumValue(roles, role)}}</mat-option>
-        </mat-select>
-      </mat-form-field>
-
-      <mat-form-field >
-        <mat-label>Passwort</mat-label>
-        <input [required]="fg.get('id').value === 'new'" formControlName="password" autocomplete="off" type="password" matInput>
-      </mat-form-field>
-
-      <div><mat-checkbox formControlName="active">Aktiv</mat-checkbox></div>
-      <br />
-
-
-      <span>
-        <button *ngIf="fg.get('id').value === 'new'" mat-raised-button color="primary" (click)="create()">erstellen</button>
-        <button *ngIf="fg.get('id').value !== 'new'" mat-raised-button color="primary" (click)="update()">ändern</button>
-        <button color="secondary" (click)="users.deselectAll(); unselect()"  mat-raised-button>Abbrechen</button>
-      </span>
-
+  <div fxLayout="row">
+    <mat-selection-list fxFlex="20" #users [multiple]="false" (selectionChange)="onSelection(users.selectedOptions.selected[0]?.value)" >
+      <ng-container *ngFor="let user of users$ | async">
+        <mat-list-option [value]="user" class="user-line">
+          <div matLine fxLayout="row" fxLayoutAlign="space-between center">
+            {{user.username}}
+            <button mat-icon-button (click)="delete($event, user)" class="action-delete hidden-no-touch">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </mat-list-option>
+      </ng-container>
+    </mat-selection-list>
+    <div fxFlex="80" class="cotent">
+  
+      <div fxFlex fxLayout="column" class="form" *ngIf="fg" [formGroup]="fg">
+  
+        <input formControlName="id" type="hidden" />
+  
+        <mat-form-field >
+          <mat-label>Benutzername</mat-label>
+          <input formControlName="username" required minlength="2" autocomplete="off" type="text" matInput>
+        </mat-form-field>
+        
+        <mat-form-field>
+          <mat-label>Rollen</mat-label>
+          <mat-select formControlName="roles" multiple>
+            <mat-option *ngFor="let role of roleList" [value]="role">{{getEnumKeyByEnumValue(roles, role)}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+  
+        <mat-form-field >
+          <mat-label>Passwort</mat-label>
+          <input [required]="fg.get('id').value === 'new'" formControlName="password" autocomplete="off" type="password" matInput>
+        </mat-form-field>
+  
+        <div><mat-checkbox formControlName="active">Aktiv</mat-checkbox></div>
+        <br />
+  
+  
+        <span>
+          <button *ngIf="fg.get('id').value === 'new'" mat-raised-button color="primary" (click)="create()">erstellen</button>
+          <button *ngIf="fg.get('id').value !== 'new'" mat-raised-button color="primary" (click)="update()">ändern</button>
+          <button color="secondary" (click)="users.deselectAll(); unselect()"  mat-raised-button>Abbrechen</button>
+        </span>
+  
+      </div>
     </div>
   </div>
-</div>
+</mat-card>

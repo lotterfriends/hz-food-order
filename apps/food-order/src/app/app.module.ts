@@ -53,7 +53,6 @@ export class MyIntl extends TimeagoIntl {
   
   constructor() {
     super();
-    console.log(deString);
     this.strings = deString;
     this.changes.next();
   }

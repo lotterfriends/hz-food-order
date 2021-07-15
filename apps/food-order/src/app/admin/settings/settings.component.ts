@@ -138,7 +138,6 @@ export class SettingsComponent implements OnInit {
   }
 
   uploadLogo() {
-    console.log(this.logo);
     this.logoUploadError = false;
     this.adminSettingsService.uploadLogo(this.logo).subscribe(
       event => {

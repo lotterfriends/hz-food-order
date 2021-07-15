@@ -39,6 +39,8 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { NgxPermissionsModule } from 'ngx-permissions';
 import { TimeagoModule } from 'ngx-timeago';
 import { UserComponent } from './user/user.component';
+import {MatRippleModule} from '@angular/material/core';
+
 @NgModule({
   declarations: [
     OrdersComponent,
@@ -83,6 +85,7 @@ import { UserComponent } from './user/user.component';
     MatChipsModule,
     MatProgressBarModule,
     MatProgressSpinnerModule,
+    MatRippleModule,
     TimeagoModule
   ],
   bootstrap: [AdminComponent]

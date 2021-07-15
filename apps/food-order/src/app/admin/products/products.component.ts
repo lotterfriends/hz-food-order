@@ -44,7 +44,7 @@ export class ProductsComponent implements OnInit, AfterViewInit {
 
   @ViewChildren(MatTable) table !: QueryList<MatTable<ViewProduct>>;
   allRoles = Role;
-  sortCategories = true;
+  sortCategoriesDisabled = true;
   sortProducts = true;
   categories: ProducCategory[] = [];
   categoryName = '';

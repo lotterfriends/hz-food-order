@@ -5,19 +5,6 @@
     <button routerLink="./print" mat-raised-button color="primary">Alle drucken</button>  
   </h2>
   
-  <mat-card *ngxPermissionsOnly="[allRoles.Admin]">
-    <mat-card-content>
-      
-      <mat-form-field fxFlexFill>
-        <mat-label>Name</mat-label>
-        <input #tableNameRef="ngModel" (keyup.enter)="addTable()" required minlength="2" autocomplete="off" [(ngModel)]="tableName" type="text" matInput>
-      </mat-form-field>
-      <span>
-        <button [disabled]="tableNameRef.invalid" mat-raised-button color="primary" (click)="addTable()">erstellen</button>
-      </span>
-    </mat-card-content>
-  </mat-card>
-  
   <mat-accordion>
     <mat-expansion-panel hideToggle *ngFor="let table of tables">
       <mat-expansion-panel-header>
@@ -63,6 +50,19 @@
       </ng-template>
     </mat-expansion-panel>
   </mat-accordion>
+
+  <mat-card *ngxPermissionsOnly="[allRoles.Admin]">
+    <mat-card-content>
+      
+      <mat-form-field fxFlexFill>
+        <mat-label>Name</mat-label>
+        <input #tableNameRef="ngModel" (keyup.enter)="addTable()" required minlength="2" autocomplete="off" [(ngModel)]="tableName" type="text" matInput>
+      </mat-form-field>
+      <span>
+        <button [disabled]="tableNameRef.invalid" mat-raised-button color="primary" (click)="addTable()">erstellen</button>
+      </span>
+    </mat-card-content>
+  </mat-card>
 
 </ng-container>  
 

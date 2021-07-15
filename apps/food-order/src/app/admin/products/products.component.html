@@ -2,7 +2,7 @@
 
   <h2 class="mat-headline">
     Kategorien
-    <button mat-button (click)="sortCategories = !sortCategories">sortieren</button>
+    <button mat-button (click)="sortCategoriesDisabled = !sortCategoriesDisabled">{{ sortCategoriesDisabled ? 'sortieren' : 'sortieren deaktivieren' }}</button>
   </h2>
 
   <div class="categories">
@@ -10,14 +10,19 @@
       <div fxFlex.gt-xs="50%" fxLayout="column">
         <mat-card style="padding: .75em;" *ngIf="categories && categories.length; else emptyCategories">
           <mat-card-content>
-            <mat-list class="categories" cdkDropList (cdkDropListDropped)="dropCategory($event)">
-              <mat-list-item (click)="editCategory(category)" class="category" cdkDrag [cdkDragDisabled]="sortCategories" *ngFor="let category of categories">
-                <span mat-line  fxLayout="row" fxLayoutAlign="start center"><mat-icon *ngIf="category.icon">{{category.icon}}</mat-icon> {{category.name}}</span>
-                <button *ngxPermissionsOnly="[allRoles.Admin]" mat-icon-button (click)="deleteCategory(category)">
-                  <mat-icon>delete</mat-icon>
-                </button>
-              </mat-list-item>
-            </mat-list>
+            <div class="list categories" cdkDropList (cdkDropListDropped)="dropCategory($event)">
+              <div matRipple class="list-item category" fxLayout="row" fxLayoutAlign="space-between center" fxFlexFill (click)="editCategory(category)" cdkDrag [cdkDragDisabled]="sortCategoriesDisabled" *ngFor="let category of categories">
+                <span fxLayout="row" fxLayoutAlign="start center"><mat-icon *ngIf="category.icon">{{category.icon}}</mat-icon> {{category.name}}</span>
+                <ng-container *ngIf="sortCategoriesDisabled">
+                  <button *ngxPermissionsOnly="[allRoles.Admin]" mat-icon-button (click)="deleteCategory(category)">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </ng-container>
+                <ng-container *ngIf="!sortCategoriesDisabled">
+                  <mat-icon>drag_handle</mat-icon>
+                </ng-container>
+              </div>
+            </div>
           </mat-card-content>
         </mat-card>
         <ng-template #emptyCategories>
