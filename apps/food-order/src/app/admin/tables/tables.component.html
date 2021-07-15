@@ -26,6 +26,7 @@
         </mat-panel-title>
         <mat-panel-description></mat-panel-description>
       </mat-expansion-panel-header>
+      <ng-template matExpansionPanelContent>
         <ng-container *ngIf="!table.edit; else tableEdit">
   
           <div fxLayout="row">
@@ -59,6 +60,7 @@
             <button mat-raised-button color="secondary" type="cancel" (click)="cancelEdit(table)">abbrechen</button>
           </mat-card-actions>
         </ng-template>
+      </ng-template>
     </mat-expansion-panel>
   </mat-accordion>
 
