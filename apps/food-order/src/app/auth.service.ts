@@ -11,9 +11,10 @@ export enum Role {
   Runner = 'runner',
   Admin = 'admin'
 }
-interface User {
+export interface User {
   id: number;
   username: string;
+  active: boolean;
   password: string;
   roles: Role[];
 }
@@ -42,6 +43,10 @@ export class AuthService {
 
   // store the URL so we can redirect after logging in
   // redirectUrl: string;
+
+  hasUser(): Observable<boolean>{
+    return this.http.get<boolean>(`${environment.apiPath}/has-user`);
+  }
 
   login(username: string, password: string): Promise<void> {
     return this.http.post<AuthenticationPayload>(`${environment.apiPath}/auth/login`, {

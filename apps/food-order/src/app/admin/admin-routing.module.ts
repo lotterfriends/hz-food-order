@@ -8,6 +8,7 @@ import { TablesComponent } from './tables/tables.component';
 import { TablePrintComponent } from './tables/table-print/table-print.component';
 import { Role } from '../auth.service';
 import { NgxPermissionsGuard } from 'ngx-permissions';
+import { UserComponent } from './user/user.component';
 
 export const adminRoutes: Routes = [
   {
@@ -45,6 +46,18 @@ export const adminRoutes: Routes = [
     data: {
       title: 'Angebot',
       icon: 'local_offer'
+    }
+  },
+  {
+    path: 'user',
+    component: UserComponent,
+    canActivate: [AuthGuardService, NgxPermissionsGuard],
+    data: {
+      title: 'Benutzer',
+      icon: 'people',
+      permissions: {
+        only: Role.Admin
+      }
     }
   },
   {

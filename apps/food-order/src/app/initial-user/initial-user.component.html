@@ -1,0 +1,36 @@
+<div class="inital-user">
+  <mat-card [formGroup]="fg">
+    <mat-card-title>Admin User anlegen</mat-card-title>
+
+    <br />
+
+    <mat-form-field fxFlexFill>
+      <input formControlName="username" matInput placeholder="Benutzername" type="text" required>
+    </mat-form-field>
+
+    <mat-form-field fxFlexFill>
+      <input formControlName="password" matInput placeholder="Passwort"  [type]="hide1 ? 'password' : 'text'" required  (change)="onPasswordChange()">
+      <button mat-icon-button matSuffix (click)="hide1 = !hide1" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide1">
+        <mat-icon>{{hide1 ? 'visibility_off' : 'visibility'}}</mat-icon>
+      </button>
+    </mat-form-field>
+
+    <mat-form-field fxFlexFill>
+      <input formControlName="password-repeat" matInput placeholder="Passwort wiederholen" [type]="hide2 ? 'password' : 'text'" (change)="onPasswordChange()">
+      <button mat-icon-button matSuffix (click)="hide2 = !hide2" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide2">
+        <mat-icon>{{hide2 ? 'visibility_off' : 'visibility'}}</mat-icon>
+      </button>
+      <mat-error *ngIf="fg.get('password-repeat').hasError('mismatch')">
+        Die Passwörter sind nicht identisch
+      </mat-error>
+    </mat-form-field>
+
+    <br />
+    <br />
+
+    <div>
+      <button [disabled]="!fg.get('password-repeat').touched || fg.invalid" mat-raised-button (click)="create()" color="accent">erstellen</button>
+    </div>
+
+  </mat-card>
+</div>

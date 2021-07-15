@@ -1,0 +1,17 @@
+::ng-deep {
+  .mat-list-base {
+    padding-top: 0;
+  }
+}
+
+.cotent {
+  padding: 1em;
+}
+
+button + button {
+  margin-left: 1em;
+}
+
+.user-line:hover .action-delete {
+  opacity: 1;
+}

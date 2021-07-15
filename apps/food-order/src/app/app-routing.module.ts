@@ -8,11 +8,16 @@ import { OrderComponent } from './order/order.component';
 import { adminRoutes} from './admin/admin-routing.module';
 import { OrderGuard } from './order.guard';
 import { OrderRedirectComponent } from './order-redirect/order-redirect.component';
+import { InitialUserComponent } from './initial-user/initial-user.component';
 
 const routes: Routes = [
   {
     path: 'login',
     component: LoginComponent
+  },
+  {
+    path: 'initial-user',
+    component: InitialUserComponent
   },
   {
     path: 'order/:secret',

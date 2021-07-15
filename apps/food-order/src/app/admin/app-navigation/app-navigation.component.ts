@@ -26,7 +26,7 @@ export class AppNavigationComponent {
   ) {
     this.ngxPermissionsService.hasPermission(Role.Admin).then((isAdmin) => {
       this.mainRoutes = adminRoutes.filter((e) => {
-        if (e.path === 'settings' && !isAdmin) {
+        if ((e.path === 'settings' || e.path === 'user') && !isAdmin) {
           return false;
         }
         return e.path?.length && e.path !== '**';

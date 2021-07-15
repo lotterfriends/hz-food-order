@@ -38,6 +38,7 @@ import { TablePrintComponent } from './tables/table-print/table-print.component'
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { NgxPermissionsModule } from 'ngx-permissions';
 import { TimeagoModule } from 'ngx-timeago';
+import { UserComponent } from './user/user.component';
 @NgModule({
   declarations: [
     OrdersComponent,
@@ -48,7 +49,8 @@ import { TimeagoModule } from 'ngx-timeago';
     AppHeaderComponent,
     AppNavigationComponent,
     OrderMessageDialogComponent,
-    SettingsComponent
+    SettingsComponent,
+    UserComponent
   ],
   imports: [
     NgxPermissionsModule.forChild(),

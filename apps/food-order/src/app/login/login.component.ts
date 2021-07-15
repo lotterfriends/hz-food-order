@@ -1,5 +1,6 @@
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
+import { first } from 'rxjs/operators';
 import { AuthService } from '../auth.service';
 
 @Component({
@@ -19,6 +20,13 @@ export class LoginComponent implements OnInit {
   @Input() password = '';
 
   ngOnInit(): void {
+
+    this.authService.hasUser().pipe(first()).subscribe(hasUser => {
+      if (!hasUser) {
+        this.router.navigate(['/initial-user']);
+      }
+    });
+
     if (typeof this.authService.getToken() === 'string') {
       this.router.navigate(['/admin']);
     }

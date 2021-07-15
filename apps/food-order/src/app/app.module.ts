@@ -35,6 +35,7 @@ import { SecretInterceptor } from './secret.interceptor';
 import { SettingsService } from './settings.service';
 import { TokenInterceptor } from './token.interceptor';
 import {strings as deString} from 'ngx-timeago/language-strings/de';
+import { InitialUserComponent } from './initial-user/initial-user.component';
 
 registerLocaleData(localeDe, 'de');
 
@@ -67,7 +68,8 @@ export class MyIntl extends TimeagoIntl {
     EnterCodeDialogComponent,
     ScanCodeDialogComponent,
     LoginComponent,
-    OrderRedirectComponent
+    OrderRedirectComponent,
+    InitialUserComponent
   ],
   imports: [
     FormsModule,
