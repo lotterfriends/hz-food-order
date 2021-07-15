@@ -49,7 +49,7 @@ export class ProductsComponent implements OnInit, AfterViewInit {
   categories: ProducCategory[] = [];
   categoryName = '';
   categoryId;
-  categoryIcon;
+  
   categoryFunnels;
   settings: Settings;
   products: ViewProduct[] = [];
@@ -84,7 +84,8 @@ export class ProductsComponent implements OnInit, AfterViewInit {
     { value: 'icecream' },
     { value: 'sports_bar' },
     { value: 'wine_bar' },
-  ]
+  ];
+  categoryIcon = this.icons[0].value;
 
   constructor(
     private adminProductsService: AdminProductsService,
@@ -137,14 +138,18 @@ export class ProductsComponent implements OnInit, AfterViewInit {
   }
 
   addCategory(): void {
-    this.adminProductsService.createCategory({
+    const obj = {
       name: this.categoryName,
       icon: this.categoryIcon,
       funnels: this.categoryFunnels
-    } as ProducCategory).pipe(first()).subscribe((product: ProducCategory) => {
+    } as ProducCategory;
+    if (!obj.funnels) {
+      delete obj.funnels;
+    }
+    this.adminProductsService.createCategory(obj).pipe(first()).subscribe((product: ProducCategory) => {
       this.categories.push(product);
       this.categoryName = '';
-      this.categoryIcon = '';
+      this.categoryIcon = this.icons[0].value;
       this.categoryFunnels = '';
       this.productCategory = this.categories[0];
       this.snackBar.open(`Das Kategorie wurde angelegt`, 'OK', {
@@ -207,7 +212,7 @@ export class ProductsComponent implements OnInit, AfterViewInit {
     return new FormGroup({
       name: new FormControl(p?.name, [
         Validators.required,
-        Validators.minLength(4)
+        Validators.minLength(2)
       ]),
       description: new FormControl(p?.description),
       allergens: new FormControl(p?.allergens),
