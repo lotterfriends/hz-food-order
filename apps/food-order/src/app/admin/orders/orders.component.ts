@@ -170,6 +170,13 @@ export class OrdersComponent implements OnInit {
     });
   }
 
+  hasOrders() {
+    return this.orders 
+      && this.orders.length 
+      && this.orders.filter(o => this.filter.displayedCategories.includes(o.status)).length 
+      && this.orders.filter(o => this.displayOrderByCategory(o)).length;
+  }
+
   orderTrackByFn(index, item) {
     return item.id;
   }

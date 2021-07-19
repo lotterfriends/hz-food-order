@@ -53,7 +53,7 @@
 
 <ng-template #noLoading>
 
-  <ng-container *ngIf="orders && orders.length; else noOrder">
+  <ng-container *ngIf="hasOrders(); else noOrder">
   
     <ng-container *ngFor="let order of orders; trackBy: orderTrackByFn; index as i">
       <div class="order" fxLayout="column" fxLayoutGap="10px" fxHide [fxShow]="filter.displayedCategories.includes(order.status) && displayOrderByCategory(order)">
