@@ -61,7 +61,7 @@
           <mat-card fxFlex="grow" class="{{order.status}}">
             <mat-card-title fxLayout="row" fxLayoutAlign="space-between center">
               <div fxLayout="row" fxLayoutAlign="center center">
-                <span><mat-icon class="category-icon" *ngIf="settings.seperateOrderPerProductCategory">{{order.items[0]?.product?.category?.icon}}</mat-icon></span>
+                <span fxLayout="row" fxLayoutAlign="center center"><mat-icon class="category-icon" *ngIf="settings.seperateOrderPerProductCategory">{{order.items[0]?.product?.category?.icon}}</mat-icon></span>
                 <span>{{order.table.name}}</span>
               </div>
               <div *ngIf="settings?.orderCode"><span class="order-code">{{order.code}}</span></div>
