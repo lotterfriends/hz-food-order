@@ -45,7 +45,7 @@ export class ProductsComponent implements OnInit, AfterViewInit {
   @ViewChildren(MatTable) table !: QueryList<MatTable<ViewProduct>>;
   allRoles = Role;
   sortCategoriesDisabled = true;
-  sortProducts = true;
+  sortProductsDisabled = true;
   categories: ProducCategory[] = [];
   categoryName = '';
   categoryId;
@@ -203,7 +203,7 @@ export class ProductsComponent implements OnInit, AfterViewInit {
 
   cancelCategory(): void {
     this.categoryId = '';
-    this.categoryIcon = '';
+    this.categoryIcon = this.icons[0].value;
     this.categoryName = '';
     this.categoryFunnels = '';
   }

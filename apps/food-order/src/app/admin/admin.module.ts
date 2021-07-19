@@ -1,46 +1,46 @@
+import { DragDropModule } from '@angular/cdk/drag-drop';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
+import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatRippleModule } from '@angular/material/core';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatListModule } from '@angular/material/list';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatTableModule } from '@angular/material/table';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatToolbarModule } from '@angular/material/toolbar';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { UiModule } from '@hz/ui';
 import { NgxQRCodeModule } from '@techiediaries/ngx-qrcode';
+import { CurrencyMaskModule } from 'ng2-currency-mask';
+import { NgxPermissionsModule } from 'ngx-permissions';
+import { TimeagoModule } from 'ngx-timeago';
+import { AdminRoutingModule } from './admin-routing.module';
 import { AdminComponent } from './admin.component';
 import { AppHeaderComponent } from './app-header/app-header.component';
 import { AppNavigationComponent } from './app-navigation/app-navigation.component';
-import { ProductsComponent } from './products/products.component';
-import { TablesComponent } from './tables/tables.component';
-import { UiModule } from '@hz/ui';
-import { OrdersComponent } from './orders/orders.component';
-import { AdminRoutingModule } from './admin-routing.module';
 import { OrderMessageDialogComponent } from './orders/order-message-dialog/order-message-dialog';
+import { OrdersComponent } from './orders/orders.component';
+import { ProductsComponent } from './products/products.component';
 import { SettingsComponent } from './settings/settings.component';
-import { CurrencyMaskModule } from 'ng2-currency-mask';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { MatCardModule } from '@angular/material/card';
-import { MatExpansionModule } from '@angular/material/expansion';
-import { MatIconModule } from '@angular/material/icon';
-import { DragDropModule } from '@angular/cdk/drag-drop';
-import { MatTableModule } from '@angular/material/table';
-import { MatDividerModule } from '@angular/material/divider';
-import { FlexLayoutModule } from '@angular/flex-layout';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatButtonModule } from '@angular/material/button';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatListModule } from '@angular/material/list';
-import {MatCheckboxModule} from '@angular/material/checkbox';
-import {MatChipsModule} from '@angular/material/chips';
-import {MatProgressBarModule} from '@angular/material/progress-bar'
 import { TablePrintComponent } from './tables/table-print/table-print.component';
-import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
-import { NgxPermissionsModule } from 'ngx-permissions';
-import { TimeagoModule } from 'ngx-timeago';
+import { TablesComponent } from './tables/tables.component';
 import { UserComponent } from './user/user.component';
-import {MatRippleModule} from '@angular/material/core';
-
 @NgModule({
   declarations: [
     OrdersComponent,
@@ -86,6 +86,7 @@ import {MatRippleModule} from '@angular/material/core';
     MatProgressBarModule,
     MatProgressSpinnerModule,
     MatRippleModule,
+    MatTabsModule,
     TimeagoModule
   ],
   bootstrap: [AdminComponent]

@@ -16,8 +16,6 @@
 
 .category.cdk-drag-preview {
   background-color: #efefef;
-  // display: flex;
-  // box-sizing: border-box;
   min-height: inherit !important;
   min-width: inherit !important;
   height: 3em !important;
@@ -94,7 +92,34 @@ tr.product-table-element-row:not(.product-table-expanded-row):active {
 
 .mat-column-expandedDetail {
   background-color: #f7f7f7;
+}
 
+.sort-button {
+  position: absolute;
+  right: 0;
+  top: .25em;
+}
+
+.categories-container,
+.products-container {
+  padding-top: 2em;
+}
+
+.product-sort-handle {
+  padding: 0 1em;
+}
+
+.cdk-drag-preview.product-table-element-row {
+  display: table;
+  background-color: #efefef;
+  min-height: inherit !important;
+  min-width: inherit !important;
+  height: 3em !important;
+  border-radius: 4px;
+  vertical-align: middle;
+  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+              0 8px 10px 1px rgba(0, 0, 0, 0.14),
+              0 3px 14px 2px rgba(0, 0, 0, 0.12);
 }
 
 .form {

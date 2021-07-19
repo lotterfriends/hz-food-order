@@ -38,7 +38,7 @@
   
         <mat-form-field >
           <mat-label>Passwort</mat-label>
-          <input [required]="fg.get('id').value === 'new'" formControlName="password" autocomplete="off" type="password" matInput>
+          <input [required]="fg.get('id').value === 'new'" [autocomplete]="fg.get('id').value === 'new' ? 'new-password' : 'current-password'" formControlName="password" autocomplete="off" type="password" matInput>
         </mat-form-field>
   
         <div><mat-checkbox formControlName="active">Aktiv</mat-checkbox></div>
