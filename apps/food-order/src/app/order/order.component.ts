@@ -62,10 +62,7 @@ export class OrderComponent implements OnInit, OnDestroy {
         }
       });
     }
-    this.getProducts();
-    this.orderService.getOrders().subscribe(result => {
-      this.orders = result;
-    });
+    this.loadData();
 
     this.orderWSService.tableOrderUpdate().subscribe(order => {
       const eOrder = this.orders.find(e => e.id === order.id);
@@ -112,6 +109,16 @@ export class OrderComponent implements OnInit, OnDestroy {
   closeCode() {
     this.selectedCode = false
     this.renderer.removeClass(document.body, 'modal-open');
+  }
+
+  loadData(doReconnect?: boolean) {
+    this.getProducts();
+    this.orderService.getOrders().subscribe(result => {
+      this.orders = result;
+    });
+    if (doReconnect) {
+      this.orderWSService.reconnect();
+    }
   }
 
   getProducts() {

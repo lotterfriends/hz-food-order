@@ -10,7 +10,10 @@
 
 <ng-container *ngIf="table">
 
-  <h1 class="mat-title">{{table.name}}</h1>
+  <h1 class="mat-title">
+    <button mat-mini-fab (click)="loadData(true)"><mat-icon>refresh</mat-icon></button>
+    {{table.name}}
+  </h1>
 
   <h3 class="mat-headline">Bestellungen</h3>
   

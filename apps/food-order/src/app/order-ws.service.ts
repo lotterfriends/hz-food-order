@@ -46,4 +46,10 @@ export class OrderWSService {
       return this.socket.fromEvent<ServerOrder>('order-update');
     }
 
+    reconnect() {
+      if (!this.isConnected.getValue()) {
+        this.socket.connect();
+      }
+    }
+
 }
