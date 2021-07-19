@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { AppService } from '../app.service';
 import { ProductsService } from '../products/products.service';
 import { Table } from '../tables/table.entity';
-import { Brackets, MoreThan, Not, Repository} from 'typeorm';
+import { Brackets, In, MoreThan, Repository} from 'typeorm';
 import { OrderItem } from './order-item.entity';
 import { Order, OrderFilter } from './order.entity';
 import { OrderDto } from './types/oder-dto';
@@ -66,7 +66,8 @@ export class OrderService {
       },
       where: {
         table: table,
-        archived: null
+        archived: null,
+        status: In([OrderStatus.Ready, OrderStatus.InPreparation])
       }
     });
   }
