@@ -42,7 +42,7 @@ export class TableService {
   }
 
   async updateTable(id: number, table: Table): Promise<Table> {
-    if (table.name === TableType.Odd || table.name !== TableType.Even) {
+    if (table.name === TableType.Odd || table.name === TableType.Even) {
       throw new BadRequestException('invalid table name');
     }
     await this.tableRepository.update(id, table);
