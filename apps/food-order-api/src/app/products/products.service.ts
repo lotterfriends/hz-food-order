@@ -37,7 +37,7 @@ export class ProductsService {
   }
 
   deleteCategory(id: number) {
-    return this.categoryRepository.delete(id);
+    return this.categoryRepository.softDelete(id);
   }
 
   async updateCategoriesOrder(entries: {id: number, order: number}[]) {
@@ -71,11 +71,11 @@ export class ProductsService {
   }
 
   getAllEnabled() {
-    return this.productsRepository.find({
-      where: {
-        disabled: false
-      }
-    });
+    return this.productsRepository.createQueryBuilder('p')
+      .innerJoinAndSelect('p.category', 'c')
+      .where('p.disabled = false')
+      .andWhere('c.disabled = false')
+      .getMany();
   }
 
   findOneWithId(id: number) {
@@ -115,6 +115,16 @@ export class ProductsService {
 
   delete(id: number) {
     this.productsRepository.softDelete(id);
+  }
+
+  async restoreProduct(id: number): Promise<Product> {
+    await this.productsRepository.restore(id);
+    return this.productsRepository.findOne(id);
+  }
+
+  async restoreCategory(id: number): Promise<ProductCategory> {
+    await this.categoryRepository.restore(id);
+    return this.categoryRepository.findOne(id);
   }
 
 

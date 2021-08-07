@@ -10,6 +10,13 @@
 }
 
 
+.list-item:hover {
+  // background-color: #fff;
+  button {
+    opacity: 1;
+  }
+}
+
 .price-field {
   text-align: left !important;
 }
