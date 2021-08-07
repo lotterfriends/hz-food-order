@@ -19,7 +19,7 @@ interface ViewProduct extends Product {
 
 interface CatergoryProducts {
   category: ProducCategory;
-  producs: ViewProduct[];
+  products: ViewProduct[];
   datasource: MatTableDataSource<ViewProduct>
 }
 
@@ -118,7 +118,7 @@ export class ProductsComponent implements OnInit, AfterViewInit {
         this.addProductToCategory(product);
       }
       this.productsByCategory.sort((a, b) => a.category.order - b.category.order);
-      this.productsByCategory.forEach(e => e.producs.sort((a, b) => a.order - b.order));
+      this.productsByCategory.forEach(e => e.products.sort((a, b) => a.order - b.order));
       
       this.categories = categories.sort((a, b) => a.order - b.order);
       if (this.categories.length) {
@@ -159,7 +159,43 @@ export class ProductsComponent implements OnInit, AfterViewInit {
     });
   }
 
-  deleteCategory(category: ProducCategory): void {
+  private reassignProductsOfDeletedCategory(category) {
+    const pCatIndex = this.productsByCategory.findIndex(e => e.category.id === category.id);
+    if (this.productsByCategory[pCatIndex].products.length) {
+      const products = [ ...this.productsByCategory[pCatIndex].products];
+      this.productsByCategory = this.productsByCategory.filter(e => e.category.id !== category.id);
+      const pUnCatIndex = this.productsByCategory.findIndex(e => e.category.id === AdminProductsService.DUMMY_CATEGORY.id);
+      if (pUnCatIndex > -1) {
+        this.productsByCategory[pUnCatIndex].products = [
+          ...products,
+          ...this.productsByCategory[pUnCatIndex].products
+        ];
+        this.productsByCategory[pUnCatIndex].datasource.data = this.productsByCategory[pUnCatIndex].products;
+      } else {
+        for (const product of products) {
+          delete product.category;
+          this.addProductToCategory(product);
+        }
+      }
+    }
+  }
+
+  async refreshProducs(): Promise<void> {
+    return new Promise<void>(resolve => {
+      this.productsByCategory = [];
+      this.adminProductsService.getProducts().pipe(first()).subscribe(products => {
+        for (const product of products) {
+          this.addProductToCategory(product);
+        }
+        this.productsByCategory.sort((a, b) => a.category.order - b.category.order);
+        this.productsByCategory.forEach(e => e.products.sort((a, b) => a.order - b.order));
+        resolve();
+      });
+    });
+  }
+
+  deleteCategory(event, category: ProducCategory): void {
+    event.stopPropagation();
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       maxWidth: '400px',
       data: new ConfirmDialogModel(null, `Wollen sie die Kategorie "${category.name}" wirklich löschen?`)
@@ -167,8 +203,23 @@ export class ProductsComponent implements OnInit, AfterViewInit {
 
     dialogRef.afterClosed().pipe(first()).subscribe(dialogResult => {
       if (dialogResult) {
-        this.adminProductsService.deleteCategory(category).pipe(first()).subscribe(result => {
-          this.init();
+        this.adminProductsService.deleteCategory(category).pipe(first()).subscribe(_ => {
+          this.reassignProductsOfDeletedCategory(category);
+          const snackBarRef = this.snackBar.open(`Die Katergorie ${category.name} wurde erfolgreich gelöscht.`, 'rückgängig', {
+            duration: 4000,
+          });
+          snackBarRef.onAction().subscribe(()=> {
+            this.adminProductsService.restoreProductCategory(category.id).pipe(first()).subscribe(async category => {
+              this.categories.push(category);
+              await this.refreshProducs();
+              this.reRenderProductTables();
+              this.ref.detectChanges();
+            });
+          });
+
+          this.categories = this.categories.filter(e => e.id !== category.id);
+          this.reRenderProductTables();
+          this.ref.detectChanges();
         });
       }
     });
@@ -179,6 +230,18 @@ export class ProductsComponent implements OnInit, AfterViewInit {
     this.categoryName = category.name;
     this.categoryId = category.id;
     this.categoryFunnels = category.funnels;
+  }
+
+  toggleDisableProductCategory($event, category: ProducCategory): void {
+    $event.stopPropagation();
+    $event.preventDefault();
+    this.adminProductsService.toggleDisableProductCategory(category.id, !category.disabled).pipe(first()).subscribe(_ => {
+      const index = this.categories.findIndex(p => p.id === category.id);
+      if (index > -1) {
+        this.categories[index].disabled = !this.categories[index].disabled;
+      }
+      this.ref.detectChanges();
+    });
   }
 
   saveEditCategory(): void {
@@ -218,16 +281,16 @@ export class ProductsComponent implements OnInit, AfterViewInit {
       allergens: new FormControl(p?.allergens),
       stock: new FormControl(p?.stock || 0, Validators.required),
       price: new FormControl(p?.price || 0, [Validators.required]),
-      category: new FormControl(p?.category || this.productCategory, Validators.required),
+      category: new FormControl(p?.category && p?.category.id > -1 ? p?.category : this.productCategory, Validators.required),
     });
   }
 
   async dropProduct(event: CdkDragDrop<ViewProduct[]>, catergoryProducts: CatergoryProducts): Promise<void> {
-    moveItemInArray(catergoryProducts.producs, event.previousIndex, event.currentIndex);
-    catergoryProducts.producs.forEach((e, i) => {
+    moveItemInArray(catergoryProducts.products, event.previousIndex, event.currentIndex);
+    catergoryProducts.products.forEach((e, i) => {
       e.order = i;
     });
-    await this.adminProductsService.orderProducs(catergoryProducts.producs).toPromise();
+    await this.adminProductsService.orderProducts(catergoryProducts.products).toPromise();
     this.reRenderProductTables();
   }
 
@@ -247,6 +310,7 @@ export class ProductsComponent implements OnInit, AfterViewInit {
 
   reRenderProductTables(): void {
     this.table.toArray().forEach(data => data.renderRows());
+    this.ref.detectChanges();
   }
 
   startEditProduct(product: ViewProduct): void {
@@ -259,7 +323,7 @@ export class ProductsComponent implements OnInit, AfterViewInit {
   getProductById(id: number): ViewProduct | null {
     let element = null;
     for (const pc of this.productsByCategory) {
-      const result = pc.producs.find(p => p.id === id);
+      const result = pc.products.find(p => p.id === id);
       if (result) {
         element = result;
         break;
@@ -279,13 +343,13 @@ export class ProductsComponent implements OnInit, AfterViewInit {
         categoryChanged = true;
       }
       this.productsByCategory.forEach(pc => {
-        const prpductIndex = pc.producs.findIndex(p => p.id === result.id);
+        const prpductIndex = pc.products.findIndex(p => p.id === result.id);
         if (prpductIndex > -1) {
           if (categoryChanged) {
-            pc.producs.splice(prpductIndex, 1);
+            pc.products.splice(prpductIndex, 1);
             this.addProductToCategory(result);
           } else {
-            pc.producs[prpductIndex] = { edit: false, ...result };
+            pc.products[prpductIndex] = { edit: false, ...result };
           }
         }
       });
@@ -300,16 +364,11 @@ export class ProductsComponent implements OnInit, AfterViewInit {
 
   addProductToCategory(product: Product): void {
     if (!product.category) {
-      product.category = {
-        id: -1,
-        icon: '',
-        name: 'Ohne Katergorie',
-        order: 100
-      };
+      product.category = { ...AdminProductsService.DUMMY_CATEGORY};
     }
     const e = this.productsByCategory.find(c => c.category.id === product.category.id);
     if (e) {
-      e.producs.push({
+      e.products.push({
         edit: false,
         ...product
       });
@@ -322,7 +381,7 @@ export class ProductsComponent implements OnInit, AfterViewInit {
       ];
       this.productsByCategory.push({
         category: product.category,
-        producs: viewProducts,
+        products: viewProducts,
         datasource: new MatTableDataSource(viewProducts)
       });
     }
@@ -343,12 +402,25 @@ export class ProductsComponent implements OnInit, AfterViewInit {
       if (dialogResult) {
         this.adminProductsService.deleteProduct(product.id).pipe(first()).subscribe(_ => {
           this.productsByCategory.forEach(pc => {
-            const prpductIndex = pc.producs.findIndex(p => p.id === product.id);
+            const prpductIndex = pc.products.findIndex(p => p.id === product.id);
             if (prpductIndex > -1) {
-              pc.producs.splice(prpductIndex, 1);
+              pc.products.splice(prpductIndex, 1);
+              if (!pc.products.length) {
+                this.productsByCategory = this.productsByCategory.filter(e => e.category.id !== pc.category.id); 
+              }
             }
           });
           this.reRenderProductTables();
+
+          const snackBarRef = this.snackBar.open(`Das Produkt ${product.name} wurde erfolgreich gelöscht.`, 'rückgängig', {
+            duration: 4000,
+          });
+          snackBarRef.onAction().subscribe(()=> {
+            this.adminProductsService.restoreProduct(product.id).pipe(first()).subscribe(product => {
+              this.addProductToCategory(product);
+              this.reRenderProductTables();
+            });
+          });
         });
       }
     });
@@ -361,9 +433,9 @@ export class ProductsComponent implements OnInit, AfterViewInit {
     $event.preventDefault();
     this.adminProductsService.toggleDisableProduct(product.id, !product.disabled).pipe(first()).subscribe(_ => {
       this.productsByCategory.forEach(pc => {
-        const prpductIndex = pc.producs.findIndex(p => p.id === product.id);
+        const prpductIndex = pc.products.findIndex(p => p.id === product.id);
         if (prpductIndex > -1) {
-          pc.producs[prpductIndex].disabled = !pc.producs[prpductIndex].disabled;
+          pc.products[prpductIndex].disabled = !pc.products[prpductIndex].disabled;
         }
       });
       this.ref.detectChanges();

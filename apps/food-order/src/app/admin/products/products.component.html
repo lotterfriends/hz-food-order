@@ -1,6 +1,6 @@
 <div>
 
-  <mat-tab-group>
+  <mat-tab-group mat-align-tabs="center">
     <mat-tab label="Kategorien">
       <button color="primary" class="sort-button" mat-stroked-button (click)="sortCategoriesDisabled = !sortCategoriesDisabled">{{ sortCategoriesDisabled ? 'sortieren' : 'sortieren deaktivieren' }}</button>
       <div class="categories-container">
@@ -9,15 +9,21 @@
           <mat-card-content fxFlexFill >
             <div class="list categories" cdkDropList (cdkDropListDropped)="dropCategory($event)">
               <div matRipple class="list-item category" fxLayout="row" fxLayoutAlign="space-between center" fxFlexFill (click)="editCategory(category)" cdkDrag [cdkDragDisabled]="sortCategoriesDisabled" *ngFor="let category of categories">
-                <span fxLayout="row" fxLayoutAlign="start center"><mat-icon *ngIf="category.icon">{{category.icon}}</mat-icon> {{category.name}}</span>
-                <ng-container *ngIf="sortCategoriesDisabled">
-                  <button *ngxPermissionsOnly="[allRoles.Admin]" mat-icon-button (click)="deleteCategory(category)">
-                    <mat-icon>delete</mat-icon>
-                  </button>
-                </ng-container>
-                <ng-container *ngIf="!sortCategoriesDisabled">
-                  <mat-icon>drag_handle</mat-icon>
-                </ng-container>
+                <span fxLayout="row" fxLayoutAlign="start center" [ngClass]="{'disabled': category.disabled}" ><mat-icon *ngIf="category.icon">{{category.icon}}</mat-icon> {{category.name}}</span>
+                <span>
+                  <ng-container *ngIf="sortCategoriesDisabled">
+                    <button class="hidden-no-touch" (click)="toggleDisableProductCategory($event, category)" mat-icon-button color="primary" aria-label="Produkt deaktivieren">
+                      <mat-icon *ngIf="!category.disabled">block</mat-icon>
+                      <mat-icon *ngIf="category.disabled">check</mat-icon>
+                    </button>
+                    <button class="hidden-no-touch" *ngxPermissionsOnly="[allRoles.Admin]" mat-icon-button color="primary" (click)="deleteCategory($event, category)">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </ng-container>
+                  <ng-container *ngIf="!sortCategoriesDisabled">
+                    <mat-icon>drag_handle</mat-icon>
+                  </ng-container>
+                </span>
               </div>
             </div>
           </mat-card-content>
@@ -80,20 +86,20 @@
       <div class="products-container" *ngIf="productsByCategory && productsByCategory.length && showTable">
         <ng-container *ngFor="let productByCategory of this.productsByCategory">
           
-          <h3 class="mat-headline" *ngIf="productByCategory.producs && productByCategory.producs.length" fxLayout="row" fxLayoutAlign="start center">
+          <h3 class="mat-headline" *ngIf="productByCategory.products && productByCategory.products.length" fxLayout="row" fxLayoutAlign="start center">
             <mat-icon *ngIf="productByCategory.category.icon">{{productByCategory.category.icon}}</mat-icon>
             {{productByCategory.category.name}}
           </h3>
           
           <table
-            *ngIf="productByCategory.producs && productByCategory.producs.length"
+            *ngIf="productByCategory.products && productByCategory.products.length"
             mat-table
             #currentTable
             [dataSource]="productByCategory.datasource"
             multiTemplateDataRows
             class="mat-elevation-z2"
             cdkDropList
-            [cdkDropListData]="productByCategory.producs"
+            [cdkDropListData]="productByCategory.products"
             (cdkDropListDropped)="dropProduct($event, productByCategory)"
             >
             

@@ -16,7 +16,7 @@ export class UsersService {
   }
   
   delete(id: number): Promise<DeleteResult> {
-    return this.userRepository.delete(id);
+    return this.userRepository.softDelete(id);
   }
   
   async create(user: User): Promise<User> {

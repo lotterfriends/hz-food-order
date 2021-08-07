@@ -19,17 +19,25 @@ export interface ProducCategory {
   id: number;
   name: string;
   icon: string;
+  disabled: boolean;
   description?: string;
   funnels?: number;
   order: number;
 }
-
 @Injectable({
   providedIn: 'root'
 })
 export class AdminProductsService {
 
   constructor(private http: HttpClient) {}
+
+  public static DUMMY_CATEGORY: ProducCategory = {
+    id: -1,
+    icon: '',
+    name: 'Ohne Katergorie',
+    order: 100,
+    disabled: false
+  }
 
   getProducts(): Observable<Product[]> {
     return this.http.get<Product[]>(`${environment.apiPath}/products`);
@@ -47,12 +55,24 @@ export class AdminProductsService {
     return this.http.put<ProducCategory>(`${environment.apiPath}/product-categories`, category);
   }
 
+  toggleDisableProductCategory(id: number, disabled: boolean = true): Observable<ProducCategory> {
+    return this.http.put<ProducCategory>(`${environment.apiPath}/product-categories`, {id, disabled});
+  }
+
   deleteCategory(category: ProducCategory): Observable<ProducCategory> {
     return this.http.delete<ProducCategory>(`${environment.apiPath}/product-categories/${category.id}`);
   }
 
   createProduct(product: Product): Observable<Product> {
     return this.http.post<Product>(`${environment.apiPath}/products`, product);
+  }
+  
+  restoreProduct(id: number): Observable<Product> {
+    return this.http.get<Product>(`${environment.apiPath}/products/${id}/restore`);
+  }
+
+  restoreProductCategory(id: number): Observable<ProducCategory> {
+    return this.http.get<ProducCategory>(`${environment.apiPath}/product-categories/${id}/restore`);
   }
 
   deleteProduct(id: number): Observable<void> {
@@ -73,7 +93,7 @@ export class AdminProductsService {
     }));
   }
   
-  orderProducs(products: Product[]) {
+  orderProducts(products: Product[]) {
     return this.http.post<Product>(`${environment.apiPath}/products/order`, products.map(e => {
       return {id: e.id, order: e.order};
     }));

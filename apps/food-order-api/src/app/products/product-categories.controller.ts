@@ -27,6 +27,11 @@ export class ProductCategoriesController {
     return this.productService.getAllCategories();
   }
 
+  @Get(':id/restore')
+  restore(@Param('id') id: number): Promise<ProductCategory> {
+    return this.productService.restoreCategory(id);
+  }
+
   @Delete(':id')
   @Roles(Role.Admin)
   delete(@Param('id') id: number) {

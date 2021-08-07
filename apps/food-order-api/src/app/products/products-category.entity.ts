@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Product } from "./products.entity";
 
 @Entity()
@@ -9,6 +9,9 @@ export class ProductCategory {
   @CreateDateColumn()
   created: Date;
 
+  @DeleteDateColumn()
+  deleted: boolean;
+
   @Column()
   name?: string;
 
@@ -17,6 +20,9 @@ export class ProductCategory {
   
   @Column({default: 0})
   funnels?: number;
+
+  @Column({default: false})
+  disabled: boolean;
   
   @Column({nullable: true})
   description?: string;

@@ -37,6 +37,11 @@ export class ProductsController {
     return this.productService.update(id, product);
   }
 
+  @Get(':id/restore')
+  restore(@Param('id') id: number) {
+    return this.productService.restoreProduct(id);
+  }
+
   @Get()
   getAll() {
     return this.productService.getAll();
