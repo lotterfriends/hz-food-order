@@ -68,7 +68,7 @@
     "compression": "^1.7.4",
     "jsqr": "^1.4.0",
     "mysql2": "^2.2.5",
-    "ng2-currency-mask": "^9.0.2",
+    "ng2-currency-mask": "11.0.0",
     "ngx-permissions": "^8.1.1",
     "ngx-socket-io": "3.2.0",
     "ngx-timeago": "^2.0.0",
