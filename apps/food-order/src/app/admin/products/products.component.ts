@@ -1,7 +1,7 @@
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { filter, first } from 'rxjs/operators';
 import { AdminProductsService, ProducCategory, Product } from '../services/admin-products.service';
-import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
@@ -17,7 +17,7 @@ interface ViewProduct extends Product {
   edit: boolean;
 }
 
-interface CatergoryProducts {
+interface CategoryProducts {
   category: ProducCategory;
   products: ViewProduct[];
   datasource: MatTableDataSource<ViewProduct>
@@ -59,7 +59,7 @@ export class ProductsComponent implements OnInit, AfterViewInit {
   productStock = 0;
   productCategory: ProducCategory | null = null;
   productsTableColumns = ['name', 'stock', 'price', 'category', 'disableProduct', 'deleteProduct'];
-  productsByCategory: CatergoryProducts[] = [];
+  productsByCategory: CategoryProducts[] = [];
   expandedElement: ViewProduct | null = null;
   editElement: ViewProduct = { id: -1, category: {id: -1} } as ViewProduct;
   newProductForm: FormGroup | undefined;
@@ -273,6 +273,7 @@ export class ProductsComponent implements OnInit, AfterViewInit {
 
   createProductForm(p: ViewProduct | null): FormGroup {
     return new FormGroup({
+      id: new FormControl(p?.id || 'new', Validators.required),
       name: new FormControl(p?.name, [
         Validators.required,
         Validators.minLength(2)
@@ -285,18 +286,35 @@ export class ProductsComponent implements OnInit, AfterViewInit {
     });
   }
 
-  async dropProduct(event: CdkDragDrop<ViewProduct[]>, catergoryProducts: CatergoryProducts): Promise<void> {
-    moveItemInArray(catergoryProducts.products, event.previousIndex, event.currentIndex);
-    catergoryProducts.products.forEach((e, i) => {
-      e.order = i;
-    });
-    await this.adminProductsService.orderProducts(catergoryProducts.products).toPromise();
+  async dropProduct(event: CdkDragDrop<ViewProduct[]>, categoryProducts: CategoryProducts): Promise<void> {
+    
+    if (event.previousContainer === event.container) {
+      moveItemInArray(categoryProducts.products, event.previousIndex, event.currentIndex);
+      categoryProducts.products.forEach((e, i) => {
+        e.order = i;
+      });
+      await this.adminProductsService.orderProducts(categoryProducts.products).toPromise();
+    } else {
+      transferArrayItem(event.previousContainer.data,
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex);
+      const product = event.item.data as ViewProduct;
+      product.category = categoryProducts.category;
+      categoryProducts.products.forEach((e, i) => {
+        e.order = i;
+      });
+      await this.saveEditProduct(product, false);
+      await this.adminProductsService.orderProducts(categoryProducts.products).toPromise();
+    }
     this.reRenderProductTables();
   }
 
   addProduct(): void {
+    const product = this.newProductForm?.getRawValue() as Product;
+    delete product.id;
     this.adminProductsService.createProduct(
-      this.newProductForm?.getRawValue() as Product
+      product
     ).pipe(first()).subscribe((product: Product) => {
       this.newProductForm = this.createProductForm(null);
       this.addProductToCategory(product);
@@ -332,13 +350,19 @@ export class ProductsComponent implements OnInit, AfterViewInit {
     return element;
   }
 
-  saveEditProduct(): void {
+  saveEditProduct(product?: Product | ViewProduct, rerender = true): void {
+    if (!product) {
+      product = this.editProductForm?.getRawValue() as Product;
+    }
+    if ("edit" in product) {
+      delete product.edit;
+    }
     this.adminProductsService.updateProduct(
-      this.editElement.id,
-      this.editProductForm?.getRawValue() as Product
+      product.id,
+      product
     ).pipe(first()).subscribe(result => {
       let categoryChanged = false;
-      const currentElement = this.getProductById(this.editElement.id);
+      const currentElement = this.getProductById(product.id);
       if (currentElement && result.category?.id !== currentElement.category?.id) {
         categoryChanged = true;
       }
@@ -354,11 +378,13 @@ export class ProductsComponent implements OnInit, AfterViewInit {
         }
       });
 
-      this.reRenderProductTables();
-      setTimeout(() => {
-        this.expandedElement = null;
-        this.ref.detectChanges();
-      });
+      if (rerender) {
+        this.reRenderProductTables();
+        setTimeout(() => {
+          this.expandedElement = null;
+          this.ref.detectChanges();
+        });
+      }
     });
   }
 

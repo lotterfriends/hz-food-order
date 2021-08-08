@@ -83,7 +83,7 @@
     </mat-tab>
     <mat-tab label="Produkte">
       <button color="primary" class="sort-button" mat-stroked-button (click)="sortProductsDisabled = !sortProductsDisabled">{{ sortProductsDisabled ? 'sortieren' : 'sortieren deaktivieren' }}</button>
-      <div class="products-container" *ngIf="productsByCategory && productsByCategory.length && showTable">
+      <div cdkDropListGroup class="products-container" *ngIf="productsByCategory && productsByCategory.length && showTable">
         <ng-container *ngFor="let productByCategory of this.productsByCategory">
           
           <h3 class="mat-headline" *ngIf="productByCategory.products && productByCategory.products.length" fxLayout="row" fxLayoutAlign="start center">
@@ -159,6 +159,7 @@
     
                   <ng-container *ngIf="element.id == expandedElement?.id">
                     <div fxFlex fxLayout="column" class="form" *ngIf="editProductForm" [formGroup]="editProductForm">
+                      <input formControlName="id" required  type="hidden">
                       <mat-form-field>
                         <mat-label>Name</mat-label>
                         <input formControlName="name" (keydown.enter)="saveEditProduct()" required minlength="2" autocomplete="off" type="text" matInput>
@@ -219,6 +220,7 @@
       <mat-card>
         <mat-card-content>
           <div *ngIf="newProductForm" [formGroup]="newProductForm">
+            <input formControlName="id" required  type="hidden">
             <mat-form-field fxFlexFill>
               <mat-label>Name</mat-label>
               <input formControlName="name" (keyup.enter)="addProduct()" required minlength="2" autocomplete="off" type="text" matInput>
