@@ -24,11 +24,20 @@ function bytesToSize(bytes) {
 shell.config.verbose = debug;
 
 if (devBuild) {
-  shell.exec('ng build --configuration=test');
+  const r = shell.exec('ng build --configuration=test');
+  if (r.code !== 0) {
+    process.exit(1);
+  }
 } else {
-  shell.exec('npx nx build food-order --prod');
+  const r = shell.exec('npx nx build food-order --prod');
+  if (r.code !== 0) {
+    process.exit(1);
+  }
 }
-shell.exec('npx nx build food-order-api --prod');
+const r = shell.exec('npx nx build food-order-api --prod');
+if (r.code !== 0) {
+  process.exit(1);
+}
 
 shell.rm('-rf', 'work');
 shell.mkdir('-p', 'work');
