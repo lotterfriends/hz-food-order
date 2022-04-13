@@ -7,7 +7,7 @@ import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { combineLatest } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
-import { ConfirmDialogComponent, ConfirmDialogModel } from 'libs/ui/src/lib/confirm-dialog/confirm-dialog.component';
+import { ConfirmDialogComponent, ConfirmDialogModel } from '@hz/ui';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Settings } from '../services/admin-settings.service';
 import { SettingsService } from '../../settings.service';
@@ -203,7 +203,7 @@ export class ProductsComponent implements OnInit, AfterViewInit {
 
     dialogRef.afterClosed().pipe(first()).subscribe(dialogResult => {
       if (dialogResult) {
-        this.adminProductsService.deleteCategory(category).pipe(first()).subscribe(_ => {
+        this.adminProductsService.deleteCategory(category).pipe(first()).subscribe(() => {
           this.reassignProductsOfDeletedCategory(category);
           const snackBarRef = this.snackBar.open(`Die Katergorie ${category.name} wurde erfolgreich gelöscht.`, 'rückgängig', {
             duration: 4000,
@@ -235,7 +235,7 @@ export class ProductsComponent implements OnInit, AfterViewInit {
   toggleDisableProductCategory($event, category: ProducCategory): void {
     $event.stopPropagation();
     $event.preventDefault();
-    this.adminProductsService.toggleDisableProductCategory(category.id, !category.disabled).pipe(first()).subscribe(_ => {
+    this.adminProductsService.toggleDisableProductCategory(category.id, !category.disabled).pipe(first()).subscribe(() => {
       const index = this.categories.findIndex(p => p.id === category.id);
       if (index > -1) {
         this.categories[index].disabled = !this.categories[index].disabled;
@@ -354,7 +354,7 @@ export class ProductsComponent implements OnInit, AfterViewInit {
     if (!product) {
       product = this.editProductForm?.getRawValue() as Product;
     }
-    if ("edit" in product) {
+    if ('edit' in product) {
       delete product.edit;
     }
     this.adminProductsService.updateProduct(
@@ -426,7 +426,7 @@ export class ProductsComponent implements OnInit, AfterViewInit {
 
     dialogRef.afterClosed().pipe(first()).subscribe(dialogResult => {
       if (dialogResult) {
-        this.adminProductsService.deleteProduct(product.id).pipe(first()).subscribe(_ => {
+        this.adminProductsService.deleteProduct(product.id).pipe(first()).subscribe(() => {
           this.productsByCategory.forEach(pc => {
             const prpductIndex = pc.products.findIndex(p => p.id === product.id);
             if (prpductIndex > -1) {
@@ -457,7 +457,7 @@ export class ProductsComponent implements OnInit, AfterViewInit {
   toggleDisableProduct($event, product: ViewProduct): void {
     $event.stopPropagation();
     $event.preventDefault();
-    this.adminProductsService.toggleDisableProduct(product.id, !product.disabled).pipe(first()).subscribe(_ => {
+    this.adminProductsService.toggleDisableProduct(product.id, !product.disabled).pipe(first()).subscribe(() => {
       this.productsByCategory.forEach(pc => {
         const prpductIndex = pc.products.findIndex(p => p.id === product.id);
         if (prpductIndex > -1) {

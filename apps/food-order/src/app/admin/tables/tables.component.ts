@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { NavigationEnd, Router } from '@angular/router';
 import { NgxQrcodeElementTypes, NgxQrcodeErrorCorrectionLevels } from '@techiediaries/ngx-qrcode';
-import { ConfirmDialogComponent, ConfirmDialogModel } from 'libs/ui/src/lib/confirm-dialog/confirm-dialog.component';
+import { ConfirmDialogComponent, ConfirmDialogModel } from '@hz/ui';
 import { filter, first } from 'rxjs/operators';
 import { Role } from '../../auth.service';
 import { PublicTableService } from '../../public-table.service';
@@ -81,7 +81,7 @@ export class TablesComponent implements OnInit {
 
     dialogRef.afterClosed().pipe(first()).subscribe(dialogResult => {
       if (dialogResult) {
-        this.adminTablesService.deleteTable(item.id).pipe(first()).subscribe(_ => {
+        this.adminTablesService.deleteTable(item.id).pipe(first()).subscribe(() => {
           this.tables = this.tables.filter(e => e.id !== item.id);
         });
       }

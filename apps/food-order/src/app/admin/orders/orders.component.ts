@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { OrderService, ServerOrder } from '../../order/order.service';
 import { AdminOrderService, OrderFilter, TableType } from '../services/admin-order.service';
 import { OrderStatus } from '../../order/order.service';
@@ -9,7 +9,7 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { filter, first } from 'rxjs/operators';
 import { SettingsService, Settings } from '../../settings.service';
 import { AdminTablesService, Table } from '../services/admin-tables.service';
-import { ConfirmDialogComponent, ConfirmDialogModel } from 'libs/ui/src/lib/confirm-dialog/confirm-dialog.component';
+import { ConfirmDialogComponent, ConfirmDialogModel } from '@hz/ui';
 import { AdminProductsService, ProducCategory } from '../services/admin-products.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ScrollStateService } from '../../scroll-state.service';
@@ -158,7 +158,8 @@ export class OrdersComponent implements OnInit {
         eOrder.status = result.status;
         this.more();
         if (showMessage) {
-          const snackBarRef = this.snackBar.open(`Status auf "${this.orderService.getTextForOrderStatus(result.status)}" gesetzt`, 'rückgängig', {
+          const snackBarRef = 
+            this.snackBar.open(`Status auf "${this.orderService.getTextForOrderStatus(result.status)}" gesetzt`, 'rückgängig', {
             duration: 4000,
           });
           snackBarRef.onAction().pipe(first()).subscribe(()=> {
@@ -246,7 +247,7 @@ export class OrdersComponent implements OnInit {
   }
 
   toggleSelectedProductCategoryFunnel(funnel: number, category: ProducCategory) {
-    let entry = `${category.id}-${funnel}`;
+    const entry = `${category.id}-${funnel}`;
     if (this.filter.funnels && this.filter.funnels.length) {
       const index = this.filter.funnels.findIndex(e => e === entry);
       if (index > -1) {

@@ -1,5 +1,5 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Component, OnInit } from '@angular/core';
+import { MatDialogRef } from '@angular/material/dialog';
 import jsQR from 'jsqr';
 import { PublicTableService } from '../public-table.service';
 
@@ -23,7 +23,7 @@ export class ScanCodeDialogComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<ScanCodeDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: {},
+    // @Inject(MAT_DIALOG_DATA) public data: {},
   ) {}
 
 
@@ -64,8 +64,8 @@ export class ScanCodeDialogComponent implements OnInit {
         canvasElement.height = video.videoHeight;
         canvasElement.width = video.videoWidth;
         canvas.drawImage(video, 0, 0, canvasElement.width, canvasElement.height);
-        var imageData = canvas.getImageData(0, 0, canvasElement.width, canvasElement.height);
-        var code = jsQR(imageData.data, imageData.width, imageData.height, {
+        const imageData = canvas.getImageData(0, 0, canvasElement.width, canvasElement.height);
+        const code = jsQR(imageData.data, imageData.width, imageData.height, {
           inversionAttempts: 'dontInvert',
         });
         if (code) {

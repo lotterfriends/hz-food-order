@@ -16,7 +16,6 @@ export class OrderService {
   constructor(
     @InjectRepository(Order) private orderRepository: Repository<Order>,
     private readonly productsService: ProductsService,
-    private readonly appService: AppService,
     private readonly settingsService: SettingsService
   ) {}
 

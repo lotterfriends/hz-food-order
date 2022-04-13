@@ -8,7 +8,7 @@ import { Component } from '@angular/core';
 export class AppComponent {
 
   constructor(){
-    const supportsTouch = 'ontouchstart' in window || navigator.msMaxTouchPoints;
+    const supportsTouch = 'ontouchstart' in window || (navigator as any).msMaxTouchPoints;
     document.body.classList.add(supportsTouch ? 'touch' : 'no-touch');
   }
 

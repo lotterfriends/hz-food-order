@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs';
-import { environment } from 'apps/food-order/src/environments/environment';
+import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 
 export class CrudService<T> {

@@ -3,7 +3,7 @@ import { Component, OnDestroy, OnInit, Renderer2 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
-import { ConfirmDialogComponent, ConfirmDialogModel } from 'libs/ui/src/lib/confirm-dialog/confirm-dialog.component';
+import { ConfirmDialogComponent, ConfirmDialogModel } from '@hz/ui';
 import { filter, first } from 'rxjs/operators';
 import { OrderWSService } from '../order-ws.service';
 import { Settings, SettingsService } from '../settings.service';
@@ -72,7 +72,7 @@ export class OrderComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.orderWSService.tableProductUpdate().subscribe(product => {
+    this.orderWSService.tableProductUpdate().subscribe(() => {
       if (this.somethingOrderedForCard()) {
         this.updateCardAfterPlaceOrder = true;
       } else {

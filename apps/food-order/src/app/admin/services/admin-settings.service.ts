@@ -40,10 +40,9 @@ export class AdminSettingsService {
   }
   
   uploadLogo(file: File): Observable<any> {
-    let formData = new FormData();
+    const formData = new FormData();
     formData.append('file', file);
-
-    let params = new HttpParams();
+    const params = new HttpParams();
 
     const options = {
       params: params,

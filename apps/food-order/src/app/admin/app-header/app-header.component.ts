@@ -10,7 +10,7 @@ import { AuthService } from '../../auth.service';
   styleUrls: ['./app-header.component.scss']
 })
 @UntilDestroy()
-export class AppHeaderComponent implements OnInit {
+export class AppHeaderComponent {
 
   @Input() title = '';
   @Output() toggleSidenav = new EventEmitter<void>();
@@ -30,9 +30,6 @@ export class AppHeaderComponent implements OnInit {
         }
       }
     });
-  }
-
-  ngOnInit(): void {
   }
 
   logout(): void {

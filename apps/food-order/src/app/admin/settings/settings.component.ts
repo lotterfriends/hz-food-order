@@ -1,7 +1,7 @@
 import { HttpEventType, HttpResponse } from '@angular/common/http';
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ConfirmDialogComponent, ConfirmDialogModel } from 'libs/ui/src/lib/confirm-dialog/confirm-dialog.component';
+import { ConfirmDialogComponent, ConfirmDialogModel } from '@hz/ui';
 import { first } from 'rxjs/operators';
 import { SettingsService } from '../../settings.service';
 import { AdminOrderService } from '../services/admin-order.service';
@@ -17,7 +17,7 @@ export class SettingsComponent implements OnInit {
   serverSecret = '';
   secret = '';
   logo: File = null;
-  logoPreview: string = '';
+  logoPreview = '';
   logoUploadStarted = false;
   logoUploadProgress = 0;
   logoUploadError = false;
@@ -84,7 +84,7 @@ export class SettingsComponent implements OnInit {
 
     dialogRef.afterClosed().pipe(first()).subscribe(dialogResult => {
       if (dialogResult) {
-        this.adminOrderService.archive().pipe(first()).subscribe(e => {
+        this.adminOrderService.archive().pipe(first()).subscribe(() => {
           // 
         });
       }
@@ -101,7 +101,7 @@ export class SettingsComponent implements OnInit {
       orderSound: this.orderSound,
       whileStocksLast: this.whileStocksLast,
       maxSameProductsPerOrder: this.maxSameProductsPerOrder
-    }).pipe(first()).subscribe((settings: Settings) => {
+    }).pipe(first()).subscribe(() => {
       window.sessionStorage.removeItem('order_filter');
       //TODO: send reload event to all clients
 
@@ -156,7 +156,7 @@ export class SettingsComponent implements OnInit {
         }
         // console.log(event);
       },
-      (err) => {
+      () => {
         this.logoUploadError = true;
         this.logoUploadStarted = false;
         // console.log("Upload Error:", err);
@@ -169,7 +169,7 @@ export class SettingsComponent implements OnInit {
   }
 
   deleteLogo() {
-    this.adminSettingsService.updateSettings({logo: ''}).pipe(first()).subscribe((settings: Settings) => {
+    this.adminSettingsService.updateSettings({logo: ''}).pipe(first()).subscribe(() => {
       this.settingsLogo  = '';
     });
   }

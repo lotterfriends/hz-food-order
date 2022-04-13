@@ -1,12 +1,11 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { UntilDestroy } from '@ngneat/until-destroy';
 import { NgxQrcodeElementTypes, NgxQrcodeErrorCorrectionLevels } from '@techiediaries/ngx-qrcode';
-import { Observable } from 'rxjs';
-import { filter, first, map } from 'rxjs/operators';
+import { filter, first } from 'rxjs/operators';
 import { PublicTableService } from '../../../public-table.service';
 import { Settings, SettingsService } from '../../../settings.service';
-import { AdminTablesService, Table } from '../../services/admin-tables.service';
+import { Table } from '../../services/admin-tables.service';
 
 interface ViewTable extends Table {
   edit: boolean;

@@ -87,7 +87,7 @@ export class AuthService {
   }
 
   logout(): void {
-    this.http.post<{}>(`${environment.apiPath}/auth/logout`, {
+    this.http.post(`${environment.apiPath}/auth/logout`, {
       refresh_token:  localStorage.getItem('refresh_token')
     }).pipe(first()).subscribe(() => {
       this.removeToken();
@@ -120,7 +120,9 @@ export class AuthService {
         const expires = new Date(refreshTokenObject.exp * 1000);
 
         if (expires.getTime() - Date.now() > 0) {
-          return this.refresh().then(() => {}, () => {
+          return this.refresh().then(() => {
+            // do nothing
+          }, () => {
             this.removeToken();
           });
         } else {

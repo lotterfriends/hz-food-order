@@ -1,7 +1,7 @@
-import { Component, Inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { AbstractControl, FormControl, FormGroupDirective, NgForm, ValidationErrors, Validators } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialogRef } from '@angular/material/dialog';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { PublicTableService } from '../public-table.service';
@@ -20,7 +20,9 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
     <div mat-dialog-content>
       <mat-form-field fxFlexFill class="">
         <mat-label>Code</mat-label>
-        <input #code type="text" minlength="6" maxlength="6" autocomplete="off" [formControl]="codeFormControl" [errorStateMatcher]="matcher" placeholder="Tisch-Code" matInput>
+        <input #code type="text" minlength="6" maxlength="6" 
+          autocomplete="off" [formControl]="codeFormControl" [errorStateMatcher]="matcher"
+          placeholder="Tisch-Code" matInput>
         <span matSuffix>{{code.value?.length || 0}}/6</span>
         <mat-error *ngIf="codeFormControl.hasError('minlength')">
           Der Code ist zu kurz
@@ -47,9 +49,8 @@ export class EnterCodeDialogComponent {
   constructor(
     public dialogRef: MatDialogRef<EnterCodeDialogComponent>,
     private publicTableService: PublicTableService,
-    @Inject(MAT_DIALOG_DATA) public data: {},
-  ) {
-  }
+    // @Inject(MAT_DIALOG_DATA) public data: {},
+  ) {}
 
   validateCode(
     ctrl: AbstractControl
