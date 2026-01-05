@@ -67,7 +67,7 @@
     "class-validator": "^0.13.1",
     "compression": "^1.7.4",
     "jsqr": "^1.4.0",
-    "mysql2": "^2.2.5",
+    "mysql2": "^3.9.8",
     "ng2-currency-mask": "11.0.0",
     "ngx-permissions": "^8.1.1",
     "ngx-socket-io": "3.2.0",
